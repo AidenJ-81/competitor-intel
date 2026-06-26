@@ -131,11 +131,14 @@ async def get_financial(company: str, year: int = 2023):
     rows = data.get("list", [])
 
     def find(account: str, sj: str | None = None) -> int:
+        # IS 항목은 CIS(포괄손익계산서)도 함께 탐색
+        sj_check = [sj, "CIS"] if sj == "IS" else ([sj] if sj else [])
         for row in rows:
             if account in row.get("account_nm", ""):
-                if sj and row.get("sj_div") != sj:
+                if sj_check and row.get("sj_div") not in sj_check:
                     continue
-                return to_100m(row.get("thstrm_amount", "0"))
+                val = row.get("thstrm_amount") or row.get("thstrm_add_amount") or "0"
+                return to_100m(val)
         return 0
 
     return {
@@ -196,7 +199,7 @@ async def chat(body: ChatRequest):
         messages = (body.history or [])[-10:] + [{"role": "user", "content": body.message}]
 
         resp = client.messages.create(
-            model="claude-haiku-4-5-20251001",
+            model="claude-3-5-haiku-20241022",
             max_tokens=1024,
             system=SYSTEM_PROMPT,
             messages=messages,
