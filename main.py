@@ -21,23 +21,29 @@ ANTHROPIC_API_KEY   = os.getenv("ANTHROPIC_API_KEY", "")
 _corp_cache: dict[str, str] = {}
 
 async def get_corp_code(company: str) -> str:
-    """기업명으로 DART 고유번호(corp_code) 조회 — list.json 검색 사용"""
+    """기업명으로 DART 고유번호(corp_code) 조회"""
     if company in _corp_cache:
         return _corp_cache[company]
 
     async with httpx.AsyncClient(timeout=10) as client:
         r = await client.get(
             "https://opendart.fss.or.kr/api/list.json",
-            params={"crtfc_key": DART_API_KEY, "corp_name": company, "page_count": 5},
+            params={"crtfc_key": DART_API_KEY, "corp_name": company, "page_count": 20},
         )
     data = r.json()
 
     if data.get("status") == "000" and data.get("list"):
-        # 정확히 이름이 일치하는 항목 우선
+        # 1순위: 완전 일치
         for item in data["list"]:
             if item.get("corp_name") == company:
                 _corp_cache[company] = item["corp_code"]
                 return item["corp_code"]
+        # 2순위: 포함 일치
+        for item in data["list"]:
+            if company in item.get("corp_name", ""):
+                _corp_cache[company] = item["corp_code"]
+                return item["corp_code"]
+        # 3순위: 첫 번째 결과
         code = data["list"][0]["corp_code"]
         _corp_cache[company] = code
         return code
@@ -199,7 +205,7 @@ async def chat(body: ChatRequest):
         messages = (body.history or [])[-10:] + [{"role": "user", "content": body.message}]
 
         resp = await client.messages.create(
-            model="claude-sonnet-4-5-20250514",
+            model="claude-sonnet-4-5",
             max_tokens=1024,
             system=SYSTEM_PROMPT,
             messages=messages,
