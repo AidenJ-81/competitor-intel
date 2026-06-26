@@ -108,19 +108,24 @@ async def get_financial(company: str, year: int = 2023):
     corp_code = await get_corp_code(company)
 
     async with httpx.AsyncClient(timeout=15) as client:
-        r = await client.get(
-            "https://opendart.fss.or.kr/api/fnlttSinglAcntAll.json",
-            params={
-                "crtfc_key":  DART_API_KEY,
-                "corp_code":  corp_code,
-                "bsns_year":  str(year),
-                "reprt_code": "11011",   # 사업보고서
-                "fs_div":     "CFS",     # 연결재무제표
-            },
-        )
-    data = r.json()
+        # CFS(연결) 먼저 시도, 없으면 OFS(별도)로 재시도
+        data = None
+        for fs_div in ("CFS", "OFS"):
+            r = await client.get(
+                "https://opendart.fss.or.kr/api/fnlttSinglAcntAll.json",
+                params={
+                    "crtfc_key":  DART_API_KEY,
+                    "corp_code":  corp_code,
+                    "bsns_year":  str(year),
+                    "reprt_code": "11011",
+                    "fs_div":     fs_div,
+                },
+            )
+            data = r.json()
+            if data.get("status") == "000" and data.get("list"):
+                break
 
-    if data.get("status") != "000":
+    if not data or data.get("status") != "000":
         raise HTTPException(404, f"재무 데이터 없음: {data.get('message', '')}")
 
     rows = data.get("list", [])
@@ -186,16 +191,19 @@ async def chat(body: ChatRequest):
     if not ANTHROPIC_API_KEY:
         raise HTTPException(500, "ANTHROPIC_API_KEY 환경변수 미설정")
 
-    client = Anthropic(api_key=ANTHROPIC_API_KEY)
-    messages = (body.history or [])[-10:] + [{"role": "user", "content": body.message}]
+    try:
+        client = Anthropic(api_key=ANTHROPIC_API_KEY)
+        messages = (body.history or [])[-10:] + [{"role": "user", "content": body.message}]
 
-    resp = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=1024,
-        system=SYSTEM_PROMPT,
-        messages=messages,
-    )
-    return {"response": resp.content[0].text}
+        resp = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1024,
+            system=SYSTEM_PROMPT,
+            messages=messages,
+        )
+        return {"response": resp.content[0].text}
+    except Exception as e:
+        raise HTTPException(500, f"Claude API 오류: {str(e)}")
 
 
 # ── 프론트엔드 (최상위 index.html) ───────────────────────────────────────────
