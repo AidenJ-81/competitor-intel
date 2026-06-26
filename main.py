@@ -199,7 +199,7 @@ async def chat(body: ChatRequest):
         messages = (body.history or [])[-10:] + [{"role": "user", "content": body.message}]
 
         resp = client.messages.create(
-            model="claude-3-5-haiku-20241022",
+            model="claude-3-haiku-20240307",
             max_tokens=1024,
             system=SYSTEM_PROMPT,
             messages=messages,
