@@ -21,13 +21,13 @@ ANTHROPIC_API_KEY   = os.getenv("ANTHROPIC_API_KEY", "")
 _corp_cache: dict[str, str] = {}
 
 async def get_corp_code(company: str) -> str:
-    """기업명으로 DART 고유번호(corp_code) 조회"""
+    """기업명으로 DART 고유번호(corp_code) 조회 — list.json 검색 사용"""
     if company in _corp_cache:
         return _corp_cache[company]
 
     async with httpx.AsyncClient(timeout=10) as client:
         r = await client.get(
-            "https://opendart.fss.or.kr/api/company.json",
+            "https://opendart.fss.or.kr/api/list.json",
             params={"crtfc_key": DART_API_KEY, "corp_name": company, "page_count": 5},
         )
     data = r.json()
@@ -35,7 +35,7 @@ async def get_corp_code(company: str) -> str:
     if data.get("status") == "000" and data.get("list"):
         # 정확히 이름이 일치하는 항목 우선
         for item in data["list"]:
-            if item["corp_name"] == company:
+            if item.get("corp_name") == company:
                 _corp_cache[company] = item["corp_code"]
                 return item["corp_code"]
         code = data["list"][0]["corp_code"]
