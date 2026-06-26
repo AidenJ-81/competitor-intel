@@ -4,7 +4,7 @@ import html as html_lib
 from typing import Optional
 
 import httpx
-from anthropic import Anthropic
+from anthropic import AsyncAnthropic
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -195,11 +195,11 @@ async def chat(body: ChatRequest):
         raise HTTPException(500, "ANTHROPIC_API_KEY 환경변수 미설정")
 
     try:
-        client = Anthropic(api_key=ANTHROPIC_API_KEY)
+        client = AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
         messages = (body.history or [])[-10:] + [{"role": "user", "content": body.message}]
 
-        resp = client.messages.create(
-            model="claude-3-haiku-20240307",
+        resp = await client.messages.create(
+            model="claude-sonnet-4-5-20250514",
             max_tokens=1024,
             system=SYSTEM_PROMPT,
             messages=messages,
