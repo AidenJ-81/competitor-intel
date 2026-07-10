@@ -8,7 +8,7 @@ RUN npm install --omit=dev
 
 # 앱 소스 복사
 COPY server.js ./
-COPY public ./public
+COPY index.html ./
 
 ENV PORT=3000
 EXPOSE 3000
