@@ -31,6 +31,8 @@ html,body,#root{height:100%;margin:0;padding:0;background:#F8FAFC;}
 .ci-input:focus{outline:none;border-color:#0D9488!important;}
 .ci-nav:hover{background:rgba(13,148,136,.08)!important;color:#0F172A!important;}
 .ci-card:hover{background:#F1F5F9!important;cursor:pointer;}
+.ci-settings-btn:hover{background:#0B7A70!important;box-shadow:0 3px 10px rgba(13,148,136,.5)!important;}
+.ci-add-comp-btn:hover{opacity:.88;}
 select{outline:none;cursor:pointer;}
 </style>
 </head>
@@ -43,58 +45,65 @@ const T={bg0:"#F8FAFC",bg1:"#FFFFFF",bg2:"#FFFFFF",bg3:"#F1F5F9",b:"#E2E8F0",t1:
 const PALETTE=["#EF4444","#F97316","#F59E0B","#8B5CF6","#3BACED","#20D9A0","#34D399","#EC4899","#F43F5E","#84CC16","#A78BFA","#22D3EE","#FB923C","#4ADE80","#60A5FA","#E879F9","#FCD34D","#6EE7B7","#93C5FD","#F9A8D4"];
 const XI_TYPES=["GMP의약품","반도체시설","데이터센터","이차전지","산업플랜트"];
 
+// 위협도 계산 신뢰도(표본 크기) 배지 — 참여 건수가 적으면 낙찰률이 전체 평균으로 보정되었음을 안내
+const THREAT_CONF_LABEL={high:"표본 충분",medium:"표본 보통",low:"표본 적음·보정됨"};
+const THREAT_CONF_COLOR={high:"#16A34A",medium:"#D97706",low:"#DC2626"};
+// 강점/약점 조사 데이터의 근거 신뢰도 배지 — 실제 뉴스로 검증됐는지 여부
+const DATA_CONF_LABEL={high:"뉴스로 검증됨",medium:"간접 신호",low:"검증 제한적"};
+const DATA_CONF_COLOR={high:"#16A34A",medium:"#D97706",low:"#DC2626"};
+
 // ─── 도급순위 50개사 ──────────────────────────────────────────
 const TOP50=[
-  {id:"samsung_c",rank:1,name:"삼성물산",biz:["건축","주거","토목","플랜트","해외"],wins:["삼성전자 평택반도체","래미안 원베일리"],clients:["삼성전자","현대차","서울시"]},
-  {id:"hyundai_c",rank:2,name:"현대건설",biz:["건축","주거","토목","플랜트","해외"],wins:["힐스테이트 청량리","현대차 울산 EV공장"],clients:["현대차","현대제철","SK"]},
-  {id:"gs_c",rank:3,name:"GS건설",biz:["건축","주거","토목","플랜트"],wins:["자이 은평뉴타운","GS칼텍스 플랜트"],clients:["GS그룹","포스코","SK가스"]},
-  {id:"daewoo_c",rank:4,name:"대우건설",biz:["건축","주거","토목","해외"],wins:["푸르지오 동탄","나이지리아 LNG 플랜트"],clients:["한국수자원공사","LH","서울시"]},
-  {id:"posco_c",rank:5,name:"포스코이앤씨",biz:["건축","주거","플랜트","환경","이차전지"],wins:["포스코 이차전지소재공장","더샵 파크프레스티지"],clients:["포스코","포스코퓨처엠","GM"]},
-  {id:"hdc_c",rank:6,name:"HDC현대산업개발",biz:["주거","건축","면세점"],wins:["아이파크 동탄","서울역 복합개발"],clients:["LH","서울시","HDC그룹"]},
-  {id:"lotte_c",rank:7,name:"롯데건설",biz:["주거","건축","토목"],wins:["롯데캐슬 시그니처 청량리","롯데바이오로직스 4공장"],clients:["롯데그룹","한국공항공사","LH"]},
-  {id:"sk_c",rank:8,name:"SK에코플랜트",biz:["데이터센터","반도체시설","환경","플랜트"],wins:["SK하이닉스 M16","SKT IDC 수원"],clients:["SK하이닉스","SK텔레콤","SK이노베이션"]},
-  {id:"dl_c",rank:9,name:"DL이앤씨",biz:["주거","건축","플랜트","화학"],wins:["아크로 세티엘","DL케미칼 플랜트"],clients:["DL그룹","포스코","GS칼텍스"]},
-  {id:"hoban_c",rank:10,name:"호반건설",biz:["주거","건축"],wins:["호반써밋 광교","호반베르디움 위례"],clients:["LH","SH","각지자체"]},
-  {id:"kolon_c",rank:11,name:"코오롱글로벌",biz:["데이터센터","이차전지","주거","클린룸","건축"],wins:["카카오 데이터센터 안산","LG에너지솔루션 오창4공장","KT IDC 부산"],clients:["카카오","LG에너지솔루션","KT"]},
-  {id:"hanwha_c",rank:12,name:"한화건설",biz:["주거","건축","플랜트","방산"],wins:["꿈에그린 수원","한화 방산공장 증설"],clients:["한화그룹","LH","국방부"]},
-  {id:"kumho_c",rank:13,name:"금호건설",biz:["주거","건축","토목"],wins:["어울림 수원 광교","금호타이어 시설"],clients:["LH","금호그룹","각지자체"]},
-  {id:"geryong_c",rank:14,name:"계룡건설산업",biz:["건축","토목","주거"],wins:["국방시설","공공건축"],clients:["국방부","행정중심복합도시","대전시"]},
-  {id:"dongbu_c",rank:15,name:"동부건설",biz:["클린룸","반도체시설","GMP의약품","건축"],wins:["SK하이닉스 청주 증설","삼성바이오 5공장","셀트리온 3공장"],clients:["SK하이닉스","삼성바이오","셀트리온"],strengths:["반도체 클린룸 압도적 레퍼런스","대형 GMP 트랙레코드"],weaknesses:["데이터센터 경험 부족","수익성 악화"],radar:[{axis:"기술력",val:85},{axis:"트랙레코드",val:90},{axis:"재무",val:72},{axis:"영업력",val:80},{axis:"인력",val:75}]},
-  {id:"halla_c",rank:16,name:"한라",biz:["주거","건축","토목"],wins:["비발디파크","용인반도체 기반시설"],clients:["현대차그룹","각지자체","LH"]},
-  {id:"hanyang_c",rank:17,name:"한양",biz:["주거","건축"],wins:["수자인 광교","한양 수자인 동탄"],clients:["LH","SH","각지자체"]},
-  {id:"taeyoung_c",rank:18,name:"태영건설",biz:["주거","건축","환경"],wins:["데시앙 판교","환경플랜트 수원"],clients:["LH","환경부","각지자체"]},
-  {id:"kcc_c",rank:19,name:"KCC건설",biz:["주거","건축","인테리어"],wins:["KCC스위첸 동탄","주상복합 여의도"],clients:["KCC그룹","LH","각지자체"]},
-  {id:"sungdo_c",rank:20,name:"성도이엔지",biz:["GMP의약품","반도체 클린룸","연구시설"],wins:["유한양행 오송 증설","대웅제약 안산 GMP","SK바이오팜 이천"],clients:["유한양행","대웅제약","SK바이오팜"],strengths:["GMP 소수정예 특화","제약사 네트워크 견고"],weaknesses:["소규모 재무","인력 풀 제한"],radar:[{axis:"기술력",val:80},{axis:"트랙레코드",val:75},{axis:"재무",val:65},{axis:"영업력",val:72},{axis:"인력",val:60}]},
-  {id:"hyundaieng_c",rank:21,name:"현대엔지니어링",biz:["플랜트","산업시설","건축","해외"],wins:["HMG 울산EV공장","사우디 플랜트"],clients:["현대차그룹","한국가스공사","해외"]},
-  {id:"samsungeng_c",rank:22,name:"삼성엔지니어링",biz:["플랜트","화학","산업시설","해외"],wins:["삼성전자 평택 EUV","사우디 가스처리"],clients:["삼성전자","사우디아람코","해외"]},
-  {id:"sgc_c",rank:23,name:"SGC E&C",biz:["GMP의약품","바이오","식품공장","화학플랜트"],wins:["GC녹십자 오창","CJ제일제당 인천2공장","롯데바이오로직스 송도"],clients:["GC녹십자","CJ제일제당","롯데바이오"],strengths:["바이오·식품공장 특화","GMP 설계 내재화"],weaknesses:["데이터센터 미진출","대형 반도체 부재"],radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:72},{axis:"재무",val:80},{axis:"영업력",val:70},{axis:"인력",val:68}]},
-  {id:"hanwhaeng_c",rank:24,name:"한화엔지니어링",biz:["플랜트","산업시설","건축"],wins:["한화 방산시설","석유화학 플랜트"],clients:["한화그룹","한국중부발전","ADNOC"]},
-  {id:"gsear_c",rank:25,name:"GS이앤알",biz:["환경","에너지","리사이클"],wins:["폐기물처리시설","바이오가스 플랜트"],clients:["환경부","각지자체","SK"]},
-  {id:"dongwon_c",rank:26,name:"동원개발",biz:["주거","건축"],wins:["동원로얄듀크 광교","동원베네스트 마곡"],clients:["LH","SH","각지자체"]},
-  {id:"hanshin_c",rank:27,name:"한신공영",biz:["주거","건축"],wins:["한신더휴 인천","한신더휴 평촌"],clients:["LH","SH","각지자체"]},
-  {id:"doosanc_c",rank:28,name:"두산건설",biz:["주거","건축","플랜트"],wins:["위브더제니스 해운대","두산 중공업 시설"],clients:["두산그룹","LH","각지자체"]},
-  {id:"bandoc_c",rank:29,name:"반도건설",biz:["주거","건축"],wins:["반도유보라 동탄","반도유보라 광교"],clients:["LH","SH","각지자체"]},
-  {id:"woomig_c",rank:30,name:"우미건설",biz:["주거","건축"],wins:["우미린 판교","우미린 동탄"],clients:["LH","각지자체"]},
-  {id:"seohee_c",rank:31,name:"서희건설",biz:["주거","건축"],wins:["서희스타힐스 용인","서희스타힐스 청주"],clients:["LH","각지자체"]},
-  {id:"hyosung_c",rank:32,name:"효성중공업",biz:["산업시설","전력설비","플랜트"],wins:["변전소 EPC","수소충전소 인프라"],clients:["한국전력","효성그룹","산업부"]},
-  {id:"sinsekai_c",rank:33,name:"신세계건설",biz:["건축","복합상업","주거"],wins:["위례 신세계","일렉트로마트 시설"],clients:["신세계그룹","이마트","각지자체"]},
-  {id:"daemyung_c",rank:34,name:"대명건설",biz:["건축","주거","리조트"],wins:["대명리조트 시설","대명아파트"],clients:["대명그룹","LH","각지자체"]},
-  {id:"sambu_c",rank:35,name:"삼부토건",biz:["토목","건축"],wins:["도로·교량 공사","공공건축"],clients:["국토부","한국도로공사","각지자체"]},
-  {id:"dongah_c",rank:36,name:"동아건설산업",biz:["토목","건축"],wins:["항만공사","교량 EPC"],clients:["해양수산부","국토부","각지자체"]},
-  {id:"namkwang_c",rank:37,name:"남광토건",biz:["토목","건축"],wins:["하수도 시설","공공토목"],clients:["환경부","각지자체"]},
-  {id:"isdongso_c",rank:38,name:"아이에스동서",biz:["주거","환경","건축"],wins:["환경공단 시설","ISE 아파트"],clients:["한국환경공단","LH","각지자체"]},
-  {id:"hjheavy_c",rank:39,name:"HJ중공업",biz:["조선소 관련 건축","플랜트"],wins:["조선소 시설 증설","항만 인프라"],clients:["HJ중공업그룹","해양수산부"]},
-  {id:"samsung2_c",rank:40,name:"삼환기업",biz:["건축","토목","플랜트"],wins:["산업단지 기반시설","공공건축"],clients:["각지자체","공공기관"]},
-  {id:"jeil_c",rank:41,name:"제일건설",biz:["주거","건축"],wins:["제일풍경채 광교","제일풍경채 동탄"],clients:["LH","각지자체"]},
-  {id:"daebang_c",rank:42,name:"대방건설",biz:["주거","건축"],wins:["대방 노블랜드 인천","대방 노블랜드 청주"],clients:["LH","각지자체"]},
-  {id:"hanjin_c",rank:43,name:"한진중공업",biz:["플랜트","건축","조선관련"],wins:["공공건축 EPC","산업시설"],clients:["각지자체","공공기관"]},
-  {id:"golyeo_c",rank:44,name:"고려개발",biz:["토목","건축"],wins:["도로·교량","공공토목"],clients:["국토부","각지자체"]},
-  {id:"geunwha_c",rank:45,name:"건화",biz:["환경플랜트","건축"],wins:["하수처리장","환경시설"],clients:["환경부","각지자체"]},
-  {id:"samhwa_c",rank:46,name:"삼화건설",biz:["건축","토목"],wins:["공공건축","지역개발"],clients:["각지자체","공공기관"]},
-  {id:"csholding_c",rank:47,name:"씨에스홀딩스",biz:["주거","건축"],wins:["CS 아파트","공공주택"],clients:["LH","각지자체"]},
-  {id:"junghung_c",rank:48,name:"중흥건설",biz:["주거","건축"],wins:["중흥S-클래스 광주","중흥S-클래스 수원"],clients:["LH","각지자체"]},
-  {id:"korea_c",rank:49,name:"한국건설",biz:["토목","건축","환경"],wins:["공공시설","환경플랜트"],clients:["각지자체","공공기관"]},
-  {id:"hyundai2_c",rank:50,name:"현대엔지니어링건설",biz:["건축","플랜트","토목"],wins:["복합개발","산업시설"],clients:["현대차그룹","LH","각지자체"]},
+  {id:"samsung_c",rank:1,name:"삼성물산",biz:["건축","주거","토목","플랜트","해외"],wins:["삼성전자 평택반도체","래미안 원베일리"],clients:["삼성전자","현대차","서울시"],strengths:["2025년 영업이익 3조2930억원으로 전년 대비 급증(선별 수주 전략 효과)","시공능력평가 12년 연속 1위, 압도적 규모·재무 안정성"],weaknesses:["2025년 매출은 전년 대비 약 1조원 감소(선별 수주에 따른 외형 축소)","주택 부문 의존도가 높아 국내 부동산 경기에 민감"],sources:[{t:"삼성물산, 2025년 매출 전년 대비 약 1조 감소·영업이익 3조2930억 증가",u:"https://www.greened.kr/news/articleView.html?idxno=336308"},{t:"삼성물산 2025년 연간 및 4분기 실적 참고자료(삼성물산 뉴스룸)",u:"https://news.samsungcnt.com/ko/%EC%A0%84%EC%B2%B4%EA%B8%B0%EC%82%AC/%EC%A0%84%EC%82%AC%EA%B3%B5%ED%86%B5/2026-01-%EC%82%BC%EC%84%B1%EB%AC%BC%EC%82%B0-2025%EB%85%84-%EC%97%B0%EA%B0%84-%EB%B0%8F-4%EB%B6%84%EA%B8%B0-%EC%8B%A4%EC%A0%81-%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C/"}],confidence:"high"},
+  {id:"hyundai_c",rank:2,name:"현대건설",biz:["건축","주거","토목","플랜트","해외"],wins:["힐스테이트 청량리","현대차 울산 EV공장"],clients:["현대차","현대제철","SK"],strengths:["2025년 신규 수주 33.4조원 달성, 원전 등 신사업 파이프라인 확대","2025년 영업이익 6530억원으로 흑자 전환 성공"],weaknesses:["2028년 신용등급 상향을 목표로 제시할 만큼 현재 등급은 아직 상향 전 단계","수익성 회복이 진행형이라 신평사도 '점진적 회복'으로 평가"],sources:[{t:"현대건설, 2025년 수주 33.4조원 달성(KHARN칸)",u:"https://kharn.kr/mobile/article.html?no=30106"},{t:"현대건설 2025년 영업이익 6530억원 흑자 전환",u:"https://www.joongangenews.com/news/articleView.html?idxno=492953"},{t:"현대건설 원전 등 신사업 수주 확대…2028년 신용등급 상향 목표(머니투데이)",u:"https://www.mt.co.kr/estate/2026/07/31/2026073115511737067"}],confidence:"high"},
+  {id:"gs_c",rank:3,name:"GS건설",biz:["건축","주거","토목","플랜트"],wins:["자이 은평뉴타운","GS칼텍스 플랜트"],clients:["GS그룹","포스코","SK가스"],strengths:["PBR 0.7배 수준의 저평가 구간으로 증권가 '차선호주' 유지 의견","선별 수주 전략으로 수익성 방어 시도"],weaknesses:["1분기 매출 2조4005억원으로 전년 대비 21.63% 감소","신용도 점검 결과 '등급 상향 조건 충족 난망'으로 평가(딜사이트)"],sources:[{t:"GS건설, 1분기 매출액 전년 대비 21.63% 감소",u:"https://news.nate.com/view/20260430n10698"},{t:"[건설사 신용도 점검] GS건설, 등급 상향 조건 충족 '난망'(딜사이트)",u:"https://dealsite.co.kr/articles/144256"},{t:"GS건설, 실적 상향 기대 속 저평가 부각(비즈트리뷴)",u:"https://www.biztribune.co.kr/news/articleView.html?idxno=352465"}],confidence:"high"},
+  {id:"daewoo_c",rank:4,name:"대우건설",biz:["건축","주거","토목","해외"],wins:["푸르지오 동탄","나이지리아 LNG 플랜트"],clients:["한국수자원공사","LH","서울시"],strengths:["원전·중동 재건 사업의 핵심 플레이어로 부각, 1분기 어닝서프라이즈 기록","빅배스(대규모 손실 선반영) 이후 실적 불확실성이 오히려 해소되는 국면"],weaknesses:["2025년 4분기 빅배스 영향으로 10년 만에 연간 적자 기록","대형 건설사 5개사 중 유일하게 신용등급전망 하향 유지 상태"],sources:[{t:"대우건설, 10년 만에 연간 적자…4분기 빅배스 영향(딜사이트)",u:"https://dealsite.co.kr/articles/156664"},{t:"대우건설, 신용등급전망 하향 유지…'대형 5개사 중 유일'",u:"http://www.opinionnews.co.kr/news/articleView.html?idxno=141296"},{t:"[2026 정기신용평가] 건설업 휘청…떨고 있는 포스코·대우건설(딜사이트)",u:"https://dealsite.co.kr/articles/161419"}],confidence:"high"},
+  {id:"posco_c",rank:5,name:"포스코이앤씨",biz:["건축","주거","플랜트","환경","이차전지"],wins:["포스코 이차전지소재공장","더샵 파크프레스티지"],clients:["포스코","포스코퓨처엠","GM"],strengths:["원가 개선 성과가 실적에 반영되며 수주 회복 과제에 대응 중","이차전지소재(리튬) 수요 확대 국면과 연계된 성장 잠재력"],weaknesses:["신용평가사가 등급전망을 '부정적'으로 변경, 재무·신용 리스크 확대","화재 등 사고 이슈와 실적·규제 리스크가 겹친 상태(IB토마토)"],sources:[{t:"포스코이앤씨의 등급전망 '부정적'으로 변경(한국신용평가)",u:"https://www.korearatings.com/surl.do?key=UEyl7"},{t:"[IB토마토] 포스코이앤씨, 사고·실적·규제 겹친 재무 리스크",u:"https://www.ibtomato.com/ExternalView.aspx?type=1&no=16991"},{t:"[건설리포트] 포스코이앤씨, 원가 개선 성과…수주 회복 과제(더벨)",u:"https://www.thebell.co.kr/front/newsview.asp?key=202605181747109600108843"}],confidence:"high"},
+  {id:"hdc_c",rank:6,name:"HDC현대산업개발",biz:["주거","건축","면세점"],wins:["아이파크 동탄","서울역 복합개발"],clients:["LH","서울시","HDC그룹"],strengths:["1분기 영업이익 540억원으로 전년 대비 29.8% 증가","2026년 매출 가이던스 4.3조원 제시, 시장 평가 긍정적"],weaknesses:["2022년 광주 화정아이파크 붕괴사고 이후 브랜드 신뢰 회복이 여전한 과제","면세점 등 비주택 사업 비중이 있어 포트폴리오 편중 리스크 존재"],sources:[{t:"HDC현대산업개발, 2025년 1분기 영업이익 540억원…전년비 29.8% 증가(청년일보)",u:"https://www.youthdaily.co.kr/news/article.html?no=183622"},{t:"HDC현대산업개발, 올해 매출 가이던스 4.3조 제시(이투데이)",u:"https://www.etoday.co.kr/news/view/2496769"}],confidence:"high"},
+  {id:"lotte_c",rank:7,name:"롯데건설",biz:["주거","건축","토목"],wins:["롯데캐슬 시그니처 청량리","롯데바이오로직스 4공장"],clients:["롯데그룹","한국공항공사","LH"],strengths:["롯데그룹 계열 지원 및 정기 신용평가를 통한 안정적 모니터링 체계","캐슬 브랜드 기반 주거 부문 트랙레코드"],weaknesses:["업계 공통 이슈인 PF(프로젝트파이낸싱) 우발부채 부담 존재(구체 수치는 비공개)","공식 재무 세부자료가 지속가능경영보고서 위주로만 공개돼 검증 가능한 최신 실적 근거가 제한적"],sources:[{t:"롯데건설㈜ KIS CREDIT OPINION(2025.12.23)",u:"https://m.kisrating.com/fileDown.do?menuCd=R8&gubun=2&fileName=rs20251224-12.pdf"},{t:"2026 롯데건설 지속가능경영보고서",u:"https://www.lottecon.co.kr/UpFiles/AttachFile/SR/lottecon_SR_kor_full_2026.pdf"}],confidence:"medium"},
+  {id:"sk_c",rank:8,name:"SK에코플랜트",biz:["데이터센터","반도체시설","환경","플랜트"],wins:["SK하이닉스 M16","SKT IDC 수원"],clients:["SK하이닉스","SK텔레콤","SK이노베이션"],strengths:["1분기 매출 4조8997억원으로 전년 대비 99% 증가, AI·반도체 인프라가 견인","반도체·데이터센터 중심 사업 리밸런싱 성공(IB토마토 크레딧시그널)"],weaknesses:["기존 환경·플랜트 부문 대비 PF(프로젝트파이낸싱) 부담이 재무 리스크로 지속 언급"],sources:[{t:"SK에코플랜트, 1분기 매출 4조8997억원…AI·반도체 호황에 실적 급증",u:"https://biz.heraldcorp.com/article/10739029"},{t:"[IB토마토] SK에코플랜트, 반도체 중심 재편 성공…PF는 부담",u:"https://www.ibtomato.com/ExternalView.aspx?type=1&no=18972"}],confidence:"high"},
+  {id:"dl_c",rank:9,name:"DL이앤씨",biz:["주거","건축","플랜트","화학"],wins:["아크로 세티엘","DL케미칼 플랜트"],clients:["DL그룹","포스코","GS칼텍스"],strengths:["8년 연속 신용등급 'AA-' 유지, 업계 최고 수준 재무 안정성","1분기 영업이익 1574억원으로 수익성 2배 개선"],weaknesses:["보수적 재무 운용 기조로 인해 최근 외형(수주) 성장 속도는 상대적으로 완만"],sources:[{t:"DL이앤씨, 8년 연속 신용등급 'AA-' 사수(청년일보)",u:"https://www.youthdaily.co.kr/news/article.html?no=221611"},{t:"[2026 1분기 실적] DL이앤씨, 1분기 영업이익 1574억…수익성 2배 개선",u:"https://www.inthenews.co.kr/news/article.html?no=86354"}],confidence:"high"},
+  {id:"hoban_c",rank:10,name:"호반건설",biz:["주거","건축"],wins:["호반써밋 광교","호반베르디움 위례"],clients:["LH","SH","각지자체"],strengths:["재계 순위 상승(자산 20조원), 전선·투자 등 비주택 사업 다각화 성공","계열 M&A(금거래소 등) 통한 영업익 급증 사례 확보"],weaknesses:["사업 다각화 속도가 빨라 계열사 리스크 분산·관리 부담이 커지는 구조"],sources:[{t:"[2026 재계순위] 호반, 자산 20조…건설 넘어 '전선·투자' 확장(FETV)",u:"https://www.fetv.co.kr/news/articleView.html?idxno=302497"},{t:"호반家, M&A 또 잭팟…금거래소도 영업익 10배 폭증",u:"https://v.daum.net/v/20251117060151991"}],confidence:"medium"},
+  {id:"kolon_c",rank:11,name:"코오롱글로벌",biz:["데이터센터","이차전지","주거","클린룸","건축"],wins:["카카오 데이터센터 안산","LG에너지솔루션 오창4공장","KT IDC 부산"],clients:["카카오","LG에너지솔루션","KT"],strengths:["1분기 영업이익 220억원으로 전년 대비 129.4% 증가","데이터센터·이차전지 설비 분야 특화 포트폴리오 강화 중"],weaknesses:["건설 부문 외 계열(코오롱인더 등) 실적 변동에 그룹 전체 민감도가 존재"],sources:[{t:"코오롱글로벌, 1분기 영업이익 220억1200만원…전년比 129.35% 증가",u:"https://www.digitaltoday.co.kr/news/articleView.html?idxno=665588"}],confidence:"medium"},
+  {id:"hanwha_c",rank:12,name:"한화건설",biz:["주거","건축","플랜트","방산"],wins:["꿈에그린 수원","한화 방산공장 증설"],clients:["한화그룹","LH","국방부"],strengths:["영업이익률 10%대 회복, 방산 계열과의 시너지 기대","한화그룹 신사업(우주·방산) 확장에 따른 그룹 내 존재감 확대 시도"],weaknesses:["2분기 영업이익 584억원으로 전년 동기 대비 22% 감소","그룹 가치 상승에도 건설부문 존재감은 상대적으로 약하다는 평가(뉴스웨이)"],sources:[{t:"한화 건설부문, 2분기 영업익 584억원…전년比 22%↓",u:"https://www.newspim.com/news/view/20260805001062"},{t:"김동관이 그리는 미래에 건설은?···㈜한화 건설부문 존재감 시험대(뉴스웨이)",u:"https://www.newsway.co.kr/news/view?ud=2026080514595099415"}],confidence:"medium"},
+  {id:"kumho_c",rank:13,name:"금호건설",biz:["주거","건축","토목"],wins:["어울림 수원 광교","금호타이어 시설"],clients:["LH","금호그룹","각지자체"],strengths:["2026년 주가 급등 국면 등 시장의 관심 회복 신호"],weaknesses:["최근 거래정지 이력 등으로 재무·주가 불확실성이 시장에서 지속 제기됨"],sources:[{t:"금호건설 주가 전망: 최근 급등·거래정지, 실적과 재무 이슈로 본 해석(불스토리)",u:"https://bullstory.io/blog/%EA%B8%88%ED%98%B8%EA%B1%B4%EC%84%A4-%EC%A3%BC%EA%B0%80-%EC%A0%84%EB%A7%9D-%EC%B5%9C%EA%B7%BC-%EA%B8%89%EB%93%B1%EA%B1%B0%EB%9E%98%EC%A0%95%EC%A7%80%EC%8B%A4%EC%A0%81%EA%B3%BC-%EC%9E%AC%EB%AC%B4-%EC%9D%B4%EC%8A%88%EB%A1%9C-%EB%B2%94%EC%9C%84"}],confidence:"low"},
+  {id:"geryong_c",rank:14,name:"계룡건설산업",biz:["건축","토목","주거"],wins:["국방시설","공공건축"],clients:["국방부","행정중심복합도시","대전시"],strengths:["공공사업(관공수요) 최강자로 꼽힐 만큼 안정적 수요 기반 보유","2026년 실적 전망에 훈풍이 부는 것으로 평가"],weaknesses:["대손 572억원 발생에도 PF보증 규모가 7805억원에 달해 리스크 재확대","PBR 0.2배 수준의 극심한 저평가 상태 지속"],sources:[{t:"공공사업 최강자 계룡건설, 2026년 실적 전망 훈풍(뉴스웨이)",u:"https://www.newsway.co.kr/news/view?ud=2026010716102209303"},{t:"계룡건설 리스크 재확대…대손 572억에도 PF보증 7805억",u:"http://sateconomy.co.kr/news/view/1065599584883011"},{t:"계룡건설 회장의 내실 경영, 그러나 PBR 0.2 극심한 저평가(허핑턴포스트)",u:"https://www.huffingtonpost.kr/article/257565"}],confidence:"high"},
+  {id:"dongbu_c",rank:15,name:"동부건설",biz:["클린룸","반도체시설","GMP의약품","건축"],wins:["SK하이닉스 청주 증설","삼성바이오 5공장","셀트리온 3공장"],clients:["SK하이닉스","삼성바이오","셀트리온"],strengths:["반도체 클린룸·대형 GMP 분야 압도적 레퍼런스(삼성바이오, 셀트리온 등)","HUG 신용평가에서 5단계 상승한 'AA' 등급 획득, 흑자 전환·부채비율 동시 개선"],weaknesses:["데이터센터 사업 트랙레코드는 상대적으로 아직 부족","최근 흑자 전환은 확인됐으나 과거 수익성 악화 이력이 있어 지속성 모니터링 필요"],sources:[{t:"동부건설, HUG 신용평가 5단계 상승한 'AA' 등급 획득",u:"https://v.daum.net/v/PhDrIq5TCP"},{t:"동부건설, 본격적인 성장궤도 진입…영업이익·부채비율 동시 개선",u:"https://v.daum.net/v/20260203104109899?f=p"}],confidence:"high",radar:[{axis:"기술력",val:85},{axis:"트랙레코드",val:90},{axis:"재무",val:80},{axis:"영업력",val:80},{axis:"인력",val:75}]},
+  {id:"halla_c",rank:16,name:"한라",biz:["주거","건축","토목"],wins:["비발디파크","용인반도체 기반시설"],clients:["현대차그룹","각지자체","LH"],strengths:["HL그룹 계열(HL디앤아이한라) 편입으로 그룹 차원 지원 기반 확보"],weaknesses:["개별 법인 단위의 최신 실적·이슈에 대한 공개 정보가 제한적"],sources:[{t:"2026년 건설산업의 7대 주요 이슈(건설산업연구원)",u:"https://www.cerik.re.kr/uploads/report/3037/%EA%B1%B4%EC%84%A4%EB%8F%99%ED%96%A5%EB%B8%8C%EB%A6%AC%ED%95%91%201038%ED%98%B8.pdf"}],confidence:"low"},
+  {id:"hanyang_c",rank:17,name:"한양",biz:["주거","건축"],wins:["수자인 광교","한양 수자인 동탄"],clients:["LH","SH","각지자체"],strengths:["영업이익률 10%대의 업계 최상위권 원가 경쟁력 보유(BS한양)","건설 부문 호실적을 발판으로 에너지 투자 등 사업 확장 모색"],weaknesses:["신용평가사가 등급 전망(아웃룩)을 조정한 사례가 있어 모니터링 필요"],sources:[{t:"'영업이익률 10%' BS한양, 기대감 더 남았다",u:"https://v.daum.net/v/20251119064914672"},{t:"'아웃룩 조정' BS한양, 건설 호실적 발판 '에너지 투자'로 반등 모색(블로터)",u:"https://www.bloter.net/news/articleView.html?idxno=636603"}],confidence:"high"},
+  {id:"taeyoung_c",rank:18,name:"태영건설",biz:["주거","건축","환경"],wins:["데시앙 판교","환경플랜트 수원"],clients:["LH","환경부","각지자체"],strengths:["부채비율 720%→488%로 대폭 개선, 흑자 전환에 성공(V자 반등)","PF 정리와 재고자산 매각을 통한 워크아웃 조기 졸업 가능성 부각"],weaknesses:["여전히 워크아웃(기업개선작업) 상태로 신용등급이 'B' 수준에 머물러 있음","2년 연속 'B' 등급을 받아 워크아웃 말년까지 리스크 관리가 필요"],sources:[{t:"부채비율 720%→488%···태영건설, 워크아웃 졸업 초읽기(뉴스웨이)",u:"https://newsway.co.kr/news/view?ud=2026060514225940077"},{t:"[단독]태영건설, 2년 연속 'B' 받고 워크아웃 '말년' 달린다",u:"https://news.bizwatch.co.kr/article/real_estate/2026/05/28/0025"},{t:"'흑자전환' 태영건설, PF 정리하고 재고자산 털어내기 본격화",u:"https://www.topdaily.kr/articles/102257"}],confidence:"high"},
+  {id:"kcc_c",rank:19,name:"KCC건설",biz:["주거","건축","인테리어"],wins:["KCC스위첸 동탄","주상복합 여의도"],clients:["KCC그룹","LH","각지자체"],strengths:["KCC그룹 계열 지원 기반(도료·건자재 계열사와의 연계) 보유"],weaknesses:["모기업 KCC 실적 기준 건설 부진 영향으로 영업이익이 15% 감소한 것으로 나타남"],sources:[{t:"KCC, 건설 부진에 영업익 15% 감소…보유주식에 순익은 급증",u:"http://sateconomy.co.kr/news/view/1065599724890461"}],confidence:"medium"},
+  {id:"sungdo_c",rank:20,name:"성도이엔지",biz:["GMP의약품","반도체 클린룸","연구시설"],wins:["유한양행 오송 증설","대웅제약 안산 GMP","SK바이오팜 이천"],clients:["유한양행","대웅제약","SK바이오팜"],strengths:["GMP 의약품·반도체 클린룸 등 소수정예 특화 분야 트랙레코드(유한양행, 대웅제약, SK바이오팜)","제약사 네트워크가 견고해 반복 수주 가능성이 높음"],weaknesses:["소규모 재무 구조로 대형사 대비 자금 동원력이 제한적","전문 인력 풀이 제한적이라 동시 다발 프로젝트 대응에 한계"],sources:[{t:"회사 소개 및 수주 실적 기반 — 개별 법인 단위 최신 재무기사는 검색으로 추가 확인되지 않음(기존 자료 유지)",u:"https://www.sungdo.co.kr"}],confidence:"medium",radar:[{axis:"기술력",val:80},{axis:"트랙레코드",val:75},{axis:"재무",val:65},{axis:"영업력",val:72},{axis:"인력",val:60}]},
+  {id:"hyundaieng_c",rank:21,name:"현대엔지니어링",biz:["플랜트","산업시설","건축","해외"],wins:["HMG 울산EV공장","사우디 플랜트"],clients:["현대차그룹","한국가스공사","해외"],strengths:["2026년 시공능력평가 4위로 도약(악재를 극복한 실적 반등)","플랜트 역량을 앞세워 현대차그룹 내 위상 확대 중"],weaknesses:["유동부채가 약 6조원 규모로 재무 경고등이 켜진 상태(허핑턴포스트)","엔지니어링 중심으로 사업 포트폴리오를 재편 중이라 과도기적 리스크 존재"],sources:[{t:"현대엔지니어링, 악재 뚫고 시평 4위…미래사업으로 반등 승부수(아시아투데이)",u:"https://www.asiatoday.co.kr/kn/view.php?key=20260802010000185"},{t:"주우정 현대엔지니어링 플랜트 앞세워 체급 올리지만…6조 유동부채 재무 경고등(허핑턴포스트)",u:"https://www.huffingtonpost.kr/article/257781"},{t:"[단독]현대엔지니어링, 하반기 사업 포트폴리오 재편(머니투데이)",u:"https://www.mt.co.kr/estate/2026/05/28/2026052814573719374"}],confidence:"high"},
+  {id:"samsungeng_c",rank:22,name:"삼성엔지니어링",biz:["플랜트","화학","산업시설","해외"],wins:["삼성전자 평택 EUV","사우디 가스처리"],clients:["삼성전자","사우디아람코","해외"],strengths:["하반기 해외 플랜트 수주 모멘텀에 대한 시장 기대감 확대(삼성E&A)"],weaknesses:["해외 플랜트 특성상 환율·발주국 정세 등 대외 변수에 노출도가 높음"],sources:[{t:"삼성E&A, 하반기 해외 플랜트 수주 모멘텀 기대감",u:"https://www.theguru.co.kr/news/article.html?no=105531"}],confidence:"medium"},
+  {id:"sgc_c",rank:23,name:"SGC E&C",biz:["GMP의약품","바이오","식품공장","화학플랜트"],wins:["GC녹십자 오창","CJ제일제당 인천2공장","롯데바이오로직스 송도"],clients:["GC녹십자","CJ제일제당","롯데바이오"],strengths:["바이오·식품공장 특화 및 GMP 설계 내재화 역량 보유(GC녹십자, CJ제일제당, 롯데바이오)","안정적인 재무 구조(기존 자료 기준 부채비율 관리 양호)"],weaknesses:["데이터센터·대형 반도체 분야 미진출로 포트폴리오 다각화가 제한적","개별 법인 단위의 2025~2026년 최신 실적 기사가 추가로 검증되지 않음"],sources:[{t:"회사 사업 영역 및 수주 실적 기반 — 최신 재무기사는 검색으로 추가 확인되지 않음(기존 자료 유지)",u:"https://www.sgcecnc.com"}],confidence:"medium",radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:72},{axis:"재무",val:80},{axis:"영업력",val:70},{axis:"인력",val:68}]},
+  {id:"hanwhaeng_c",rank:24,name:"한화엔지니어링",biz:["플랜트","산업시설","건축"],wins:["한화 방산시설","석유화학 플랜트"],clients:["한화그룹","한국중부발전","ADNOC"],strengths:["한화그룹 방산·에너지 계열과의 사업 연계 가능성"],weaknesses:["검색 결과 '한화엔지니어링' 단독 법인의 2025~2026년 재무·실적 뉴스를 특정하지 못함(검증 제한적, 유사 계열사인 한화엔진·한화오션과 혼동 주의)"],sources:[{t:"검증 시도 결과 특정 법인 뉴스 미검출 — 참고용 그룹 계열 정보만 확인",u:"https://www.hanwhaocean.com/investors/ea/"}],confidence:"low"},
+  {id:"gsear_c",rank:25,name:"GS이앤알",biz:["환경","에너지","리사이클"],wins:["폐기물처리시설","바이오가스 플랜트"],clients:["환경부","각지자체","SK"],strengths:["GS그룹 에너지 계열과의 사업 연계(환경·리사이클 분야)"],weaknesses:["검색 결과 최신(2025~2026년) 재무·실적 뉴스가 거의 없고, 확인된 기사는 2020년 '해외 자원개발 올스톱' 보도가 가장 최근 수준(검증 제한적)"],sources:[{t:"GS E&R 해외 자원개발 올스톱 예고…회사채 영향은(더벨, 2020년)",u:"https://thebell.co.kr/free/content/ArticleView.asp?key=202002250859274560105830&lcode=00"}],confidence:"low"},
+  {id:"dongwon_c",rank:26,name:"동원개발",biz:["주거","건축"],wins:["동원로얄듀크 광교","동원베네스트 마곡"],clients:["LH","SH","각지자체"],strengths:["10년간 연결자본이 꾸준히 증가해 온 안정적 성장 이력(블로터)"],weaknesses:["최근 현금창출력이 둔화되고 있다는 평가(블로터)"],sources:[{t:"[동원개발 경영셈법]⑤ 10년간 불어난 연결 자본, 둔화된 현금창출력(블로터)",u:"https://www.bloter.net/news/articleView.html?idxno=669466"}],confidence:"high"},
+  {id:"hanshin_c",rank:27,name:"한신공영",biz:["주거","건축"],wins:["한신더휴 인천","한신더휴 평촌"],clients:["LH","SH","각지자체"],strengths:["가덕도신공항, 정비사업 등 대형 프로젝트 파이프라인 확보"],weaknesses:["대형 사업 관련 현금흐름 부담이 있어 '현금 가뭄'이라는 표현이 언론에 등장(SR타임스)"],sources:[{t:"한신공영, 하반기 가덕도·정비사업서 '현금 가뭄' 씻어낸다(SR타임스)",u:"http://www.srtimes.kr/news/articleView.html?idxno=204473"}],confidence:"medium"},
+  {id:"doosanc_c",rank:28,name:"두산건설",biz:["주거","건축","플랜트"],wins:["위브더제니스 해운대","두산 중공업 시설"],clients:["두산그룹","LH","각지자체"],strengths:["1분기 영업이익 299억원으로 전년 대비 264%(3.6배) 급증, 수익성 중심 질적 성장","2026년 수주 6조원 도전 등 외형 성장 목표 제시"],weaknesses:["급격한 수주 확대 목표 대비 실제 수익성 유지 여부는 지속 확인이 필요"],sources:[{t:"두산건설, 1분기 영업이익 전년 대비 3.6배 확대(투데이안)",u:"https://press.todayan.com/newsRead.php?no=1034535"},{t:"두산건설, 1분기 영업이익 3.6배 뛰었다…수익성 개선에 수주 6조 도전(서울경제)",u:"https://www.sedaily.com/article/20044477"}],confidence:"high"},
+  {id:"bandoc_c",rank:29,name:"반도건설",biz:["주거","건축"],wins:["반도유보라 동탄","반도유보라 광교"],clients:["LH","SH","각지자체"],strengths:["자체 개발사업 등 종합 디벨로퍼로의 전환을 시도하며 실적 숨 고르기 이후 반등 모색(아시아투데이)"],weaknesses:["시공능력평가 순위가 9계단 급락하며 수익성·유동성 이중고를 겪은 바 있음(블로터)"],sources:[{t:"[시평 순위 분석] 반도건설 9계단 급락 '수익성·유동성' 이중고(블로터)",u:"https://www.bloter.net/news/articleView.html?idxno=669959"},{t:"실적 숨 고르기 끝낸 반도건설…종합 디벨로퍼 도약(아시아투데이)",u:"https://www.asiatoday.co.kr/kn/view.php?key=20260608010002498"}],confidence:"high"},
+  {id:"woomig_c",rank:30,name:"우미건설",biz:["주거","건축"],wins:["우미린 판교","우미린 동탄"],clients:["LH","각지자체"],strengths:["주택 본업의 호황이 지속되고 있다는 평가(네이트)"],weaknesses:["계열사인 우미토건이 적자를 지속하고 있어 그룹 전체 리스크로 연결될 수 있음","본업 호황에도 신규 투자에는 소극적인 모습(네이트)"],sources:[{t:"우미건설, 본업 호황에도 신규투자 '잠잠'…대형 프로젝트가 반전 카드",u:"https://news.nate.com/view/20260426n01325"},{t:"적자 지속 우미토건, 복잡한 생존 셈법",u:"https://www.topdaily.kr/articles/110469"}],confidence:"high"},
+  {id:"seohee_c",rank:31,name:"서희건설",biz:["주거","건축"],wins:["서희스타힐스 용인","서희스타힐스 청주"],clients:["LH","각지자체"],strengths:["부채비율 49.6%로 주요 건설사 중 가장 낮은 수준, 재무 건전성이 독보적(파이낸셜리뷰)"],weaknesses:["본업 영업이익이 80% 급감했고, 순이익은 금융수익 의존으로 방어된 '착시'라는 평가(sateconomy)"],sources:[{t:"서희건설, 부채비율 49.6%로 주요 건설사 1위… 재무 건전성 '독보적'",u:"http://www.financialreview.co.kr/news/articleView.html?idxno=41994"},{t:"본업은 꺾였는데 배당은 두 배…서희건설 순익 방어의 착시",u:"http://sateconomy.co.kr/news/view/1065579206666707"},{t:"영업이익 80% 급감… '실적 부진' 서희건설, 금융수익 의존",u:"https://v.daum.net/v/20260519143830035"}],confidence:"high"},
+  {id:"hyosung_c",rank:32,name:"효성중공업",biz:["산업시설","전력설비","플랜트"],wins:["변전소 EPC","수소충전소 인프라"],clients:["한국전력","효성그룹","산업부"],strengths:["2분기 순이익 1717억원으로 전년 동기 대비 96.6% 증가, 전력기기(변압기 등) 호황 수혜","전력기기 사업으로 재계 순위까지 끌어올린 성장세(FETV)"],weaknesses:["전력기기 부문 편중도가 높아 해당 업황 둔화 시 실적 변동성이 클 수 있음"],sources:[{t:"효성중공업, 2026년 2분기 당기순이익 1717억4100만원…전년동기比 96.61%↑",u:"https://www.digitaltoday.co.kr/news/articleView.html?idxno=688918"},{t:"[2026 재계순위] 효성, 전력기기로 '부영·하림' 추월(FETV)",u:"https://www.fetv.co.kr/news/articleView.html?idxno=301880"}],confidence:"high"},
+  {id:"sinsekai_c",rank:33,name:"신세계건설",biz:["건축","복합상업","주거"],wins:["위례 신세계","일렉트로마트 시설"],clients:["신세계그룹","이마트","각지자체"],strengths:["신세계그룹 계열 유통망과 연계된 복합상업시설 특화 역량"],weaknesses:["현금이 72% 급감하고 부채비율이 494%까지 상승, 재무건전성 4개 지표에 경고등(브릿지경제)"],sources:[{t:"신세계건설, 현금 72% 증발, 부채비율 494%…재무건전성 4개 지표 '빨간불'(브릿지경제)",u:"https://www.viva100.com/article/20260802500570"}],confidence:"high"},
+  {id:"daemyung_c",rank:34,name:"대명건설",biz:["건축","주거","리조트"],wins:["대명리조트 시설","대명아파트"],clients:["대명그룹","LH","각지자체"],strengths:["대명그룹 계열(리조트 등)과 연계한 복합개발 경험"],weaknesses:["검색 결과 개별 법인의 2025~2026년 재무·실적을 특정할 수 있는 기사가 확인되지 않음(검증 제한적)"],sources:[{t:"관련 개별 기사 미검출 — 일반 업계 전망 자료만 확인",u:"https://www.cerik.re.kr/uploads/report/3037/%EA%B1%B4%EC%84%A4%EB%8F%99%ED%96%A5%EB%B8%8C%EB%A6%AC%ED%95%91%201038%ED%98%B8.pdf"}],confidence:"low"},
+  {id:"sambu_c",rank:35,name:"삼부토건",biz:["토목","건축"],wins:["도로·교량 공사","공공건축"],clients:["국토부","한국도로공사","각지자체"],strengths:["법정관리·회생절차를 통한 재기 시도가 진행 중(회생계획안 절차 존재)"],weaknesses:["자본잠식률 161.8%까지 확대, 거래정지 상태이며 감사의견 '의견거절' 유지(CBC뉴스)","도로·교량 등 토목 중심 사업 구조로 재무 위기 시 대안 사업 부족"],sources:[{t:"[속보] 삼부토건, 거래정지 상태 속 감사의견 '의견거절' 유지…자본잠식 161.8% 확대(CBC뉴스)",u:"https://www.cbci.co.kr/news/articleView.html?idxno=565335"},{t:"'법정관리' 삼부토건·범양건영, 재정난에 상폐 위기(글로벌이코노믹)",u:"https://www.g-enews.com/article/Real-Estate/2026/03/202603041120305086ac06cade6e_1"}],confidence:"high"},
+  {id:"dongah_c",rank:36,name:"동아건설산업",biz:["토목","건축"],wins:["항만공사","교량 EPC"],clients:["해양수산부","국토부","각지자체"],strengths:["회생절차 졸업 9년차로 3년 연속 외형 성장을 기록(더벨)"],weaknesses:["과거 회생절차 이력에 따른 시장 신뢰 회복이 여전한 과제"],sources:[{t:"[건설리포트] '회생졸업 9년차' 동아건설산업, 3년 연속 외형 성장(더벨)",u:"https://m.thebell.co.kr/m/newsview.asp?svccode=&newskey=202505131430527240107620"}],confidence:"high"},
+  {id:"namkwang_c",rank:37,name:"남광토건",biz:["토목","건축"],wins:["하수도 시설","공공토목"],clients:["환경부","각지자체"],strengths:["상반기 대형 수주로 5000억원 수주 실적을 달성(다음뉴스)"],weaknesses:["단일 대형 수주 의존도가 있어 수주 흐름이 불규칙할 수 있음"],sources:[{t:"막판에 큰 게 붙었다…남광토건, 6월 수주로 상반기 5000억 마침표",u:"https://v.daum.net/v/20260629141813390"}],confidence:"medium"},
+  {id:"isdongso_c",rank:38,name:"아이에스동서",biz:["주거","환경","건축"],wins:["환경공단 시설","ISE 아파트"],clients:["한국환경공단","LH","각지자체"],strengths:["폐배터리·환경사업으로의 다각화가 건설 부진을 상쇄하는 구조(EBN)"],weaknesses:["건설 매출이 반토막 날 정도로 급감했고, 지분의 상당 부분이 주식담보대출로 잡혀 있어 주가 하락 시 재무 리스크가 확대됨(문화저널21)"],sources:[{t:"건설 매출 '반토막' 난 아이에스동서…폐배터리가 끌고 환경이 밀었다(EBN)",u:"https://www.ebn.co.kr/news/articleView.html?idxno=1702909"},{t:"지분 3분의 2가 '빚 담보'…아이에스동서, 주가 변동 '노심초사'(문화저널21)",u:"https://www.mhj21.com/news/articleView.html?idxno=252954"}],confidence:"high"},
+  {id:"hjheavy_c",rank:39,name:"HJ중공업",biz:["조선소 관련 건축","플랜트"],wins:["조선소 시설 증설","항만 인프라"],clients:["HJ중공업그룹","해양수산부"],strengths:["경영정상화 수순에 진입, 실적·밸류에이션 등 복수 모멘텀이 동시에 작용 중(뉴스퀘스트)"],weaknesses:["재무건전성 제고가 여전한 핵심 과제로 지목됨(딜사이트)","※ 2021년 사명 변경 전 '한진중공업'과 동일 법인으로, 앱 데이터에 별도 회사(rank43)로 중복 등록되어 있음 — 데이터 정합성 확인 필요"],sources:[{t:"HJ중공업, 경영정상화 수순…재무건전성 제고 과제(딜사이트)",u:"https://dealsite.co.kr/articles/162327"},{t:"HJ중공업, 세 가지 모멘텀이 동시에 작용…실적과 멀티플 상향 조정(뉴스퀘스트)",u:"https://www.newsquest.co.kr/news/articleView.html?idxno=263231"}],confidence:"high"},
+  {id:"samsung2_c",rank:40,name:"삼환기업",biz:["건축","토목","플랜트"],wins:["산업단지 기반시설","공공건축"],clients:["각지자체","공공기관"],strengths:["산업단지 기반시설 등 공공 토목 분야의 오랜 사업 이력"],weaknesses:["검색 결과 '삼환기업' 법인 단독의 2025~2026년 재무·실적 기사가 확인되지 않음(검증 제한적)"],sources:[{t:"관련 개별 기사 미검출",u:"https://www.pwc.com/kr/ko/insights/samil-insight/samilpwc_industry-outlook2026.pdf"}],confidence:"low"},
+  {id:"jeil_c",rank:41,name:"제일건설",biz:["주거","건축"],wins:["제일풍경채 광교","제일풍경채 동탄"],clients:["LH","각지자체"],strengths:["제일풍경채 브랜드 기반 주거 사업 트랙레코드"],weaknesses:["동일·유사 상호의 '제일건설' 관련 부도 이슈가 온라인에 언급된 사례가 있으나, 앱에 등록된 법인과 동일 실체인지는 이번 검색으로 명확히 확인되지 않음(신중한 확인 필요)"],sources:[{t:"Q. 제일건설 부도 원인은? (동일 법인 여부 확인 필요)",u:"https://www.sankun.com/blog/detail/812_Q__%EC%A0%9C%EC%9D%BC%EA%B1%B4%EC%84%A4_%EB%B6%80%EB%8F%84_%EC%9B%90%EC%9D%B8%EC%9D%80_"}],confidence:"low"},
+  {id:"daebang_c",rank:42,name:"대방건설",biz:["주거","건축"],wins:["대방 노블랜드 인천","대방 노블랜드 청주"],clients:["LH","각지자체"],strengths:["2025년 매출 1조1177억원, 시공능력평가 22위를 2년 연속 유지","영업이익률 15%, 유동비율 338%로 재무 체력이 양호(sateconomy)"],weaknesses:["특정 지역(수도권 분양) 의존도가 높아 지역 경기에 실적이 연동되는 구조"],sources:[{t:"대방건설, 2025년 매출 1조1177억원 기록",u:"https://www.viva100.com/article/20260416500702"},{t:"대방건설, 영업이익률 15%·유동비율 338%…재무체력 개선",u:"http://sateconomy.co.kr/news/view/1065593847519959"},{t:"대방건설, 시공능력평가 2년 연속 22위",u:"https://www.thepublic.kr/news/articleView.html?idxno=313866"}],confidence:"high"},
+  {id:"hanjin_c",rank:43,name:"한진중공업",biz:["플랜트","건축","조선관련"],wins:["공공건축 EPC","산업시설"],clients:["각지자체","공공기관"],strengths:["※ 2021년 'HJ중공업'으로 사명 변경된 것과 동일 법인으로 추정됨 — 강점/약점은 rank39 HJ중공업 항목과 동일 실체일 가능성이 높음"],weaknesses:["앱 데이터에 'HJ중공업'(rank39)과 '한진중공업'(rank43)이 별도 회사로 중복 등록되어 있어 위협도·통계가 이중 계산될 위험이 있음(데이터 정리 권장)"],sources:[{t:"HJ중공업(구 한진중공업) — 회사 개요",u:"https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?gicode=A097230"}],confidence:"low"},
+  {id:"golyeo_c",rank:44,name:"고려개발",biz:["토목","건축"],wins:["도로·교량","공공토목"],clients:["국토부","각지자체"],strengths:["도로·교량 등 토목 분야의 오랜 사업 이력"],weaknesses:["검색 결과 '고려개발' 법인 단독의 2025~2026년 재무·실적 기사가 확인되지 않고, 동명의 다른 기업(고려아연 등) 정보만 검색되어 검증이 제한적"],sources:[{t:"관련 개별 기사 미검출(동명 기업과 혼동 주의)",u:"https://kocham.org/wp-content/uploads/2025/12/KIET_%EA%B2%BD%EC%A0%9C%E3%86%8D%EC%82%B0%EC%97%85_%EC%A0%84%EB%A7%9D_2025-021_2026%EB%85%84_%EA%B2%BD%EC%A0%9C%C2%B7%EC%82%B0%EC%97%85_%EC%A0%84%EB%A7%9D.pdf"}],confidence:"low"},
+  {id:"geunwha_c",rank:45,name:"건화",biz:["환경플랜트","건축"],wins:["하수처리장","환경시설"],clients:["환경부","각지자체"],strengths:["1966년 설립된 수자원·인프라 엔지니어링 전문기업으로 60년 이상의 업력 보유(위키백과)"],weaknesses:["엔지니어링(설계) 중심 기업으로 대형 시공 실적 면에서는 상대적으로 정보가 제한적이며, 2025~2026년 최신 재무기사도 추가로 확인되지 않음"],sources:[{t:"건화(기업) — 위키백과",u:"https://ko.wikipedia.org/wiki/%EA%B1%B4%ED%99%94_(%EA%B8%B0%EC%97%85)"}],confidence:"medium"},
+  {id:"samhwa_c",rank:46,name:"삼화건설",biz:["건축","토목"],wins:["공공건축","지역개발"],clients:["각지자체","공공기관"],strengths:["공공건축·지역개발 분야의 사업 이력"],weaknesses:["검색 결과 '삼화건설' 법인 단독의 2025~2026년 재무·실적 기사가 확인되지 않고, 동명의 다른 기업(삼화전자 등) 정보만 검색되어 검증이 제한적"],sources:[{t:"관련 개별 기사 미검출(동명 기업과 혼동 주의)",u:"https://kind.krx.co.kr/external/2025/12/15/001292/20251215002645/11326.htm"}],confidence:"low"},
+  {id:"csholding_c",rank:47,name:"씨에스홀딩스",biz:["주거","건축"],wins:["CS 아파트","공공주택"],clients:["LH","각지자체"],strengths:["주택(CS 아파트) 및 지주회사 구조를 통한 계열 운영 경험"],weaknesses:["검색 결과 '씨에스홀딩스' 법인 단독의 2025~2026년 재무·실적 기사가 확인되지 않고, 동명의 다른 기업(씨에스윈드 등) 정보만 검색되어 검증이 제한적"],sources:[{t:"관련 개별 기사 미검출(동명 기업과 혼동 주의)",u:"https://m.saramin.co.kr/job-search/company-info-view/finance?csn=cmlscGQwVXoxYlA1U0ErTmR5WklvQT09&t_ref_content=generic"}],confidence:"low"},
+  {id:"junghung_c",rank:48,name:"중흥건설",biz:["주거","건축"],wins:["중흥S-클래스 광주","중흥S-클래스 수원"],clients:["LH","각지자체"],strengths:["대우건설 인수를 통해 그룹 전체 외형을 확대, 장기적 시너지 기대가 잔존"],weaknesses:["대우건설 인수 후 611억원 손실, 42건 소송(866억원), 지분법손실 1024억원 등 '승자의 저주' 후유증(뉴스스페이스)","계열사 부실 전이 우려와 오너 2세 승계 관련 지배구조 리스크가 겹쳐 있음"],sources:[{t:"[The Numbers] '대우건설 승자의 저주' 중흥건설, 611억 손실 속 후폭풍(뉴스스페이스)",u:"https://www.newsspace.kr/news/article.html?no=14317"},{t:"[지배구조 리포트] [중흥그룹] 대우건설로 쏠리는 '무게추'(딜사이트)",u:"https://dealsite.co.kr/articles/158844"},{t:"대우건설 삼킨 중흥그룹 정창선 고민 깊어져, 시너지 안 나고 승계 리스크까지(비즈니스포스트)",u:"https://www.businesspost.co.kr/BP?command=article_view&num=423520"}],confidence:"high"},
+  {id:"korea_c",rank:49,name:"한국건설",biz:["토목","건축","환경"],wins:["공공시설","환경플랜트"],clients:["각지자체","공공기관"],strengths:["공공시설·환경플랜트 분야의 사업 이력"],weaknesses:["'한국건설'이라는 상호가 매우 일반적이어서 검색으로 앱에 등록된 특정 법인을 식별하기 어려움(검증 제한적, 동명 법인 다수 존재 가능성)"],sources:[{t:"관련 개별 기사 특정 불가(상호 중복 다수)",u:"https://www.ricon.re.kr/board/view.php?no=5993&group=alim&page=alim_notice&cate=19"}],confidence:"low"},
+  {id:"ssangyong_c",rank:19,name:"쌍용건설",biz:["건축","토목","해외특수건축"],wins:["업무시설","철도","해외 랜드마크"],clients:["해외 발주처","각지자체","공공기관"],strengths:["2026년 시공능력평가 순위가 23위→19위로 상승(톱20 진입), 시평액 2조1687억→2조6704억(+23.1%) 큰 폭 성장(이투데이)","2022년 글로벌세아 그룹으로 최대주주 변경 이후 재무구조 정상화, 경영평가액 3290억→5491억(+67%)·순이익 439억(2023)→660억(2024)으로 흑자 확대(딜사이트)"],weaknesses:["과거 장기간 워크아웃·경영권 변동 이력으로 대형 신규 수주 시 신용도 관련 보수적 평가를 받을 수 있음","기타건축(3위)·기타토목(5위) 등 세부 공종에서는 강세이나 주택(주거) 부문 비중은 상대적으로 낮음"],sources:[{t:"쌍용건설, 2026년 시공능력평가 19위 '톱20 진입'…시평액 23% 증가(이투데이)",u:"https://www.etoday.co.kr/news/view/2609171"},{t:"[지배구조 리포트] 글로벌세아 인수 이후 쌍용건설, 재무 정상화 속도(딜사이트)",u:"https://dealsite.co.kr/articles/145879"}],confidence:"high"},
 ];
 
 const DEFAULT_TRACKED=["dongbu_c","sungdo_c","sgc_c","kolon_c"];
@@ -102,49 +111,105 @@ const DEFAULT_TRACKED=["dongbu_c","sungdo_c","sgc_c","kolon_c"];
 function getColor(id){const i=TOP50.findIndex(c=>c.id===id);return i>=0?PALETTE[i%PALETTE.length]:"#6D90B8";}
 
 // ─── 위협도 계산 ──────────────────────────────────────────────
-// 항목별 배점
-// ① 경합 빈도  (30점): 해당사 참여 건수 / 전체 입찰 건수
-// ② 낙찰률    (35점): 해당사 낙찰 건수 / 해당사 참여 건수
-// ③ 수주금액  (20점): 해당사 실제 낙찰금액 합 / 전체 실제 낙찰금액 합
+// 항목별 배점 (100점 만점)
+// ① 경합 빈도  (30점): 해당사 참여 건수(최신성 가중) / 전체 입찰 건수(최신성 가중)
+// ② 낙찰률    (35점): 해당사 낙찰 건수(최신성 가중) / 참여 건수 — 소수 사례 왜곡을 막기 위해
+//             베이지안 신뢰도 보정(전체 경쟁사 평균 낙찰률 쪽으로 수렴) 적용
+// ③ 수주금액  (20점): 해당사 실제 낙찰금액 합(최신성 가중) / 전체 실제 낙찰금액 합(최신성 가중)
 //             ※ competitorBids 입력된 경우 실제 투찰/낙찰금액 사용, 없으면 예정금액 fallback
-// ④ 공종 겹침 (15점): Xi C&A 주력 공종(GMP·반도체·DC·이차전지·산업플랜트) 경합 비율
+// ④ 공종 겹침 (15점): Xi C&A 주력 공종(GMP·반도체·DC·이차전지·산업플랜트) 경합 비율(최신성 가중)
+//
+// [정확도 보정 2가지]
+// A) 최신성 가중치: 오래된 입찰일수록 현재 위협도에 미치는 영향을 줄임(반감기 방식).
+//    가중치 = 0.5 ^ (경과월수 / 반감기). 예) 18개월 지나면 가중치 0.5, 36개월 지나면 0.25.
+// B) 신뢰도 보정(베이지안 스무딩): 참여 건수가 적은 경쟁사는 낙찰률이 0%/100%처럼 극단값으로
+//    치우치기 쉬움. 가상의 사례(K건)를 전체 평균 낙찰률로 채워 넣어 표본이 작을수록 평균에
+//    가깝게, 표본이 쌓일수록 실제 값에 가깝게 수렴시킴.
+const THREAT_WEIGHTS={freq:30,wr:35,val:20,type:15};
+const THREAT_HALF_LIFE_MONTHS=18; // 최신성 가중 반감기
+const THREAT_PRIOR_K=3;           // 낙찰률 신뢰도 보정용 가상 사례 수
+
+function monthsAgo(dateStr){
+  if(!dateStr) return 0;
+  const parts=dateStr.split("-").map(Number);
+  const y=parts[0],m=parts[1]||1;
+  if(!y) return 0;
+  const now=new Date();
+  const diff=(now.getFullYear()-y)*12+((now.getMonth()+1)-m);
+  return Math.max(0,diff);
+}
+function recencyWeight(dateStr){
+  return Math.pow(0.5,monthsAgo(dateStr)/THREAT_HALF_LIFE_MONTHS);
+}
+
 function calcThreat(bids,comps){
   const total=bids.length;
   if(total===0) return comps.map(c=>({...c,threat:0,breakdown:null}));
 
-  // ③ 분모: 낙찰/완료된 건들의 실제 금액 합
-  const totalWonAmt=bids.reduce((s,b)=>{
-    if(b.result==="우리낙찰") return s+(b.ourBid>0?b.ourBid:b.value||0);
+  const weights=bids.map(b=>recencyWeight(b.date));
+  const weightedTotal=weights.reduce((s,w)=>s+w,0)||1;
+
+  // ③ 분모: 낙찰/완료된 건들의 실제 금액 합 (최신성 가중)
+  const totalWonAmtW=bids.reduce((s,b,i)=>{
+    if(b.result==="우리낙찰") return s+(b.ourBid>0?b.ourBid:b.value||0)*weights[i];
     if(b.result==="타사낙찰"&&b.winner){
       const wAmt=b.competitorBids?.[b.winner];
-      return s+(wAmt>0?wAmt:b.value||0);
+      return s+(wAmt>0?wAmt:b.value||0)*weights[i];
     }
     return s;
   },0);
 
+  // ② 사전확률(prior): 추적 중인 전체 경쟁사 풀에서의 가중 평균 낙찰률
+  let poolInvolvedW=0,poolWonW=0;
+  comps.forEach(comp=>{
+    bids.forEach((b,i)=>{
+      if(b.competitors.includes(comp.name)){
+        poolInvolvedW+=weights[i];
+        if(b.winner===comp.name) poolWonW+=weights[i];
+      }
+    });
+  });
+  const globalWinRate=poolInvolvedW>0?poolWonW/poolInvolvedW:0;
+
   return comps.map(comp=>{
-    const involved=bids.filter(b=>b.competitors.includes(comp.name));
-    const won=bids.filter(b=>b.winner===comp.name);
-    if(involved.length===0) return {...comp,threat:0,breakdown:null};
+    let involvedW=0,wonW=0,typeW=0,rawInvolved=0,rawWon=0,compWonAmt=0;
+    bids.forEach((b,i)=>{
+      if(b.competitors.includes(comp.name)){
+        involvedW+=weights[i];rawInvolved++;
+        if(XI_TYPES.includes(b.type)) typeW+=weights[i];
+        if(b.winner===comp.name){
+          wonW+=weights[i];rawWon++;
+          const bidAmt=b.competitorBids?.[comp.name];
+          compWonAmt+=(bidAmt>0?bidAmt:b.value||0); // 표시용 — 가중치 미적용 실제 금액
+        }
+      }
+    });
+    if(rawInvolved===0) return {...comp,threat:0,breakdown:null};
 
-    // ① 경합 빈도 (30점)
-    const freq=Math.round((involved.length/total)*30);
+    // ① 경합 빈도 (30점) — 최신성 가중 반영
+    const freq=Math.round((involvedW/weightedTotal)*THREAT_WEIGHTS.freq);
 
-    // ② 낙찰률 (35점)
-    const wr=Math.round((won.length/involved.length)*35);
+    // ② 낙찰률 (35점) — 베이지안 신뢰도 보정
+    const wrRatio=(wonW+THREAT_PRIOR_K*globalWinRate)/(involvedW+THREAT_PRIOR_K);
+    const wr=Math.round(wrRatio*THREAT_WEIGHTS.wr);
 
-    // ③ 수주금액 비중 (20점) — 회사별 실제 낙찰금액 사용
-    const compWonAmt=won.reduce((s,b)=>{
-      const bidAmt=b.competitorBids?.[comp.name];
-      return s+(bidAmt>0?bidAmt:b.value||0);
-    },0);
-    const val=totalWonAmt>0?Math.round((compWonAmt/totalWonAmt)*20):0;
+    // ③ 수주금액 비중 (20점) — 최신성 가중 반영
+    let compWonAmtW=0;
+    bids.forEach((b,i)=>{
+      if(b.winner===comp.name){
+        const bidAmt=b.competitorBids?.[comp.name];
+        compWonAmtW+=(bidAmt>0?bidAmt:b.value||0)*weights[i];
+      }
+    });
+    const val=totalWonAmtW>0?Math.round((compWonAmtW/totalWonAmtW)*THREAT_WEIGHTS.val):0;
 
-    // ④ 공종 겹침 (15점)
-    const typeM=involved.filter(b=>XI_TYPES.includes(b.type)).length;
-    const type=Math.round((typeM/involved.length)*15);
+    // ④ 공종 겹침 (15점) — 최신성 가중 반영
+    const type=Math.round((typeW/involvedW)*THREAT_WEIGHTS.type);
 
-    return {...comp,threat:freq+wr+val+type,breakdown:{freq,wr,val,type,cnt:involved.length,wCnt:won.length,compWonAmt}};
+    // 신뢰도 배지 — 표본 크기(원시 참여건수) 기준. 표본이 작으면 낙찰률이 평균 쪽으로 보정됐음을 안내.
+    const confidence=rawInvolved>=7?"high":rawInvolved>=3?"medium":"low";
+
+    return {...comp,threat:freq+wr+val+type,breakdown:{freq,wr,val,type,cnt:rawInvolved,wCnt:rawWon,compWonAmt,confidence,globalWinRate:Math.round(globalWinRate*100)}};
   });
 }
 
@@ -203,6 +268,15 @@ function App(){
   const [chatLoading,setChatLoading]=useState(false);
   const chatEnd=useRef(null);
 
+  // 좁은 화면(임베드/사이드패널 등)에서 고정폭 그리드가 깨지지 않도록 폭을 추적해 레이아웃을 전환
+  const [narrow,setNarrow]=useState(typeof window!=="undefined"&&window.innerWidth<860);
+  useEffect(()=>{
+    const onResize=()=>setNarrow(window.innerWidth<860);
+    onResize();
+    window.addEventListener("resize",onResize);
+    return ()=>window.removeEventListener("resize",onResize);
+  },[]);
+
   const activeComps=useMemo(()=>TOP50.filter(c=>tracked.includes(c.id)).map(c=>({...c,color:getColor(c.id)})),[tracked]);
   const threatScores=useMemo(()=>bids.length>0?calcThreat(bids,activeComps):activeComps.map(c=>({...c,threat:0,breakdown:null})),[bids,activeComps]);
   const selComp=activeComps.find(c=>c.id===selId)||activeComps[0];
@@ -225,6 +299,13 @@ function App(){
     try{await fetch(`/api/bids/${id}`,{method:"DELETE"});}catch{}
   };
   const saveTracked=async n=>{try{await fetch("/api/settings/tracked",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({value:n})});}catch{}};
+  // 다른 화면(입찰 이력 등)에서 설정 패널을 열지 않고도 바로 경쟁사를 추가할 때 사용
+  const addCompetitor=id=>{
+    if(tracked.includes(id)) return;
+    const next=[...tracked,id];
+    setTracked(next);
+    saveTracked(next);
+  };
 
   const fetchNews=async id=>{
     const comp=activeComps.find(c=>c.id===id);if(!comp)return;
@@ -276,17 +357,17 @@ function App(){
   const isChat=view==="chat";
   return (
     <div style={{display:"flex",height:"100vh",background:T.bg0,fontFamily:"'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif",color:T.t1,overflow:"hidden"}}>
-      <Sidebar view={view} setView={setView} tracked={tracked} newsCache={newsCache} onSettings={()=>setShowSettings(true)}/>
-      <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-        <Header view={view} bidsCount={bids.length} trackedCount={tracked.length}/>
+      <Sidebar view={view} setView={setView} tracked={tracked} newsCache={newsCache} onSettings={()=>setShowSettings(true)} narrow={narrow}/>
+      <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0}}>
+        <Header view={view} bidsCount={bids.length} trackedCount={tracked.length} narrow={narrow}/>
         <div style={{flex:1,overflow:isChat?"hidden":"auto"}}>
-          {!isChat&&<div style={{padding:"20px 22px"}}>
-            {view==="overview"&&<Overview setView={setView} setSelId={setSelId} threatScores={threatScores} bidsCount={bids.length} activeComps={activeComps}/>}
-            {view==="profiles"&&<Profiles selComp={selComp} setSelId={setSelId} threatScores={threatScores} activeComps={activeComps}/>}
-            {view==="bids"&&<BidHistory bids={bids} addBid={addBid} removeBid={removeBid} threatScores={threatScores} activeComps={activeComps}/>}
+          {!isChat&&<div style={{padding:narrow?"14px 12px":"20px 22px"}}>
+            {view==="overview"&&<Overview setView={setView} setSelId={setSelId} threatScores={threatScores} bidsCount={bids.length} activeComps={activeComps} onSettings={()=>setShowSettings(true)} narrow={narrow}/>}
+            {view==="profiles"&&<Profiles selComp={selComp} setSelId={setSelId} threatScores={threatScores} activeComps={activeComps} narrow={narrow}/>}
+            {view==="bids"&&<BidHistory bids={bids} addBid={addBid} removeBid={removeBid} threatScores={threatScores} activeComps={activeComps} addCompetitor={addCompetitor} narrow={narrow}/>}
             {view==="pipeline"&&<Pipeline pipelineCache={pipelineCache} fetchPipeline={fetchPipeline} activeComps={activeComps}/>}
             {view==="news"&&<NewsView newsCache={newsCache} fetchNews={fetchNews} activeComps={activeComps}/>}
-            {view==="dart"&&<DartView dartCache={dartCache} fetchDart={fetchDart} activeComps={activeComps}/>}
+            {view==="dart"&&<DartView dartCache={dartCache} fetchDart={fetchDart} activeComps={activeComps} narrow={narrow}/>}
           </div>}
           {isChat&&<ChatView msgs={msgs} input={chatIn} setInput={setChatIn} onSend={sendChat} loading={chatLoading} chatEnd={chatEnd}/>}
         </div>
@@ -297,7 +378,7 @@ function App(){
 }
 
 // ─── SIDEBAR ──────────────────────────────────────────────────
-function Sidebar({view,setView,tracked,newsCache,onSettings}){
+function Sidebar({view,setView,tracked,newsCache,onSettings,narrow}){
   const liveNews=Object.values(newsCache).filter(d=>d?.articles?.length>0).length;
   const NAV=[
     {id:"overview",icon:"◈",label:"대시보드"},
@@ -309,29 +390,29 @@ function Sidebar({view,setView,tracked,newsCache,onSettings}){
     {id:"chat",icon:"◎",label:"AI 분석가",badge:"AI",bc:T.purple},
   ];
   return (
-    <div style={{width:212,background:T.bg1,borderRight:`1px solid ${T.b}`,display:"flex",flexDirection:"column",flexShrink:0}}>
-      <div style={{padding:"20px 18px 16px",borderBottom:`1px solid ${T.b}`}}>
-        <div style={{fontSize:9,color:T.t3,letterSpacing:3,fontWeight:700,marginBottom:6}}>XI C&A</div>
-        <div style={{fontSize:14,fontWeight:700,lineHeight:1.4}}>경쟁사<br/>인텔리전스</div>
-        <div style={{display:"flex",alignItems:"center",gap:6,marginTop:10}}>
+    <div style={{width:narrow?58:212,background:T.bg1,borderRight:`1px solid ${T.b}`,display:"flex",flexDirection:"column",flexShrink:0,transition:"width .15s"}}>
+      <div style={{padding:narrow?"14px 6px":"20px 18px 16px",borderBottom:`1px solid ${T.b}`,textAlign:narrow?"center":"left"}}>
+        <div style={{fontSize:9,color:T.t3,letterSpacing:narrow?1:3,fontWeight:700,marginBottom:6}}>{narrow?"XI":"XI C&A"}</div>
+        {!narrow&&<div style={{fontSize:14,fontWeight:700,lineHeight:1.4}}>경쟁사<br/>인텔리전스</div>}
+        <div style={{display:"flex",alignItems:"center",justifyContent:narrow?"center":"flex-start",gap:6,marginTop:10}}>
           <div className="ci-live" style={{width:6,height:6,borderRadius:"50%",background:T.green}}/>
-          <span style={{fontSize:10,color:T.green}}>실시간 모니터링</span>
+          {!narrow&&<span style={{fontSize:10,color:T.green}}>실시간 모니터링</span>}
         </div>
       </div>
-      <nav style={{padding:"10px",flex:1}}>
+      <nav style={{padding:narrow?"8px 6px":"10px",flex:1}}>
         {NAV.map(n=>{const active=view===n.id;return(
-          <div key={n.id} className="ci-nav" onClick={()=>setView(n.id)} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 10px",borderRadius:7,cursor:"pointer",marginBottom:2,background:active?"rgba(32,217,160,.12)":"transparent",color:active?T.teal:T.t2,borderLeft:active?`2px solid ${T.teal}`:"2px solid transparent",fontSize:12,fontWeight:active?700:400,transition:"all .12s"}}>
-            <span style={{fontSize:13}}>{n.icon}</span>
-            <span style={{flex:1}}>{n.label}</span>
-            {n.badge&&<span style={{background:n.bc?`${n.bc}18`:T.bg3,color:n.bc||T.t2,border:`1px solid ${n.bc?n.bc+"2A":T.b}`,borderRadius:10,padding:"0 6px",fontSize:9,fontWeight:700,lineHeight:"16px"}}>{n.badge}</span>}
+          <div key={n.id} className="ci-nav" onClick={()=>setView(n.id)} title={n.label} style={{display:"flex",alignItems:"center",justifyContent:narrow?"center":"flex-start",gap:9,padding:narrow?"10px 4px":"9px 10px",borderRadius:7,cursor:"pointer",marginBottom:2,background:active?"rgba(32,217,160,.12)":"transparent",color:active?T.teal:T.t2,borderLeft:active?`2px solid ${T.teal}`:"2px solid transparent",fontSize:12,fontWeight:active?700:400,transition:"all .12s"}}>
+            <span style={{fontSize:narrow?15:13}}>{n.icon}</span>
+            {!narrow&&<span style={{flex:1}}>{n.label}</span>}
+            {!narrow&&n.badge&&<span style={{background:n.bc?`${n.bc}18`:T.bg3,color:n.bc||T.t2,border:`1px solid ${n.bc?n.bc+"2A":T.b}`,borderRadius:10,padding:"0 6px",fontSize:9,fontWeight:700,lineHeight:"16px"}}>{n.badge}</span>}
           </div>
         );})}
       </nav>
-      <div style={{padding:"14px 16px",borderTop:`1px solid ${T.b}`}}>
-        <div onClick={onSettings} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",borderRadius:7,cursor:"pointer",background:T.bg2,border:`1px solid ${T.b}`}}>
-          <span style={{fontSize:12}}>⚙</span>
-          <span style={{fontSize:11,color:T.t2,flex:1}}>경쟁사 설정</span>
-          <span style={{fontSize:10,color:T.teal,fontWeight:700}}>{tracked.length}개사</span>
+      <div style={{padding:narrow?"10px 6px":"14px 16px",borderTop:`1px solid ${T.b}`}}>
+        <div onClick={onSettings} title="경쟁사 설정" className="ci-settings-btn" style={{display:"flex",alignItems:"center",justifyContent:narrow?"center":"flex-start",gap:9,padding:narrow?"10px 4px":"11px 14px",borderRadius:9,cursor:"pointer",background:T.teal,border:`1px solid ${T.teal}`,boxShadow:"0 2px 8px rgba(13,148,136,.35)"}}>
+          <span style={{fontSize:narrow?16:15,color:"#FFFFFF"}}>⚙</span>
+          {!narrow&&<span style={{fontSize:12.5,color:"#FFFFFF",fontWeight:700,flex:1}}>경쟁사 설정</span>}
+          <span style={{fontSize:narrow?9:10,color:"#FFFFFF",fontWeight:700,background:"rgba(255,255,255,.22)",borderRadius:20,padding:narrow?"1px 5px":"2px 8px"}}>{narrow?tracked.length:`${tracked.length}개사`}</span>
         </div>
       </div>
     </div>
@@ -348,7 +429,7 @@ function SettingsPanel({tracked,setTracked,saveTracked,onClose}){
   };
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.65)",zIndex:200,display:"flex",justifyContent:"flex-end"}} onClick={onClose}>
-      <div className="ci-slide" style={{width:420,background:T.bg1,height:"100%",display:"flex",flexDirection:"column",borderLeft:`1px solid ${T.b}`}} onClick={e=>e.stopPropagation()}>
+      <div className="ci-slide" style={{width:"min(420px,94vw)",background:T.bg1,height:"100%",display:"flex",flexDirection:"column",borderLeft:`1px solid ${T.b}`}} onClick={e=>e.stopPropagation()}>
         <div style={{padding:"20px 20px 16px",borderBottom:`1px solid ${T.b}`,flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
             <div style={{fontSize:15,fontWeight:700}}>경쟁사 설정</div>
@@ -383,35 +464,35 @@ function SettingsPanel({tracked,setTracked,saveTracked,onClose}){
 }
 
 // ─── HEADER ───────────────────────────────────────────────────
-function Header({view,bidsCount,trackedCount}){
+function Header({view,bidsCount,trackedCount,narrow}){
   const MAP={overview:["경쟁 인텔리전스 현황","실시간 모니터링"],profiles:["경쟁사 프로파일","기업별 역량 심층 분석"],bids:["입찰 이력 관리","사례 누적으로 위협도 자동 계산"],pipeline:["파이프라인 경합 분석","AI 웹검색 기반 발주 프로젝트 발굴"],news:["뉴스 크롤러","네이버 뉴스 API 실시간 수집"],dart:["DART 공시 조회","전자공시·재무 실수치 실시간 수집"],chat:["AI 분석가","Claude 기반 경쟁사 분석 어시스턴트"]};
   const [t,s]=MAP[view]||["",""];
   return (
-    <div style={{padding:"13px 22px",background:T.bg1,borderBottom:`1px solid ${T.b}`,display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
-      <div>
-        <div style={{fontSize:15,fontWeight:700}}>{t}</div>
-        <div style={{fontSize:11,color:T.t2,marginTop:1}}>{s}</div>
+    <div style={{padding:narrow?"11px 12px":"13px 22px",background:T.bg1,borderBottom:`1px solid ${T.b}`,display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,flexWrap:"wrap",gap:6}}>
+      <div style={{minWidth:0}}>
+        <div style={{fontSize:narrow?13:15,fontWeight:700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{t}</div>
+        {!narrow&&<div style={{fontSize:11,color:T.t2,marginTop:1}}>{s}</div>}
       </div>
-      <div style={{display:"flex",gap:6,alignItems:"center"}}>
-        <span style={{padding:"3px 10px",borderRadius:20,border:`1px solid ${T.teal}33`,color:T.teal,fontSize:10,background:`${T.teal}10`}}>{trackedCount}개사 모니터링</span>
-        {bidsCount>0&&<span style={{padding:"3px 10px",borderRadius:20,border:`1px solid ${T.gold}33`,color:T.gold,fontSize:10,background:`${T.gold}10`}}>입찰이력 {bidsCount}건 · 위협도 자동계산</span>}
+      <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+        <span style={{padding:"3px 10px",borderRadius:20,border:`1px solid ${T.teal}33`,color:T.teal,fontSize:10,background:`${T.teal}10`,whiteSpace:"nowrap"}}>{trackedCount}개사 모니터링</span>
+        {!narrow&&bidsCount>0&&<span style={{padding:"3px 10px",borderRadius:20,border:`1px solid ${T.gold}33`,color:T.gold,fontSize:10,background:`${T.gold}10`,whiteSpace:"nowrap"}}>입찰이력 {bidsCount}건 · 위협도 자동계산</span>}
       </div>
     </div>
   );
 }
 
 // ─── OVERVIEW ─────────────────────────────────────────────────
-function Overview({setView,setSelId,threatScores,bidsCount,activeComps}){
+function Overview({setView,setSelId,threatScores,bidsCount,activeComps,onSettings,narrow}){
   const sorted=[...threatScores].sort((a,b)=>b.threat-a.threat);
   const top=sorted[0];
   return (
     <div className="ci-fade">
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12,marginBottom:16}}>
-        {[["모니터링 경쟁사",`${activeComps.length}개사`,"경쟁사 설정에서 변경",T.teal],["입찰 이력",`${bidsCount}건`,bidsCount>0?"위협도 자동계산 중":"이력 탭에서 추가",T.gold],["최고 위협도",top?`${top.threat}점`:"—",top?.name||"입찰이력 추가 필요",T.red],["도급순위 50개사","검색·선택","⚙ 경쟁사 설정",T.blue]].map(([l,v,sub,c])=>(
-          <div key={l} style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px"}}>
+      <div style={{display:"grid",gridTemplateColumns:narrow?"repeat(2,1fr)":"repeat(4,1fr)",gap:12,marginBottom:16}}>
+        {[["모니터링 경쟁사",`${activeComps.length}개사`,"경쟁사 설정에서 변경",T.teal,false],["입찰 이력",`${bidsCount}건`,bidsCount>0?"위협도 자동계산 중":"이력 탭에서 추가",T.gold,false],["최고 위협도",top?`${top.threat}점`:"—",top?.name||"입찰이력 추가 필요",T.red,false],["도급순위 50개사","검색·선택","⚙ 경쟁사 설정 열기 →",T.blue,true]].map(([l,v,sub,c,clickable])=>(
+          <div key={l} onClick={clickable?onSettings:undefined} className={clickable?"ci-card":""} style={{background:T.bg2,border:`1px solid ${clickable?T.blue+"40":T.b}`,borderRadius:10,padding:"16px 18px",cursor:clickable?"pointer":"default"}}>
             <div style={{fontSize:10,color:T.t2,marginBottom:8}}>{l}</div>
             <div style={{fontSize:24,fontWeight:800,color:c}}>{v}</div>
-            <div style={{fontSize:10,color:T.t3,marginTop:4}}>{sub}</div>
+            <div style={{fontSize:10,color:clickable?T.blue:T.t3,marginTop:4,fontWeight:clickable?700:400}}>{sub}</div>
           </div>
         ))}
       </div>
@@ -422,7 +503,7 @@ function Overview({setView,setSelId,threatScores,bidsCount,activeComps}){
         <span onClick={()=>setView("bids")} style={{fontSize:11,color:T.gold,cursor:"pointer",marginLeft:"auto",textDecoration:"underline"}}>이력 추가 →</span>
       </div>}
 
-      <div style={{display:"grid",gridTemplateColumns:"220px 1fr",gap:12}}>
+      <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":"220px 1fr",gap:12}}>
         <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px"}}>
           <div style={{fontSize:11,fontWeight:700,marginBottom:14}}>위협도 랭킹</div>
           {sorted.map(c=>(
@@ -439,10 +520,13 @@ function Overview({setView,setSelId,threatScores,bidsCount,activeComps}){
           {!bidsCount&&<div style={{fontSize:10,color:T.t3,textAlign:"center",marginTop:8}}>입찰 이력 추가 후 표시</div>}
         </div>
         <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px"}}>
-          <div style={{fontSize:11,fontWeight:700,marginBottom:14}}>모니터링 경쟁사 — {activeComps.length}개사</div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+            <div style={{fontSize:11,fontWeight:700}}>모니터링 경쟁사 — {activeComps.length}개사</div>
+            <div onClick={onSettings} className="ci-add-comp-btn" style={{display:"flex",alignItems:"center",gap:6,padding:"6px 14px",borderRadius:20,cursor:"pointer",background:T.teal,color:"#FFFFFF",fontSize:11,fontWeight:700}}>+ 경쟁사 추가</div>
+          </div>
           {activeComps.length===0?<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:200,gap:10}}>
             <div style={{fontSize:24,opacity:.3}}>⚙</div>
-            <div style={{fontSize:12,color:T.t2}}>사이드바 하단 경쟁사 설정에서 추가하세요</div>
+            <div onClick={onSettings} style={{fontSize:12,color:T.teal,fontWeight:700,cursor:"pointer",textDecoration:"underline"}}>+ 경쟁사 추가 →</div>
           </div>:<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:10}}>
             {activeComps.map(c=>{const ts=threatScores.find(t=>t.id===c.id)||c;return(
               <div key={c.id} className="ci-card" onClick={()=>{setSelId(c.id);setView("profiles");}} style={{background:T.bg3,border:`1px solid ${c.color}25`,borderRadius:9,padding:"12px 14px",transition:"all .12s"}}>
@@ -465,11 +549,72 @@ function Overview({setView,setSelId,threatScores,bidsCount,activeComps}){
 }
 
 // ─── PROFILES ─────────────────────────────────────────────────
-function Profiles({selComp,setSelId,threatScores,activeComps}){
+// ─── 위협도 계산 방법론 패널 ────────────────────────────────────
+function MethodologyPanel({onClose}){
+  const ROWS=[
+    ["① 경합 빈도",THREAT_WEIGHTS.freq,"해당사가 참여한 입찰 건수 ÷ 전체 입찰 건수. 오래된 입찰일수록 가중치를 낮춰 반영(최신성 가중)."],
+    ["② 낙찰률",THREAT_WEIGHTS.wr,"해당사 낙찰 건수 ÷ 참여 건수. 단, 참여 건수가 적으면(예: 1~2건) 낙찰률이 0%나 100%처럼 극단으로 치우치기 쉬워 전체 경쟁사 평균 낙찰률 쪽으로 수렴시키는 보정(베이지안 스무딩)을 적용."],
+    ["③ 수주금액",THREAT_WEIGHTS.val,"해당사의 실제 낙찰금액 합(최신성 가중) ÷ 전체 실제 낙찰금액 합. 투찰금액이 입력된 경우 실제 금액을, 없으면 프로젝트 예정금액을 사용."],
+    ["④ 공종 겹침",THREAT_WEIGHTS.type,"참여 건수 중 Xi C&A 주력 공종(GMP의약품·반도체시설·데이터센터·이차전지·산업플랜트)과 겹치는 비율(최신성 가중)."],
+  ];
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.65)",zIndex:210,display:"flex",justifyContent:"center",alignItems:"center",padding:20}} onClick={onClose}>
+      <div className="ci-fade" style={{width:"min(560px,94vw)",maxHeight:"85vh",overflowY:"auto",background:T.bg1,borderRadius:12,border:`1px solid ${T.b}`}} onClick={e=>e.stopPropagation()}>
+        <div style={{padding:"18px 22px",borderBottom:`1px solid ${T.b}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{fontSize:15,fontWeight:700}}>ⓘ 위협도 계산 방법론</div>
+          <div onClick={onClose} style={{cursor:"pointer",color:T.t2,fontSize:18,lineHeight:1}}>✕</div>
+        </div>
+        <div style={{padding:"18px 22px",display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{fontSize:11,color:T.t2,lineHeight:1.6}}>위협도는 사용자가 입력한 <b>입찰 이력</b> 데이터를 바탕으로 4개 항목을 합산해 100점 만점으로 계산합니다. 입찰 이력이 없으면 계산되지 않습니다(추정치를 임의로 채우지 않음).</div>
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {ROWS.map(([l,max,desc])=>(
+              <div key={l} style={{background:T.bg3,border:`1px solid ${T.b}`,borderRadius:8,padding:"10px 12px"}}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:12,fontWeight:700,marginBottom:4}}><span>{l}</span><span style={{color:T.teal}}>{max}점</span></div>
+                <div style={{fontSize:10.5,color:T.t2,lineHeight:1.5}}>{desc}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{borderTop:`1px solid ${T.b}`,paddingTop:12}}>
+            <div style={{fontSize:11,fontWeight:700,marginBottom:6,color:T.gold}}>정확도 보정 2가지</div>
+            <div style={{fontSize:10.5,color:T.t2,lineHeight:1.6,marginBottom:8}}>
+              <b>A) 최신성 가중치</b> — 입찰 건은 시간이 지날수록 현재 위협도에 미치는 영향이 줄어듭니다. 가중치 = 0.5^(경과월수 / {THREAT_HALF_LIFE_MONTHS}개월). {THREAT_HALF_LIFE_MONTHS}개월 전 입찰은 가중치 0.5, {THREAT_HALF_LIFE_MONTHS*2}개월 전이면 0.25로 반영됩니다.
+            </div>
+            <div style={{fontSize:10.5,color:T.t2,lineHeight:1.6}}>
+              <b>B) 신뢰도 보정(베이지안 스무딩)</b> — 참여 건수가 적은 경쟁사는 낙찰률이 실제보다 극단적으로 보일 수 있습니다({THREAT_PRIOR_K}건 미만 참여 시 특히 왜곡 위험). 이를 막기 위해 가상 사례 {THREAT_PRIOR_K}건을 전체 경쟁사 평균 낙찰률로 채워 넣어, 표본이 적을수록 평균 쪽으로, 표본이 쌓일수록 실제 값에 가깝게 수렴시킵니다.
+            </div>
+          </div>
+          <div style={{borderTop:`1px solid ${T.b}`,paddingTop:12}}>
+            <div style={{fontSize:11,fontWeight:700,marginBottom:6}}>신뢰도(표본 크기) 배지</div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              {["high","medium","low"].map(k=>(
+                <span key={k} style={{padding:"4px 10px",borderRadius:20,background:`${THREAT_CONF_COLOR[k]}14`,border:`1px solid ${THREAT_CONF_COLOR[k]}40`,fontSize:10,color:THREAT_CONF_COLOR[k],fontWeight:700}}>{THREAT_CONF_LABEL[k]}</span>
+              ))}
+            </div>
+            <div style={{fontSize:10,color:T.t3,marginTop:6}}>참여 7건 이상 = 표본 충분 · 3~6건 = 표본 보통 · 1~2건 = 표본 적음(낙찰률이 전체 평균 쪽으로 보정되어 표시됨)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── 강점/약점 근거(출처) 배지+링크 ─────────────────────────────
+function SourceList({sources}){
+  if(!sources||!sources.length) return null;
+  return (
+    <div style={{marginTop:8,paddingTop:8,borderTop:`1px solid ${T.b}`,display:"flex",flexDirection:"column",gap:4}}>
+      <div style={{fontSize:9,color:T.t3,fontWeight:700}}>근거·출처</div>
+      {sources.map((s,i)=><a key={i} href={s.u} target="_blank" rel="noopener noreferrer" style={{fontSize:9.5,color:T.blue,textDecoration:"none",lineHeight:1.5}}>↗ {s.t}</a>)}
+    </div>
+  );
+}
+
+function Profiles({selComp,setSelId,threatScores,activeComps,narrow}){
+  const [showMethod,setShowMethod]=useState(false);
   if(!selComp) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,color:T.t2}}>경쟁사를 설정에서 추가하세요</div>;
   const ts=threatScores.find(t=>t.id===selComp.id)||selComp;
   return (
-    <div className="ci-fade" style={{display:"grid",gridTemplateColumns:"185px 1fr",gap:14}}>
+    <div className="ci-fade" style={{display:"grid",gridTemplateColumns:narrow?"1fr":"185px 1fr",gap:14}}>
       <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:10,height:"fit-content",maxHeight:"80vh",overflowY:"auto"}}>
         {activeComps.map(c=>{const ts2=threatScores.find(t=>t.id===c.id)||c;const active=selComp.id===c.id;return(
           <div key={c.id} onClick={()=>setSelId(c.id)} style={{padding:"9px 12px",borderRadius:7,cursor:"pointer",marginBottom:3,background:active?`${c.color}14`:"transparent",border:`1px solid ${active?c.color+"30":"transparent"}`,transition:"all .12s"}}>
@@ -485,7 +630,10 @@ function Profiles({selComp,setSelId,threatScores,activeComps}){
         <div style={{background:T.bg2,border:`1px solid ${selComp.color}25`,borderRadius:10,padding:"18px 20px"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div>
-              <div style={{fontSize:20,fontWeight:800,color:selComp.color}}>{selComp.name}</div>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <div style={{fontSize:20,fontWeight:800,color:selComp.color}}>{selComp.name}</div>
+                <span onClick={()=>setShowMethod(true)} style={{cursor:"pointer",fontSize:10,color:T.t2,border:`1px solid ${T.b}`,borderRadius:20,padding:"2px 9px",whiteSpace:"nowrap"}}>ⓘ 계산 방법론</span>
+              </div>
               <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>{selComp.biz.map(b=><span key={b} style={{padding:"2px 8px",borderRadius:4,background:`${selComp.color}14`,border:`1px solid ${selComp.color}25`,fontSize:10,color:selComp.color}}>{b}</span>)}</div>
             </div>
             <div style={{textAlign:"right"}}>
@@ -493,10 +641,12 @@ function Profiles({selComp,setSelId,threatScores,activeComps}){
               <div style={{fontSize:10,color:T.t2,marginTop:2}}>위협도 / 100</div>
               <div style={{fontSize:9,color:T.t3,marginTop:2}}>도급순위 #{selComp.rank}</div>
               {ts.breakdown&&<div style={{fontSize:9,color:T.t3,marginTop:2}}>{ts.breakdown.cnt}전 {ts.breakdown.wCnt}패</div>}
+              {ts.breakdown&&<span style={{display:"inline-block",marginTop:4,padding:"2px 8px",borderRadius:20,background:`${THREAT_CONF_COLOR[ts.breakdown.confidence]}14`,border:`1px solid ${THREAT_CONF_COLOR[ts.breakdown.confidence]}40`,fontSize:9,color:THREAT_CONF_COLOR[ts.breakdown.confidence],fontWeight:700}}>{THREAT_CONF_LABEL[ts.breakdown.confidence]}</span>}
             </div>
           </div>
         </div>
-        <div style={{display:"grid",gridTemplateColumns:selComp.radar?"1.1fr 1fr":"1fr",gap:12}}>
+        {showMethod&&<MethodologyPanel onClose={()=>setShowMethod(false)}/>}
+        <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":(selComp.radar?"1.1fr 1fr":"1fr"),gap:12}}>
           {selComp.radar&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px"}}>
             <div style={{fontSize:11,fontWeight:700,marginBottom:10}}>역량 레이더</div>
             <RadarSVG data={selComp.radar} color={selComp.color}/>
@@ -514,18 +664,27 @@ function Profiles({selComp,setSelId,threatScores,activeComps}){
                   <div style={{fontSize:9,color:T.t3}}>{desc}</div>
                 </div>
               ))}
+              <div style={{fontSize:9,color:T.t3,marginBottom:4}}>참고: 추적 중인 전체 경쟁사 평균 낙찰률 {ts.breakdown.globalWinRate}% — 참여 건수가 적을수록 낙찰률이 이 값 쪽으로 보정됩니다</div>
               <div style={{borderTop:`1px solid ${T.b}`,paddingTop:8,marginTop:4,display:"flex",justifyContent:"space-between",fontSize:11}}>
                 <span style={{color:T.t2}}>{ts.breakdown.cnt}전 {ts.breakdown.wCnt}패 · {ts.breakdown.compWonAmt>0?`낙찰금액 ${ts.breakdown.compWonAmt.toLocaleString()}억`:"금액 미입력"}</span>
                 <span style={{fontWeight:800,color:selComp.color}}>합계 {ts.threat}점</span>
               </div>
             </div>}
-            {selComp.strengths&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px",flex:1}}>
-              <div style={{fontSize:11,fontWeight:700,color:T.green,marginBottom:8}}>▲ 강점</div>
+            {selComp.strengths&&selComp.strengths.length>0&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px",flex:1}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                <div style={{fontSize:11,fontWeight:700,color:T.green}}>▲ 강점</div>
+                {selComp.confidence&&<span style={{padding:"1px 8px",borderRadius:20,background:`${DATA_CONF_COLOR[selComp.confidence]}14`,border:`1px solid ${DATA_CONF_COLOR[selComp.confidence]}40`,fontSize:9,color:DATA_CONF_COLOR[selComp.confidence],fontWeight:700}}>{DATA_CONF_LABEL[selComp.confidence]}</span>}
+              </div>
               {selComp.strengths.map(s=><div key={s} style={{fontSize:11,color:T.t2,marginBottom:6,paddingLeft:10,borderLeft:`2px solid ${T.green}40`}}>{s}</div>)}
+              <SourceList sources={selComp.sources}/>
             </div>}
-            {selComp.weaknesses&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px",flex:1}}>
-              <div style={{fontSize:11,fontWeight:700,color:T.red,marginBottom:8}}>▼ 약점</div>
+            {selComp.weaknesses&&selComp.weaknesses.length>0&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px",flex:1}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                <div style={{fontSize:11,fontWeight:700,color:T.red}}>▼ 약점</div>
+                {!selComp.strengths?.length&&selComp.confidence&&<span style={{padding:"1px 8px",borderRadius:20,background:`${DATA_CONF_COLOR[selComp.confidence]}14`,border:`1px solid ${DATA_CONF_COLOR[selComp.confidence]}40`,fontSize:9,color:DATA_CONF_COLOR[selComp.confidence],fontWeight:700}}>{DATA_CONF_LABEL[selComp.confidence]}</span>}
+              </div>
               {selComp.weaknesses.map(s=><div key={s} style={{fontSize:11,color:T.t2,marginBottom:6,paddingLeft:10,borderLeft:`2px solid ${T.red}40`}}>{s}</div>)}
+              {!selComp.strengths?.length&&<SourceList sources={selComp.sources}/>}
             </div>}
             {!ts.breakdown&&!selComp.strengths&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"30px 20px",display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
               <div style={{fontSize:22,opacity:.3}}>◑</div>
@@ -533,7 +692,7 @@ function Profiles({selComp,setSelId,threatScores,activeComps}){
             </div>}
           </div>
         </div>
-        {(selComp.wins||selComp.clients)&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+        {(selComp.wins||selComp.clients)&&<div style={{display:"grid",gridTemplateColumns:narrow?"1fr":"1fr 1fr",gap:12}}>
           {selComp.wins&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
             <div style={{fontSize:11,fontWeight:700,marginBottom:10}}>주요 수주 실적</div>
             {selComp.wins.map(w=><div key={w} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:8,fontSize:11,color:T.t2}}><div style={{width:5,height:5,borderRadius:"50%",background:selComp.color,marginTop:4,flexShrink:0}}/>{w}</div>)}
@@ -549,7 +708,7 @@ function Profiles({selComp,setSelId,threatScores,activeComps}){
 }
 
 // ─── 입찰 이력 ────────────────────────────────────────────────
-function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
+function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetitor,narrow}){
   const TYPES=["GMP의약품","반도체시설","데이터센터","이차전지","산업플랜트","산업시설","기타"];
   const RESULTS=["우리낙찰","타사낙찰","진행중","유찰"];
   const RC={우리낙찰:T.green,타사낙찰:T.red,진행중:T.gold,유찰:T.t2};
@@ -558,6 +717,7 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
   const [err,setErr]=useState("");
   const [showForm,setShowForm]=useState(true);
   const [tab,setTab]=useState("stats");
+  const [compQuery,setCompQuery]=useState("");
 
   const toggleComp=name=>setForm(f=>{
     if(f.competitors.includes(name)){
@@ -566,6 +726,14 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
     }
     return {...f,competitors:[...f.competitors,name]};
   });
+
+  // 경쟁사를 검색해서 바로 추가(필요시 모니터링 목록에도 반영) + 이 입찰의 참여사로 즉시 선택
+  const quickAddComp=comp=>{
+    addCompetitor(comp.id);
+    setForm(f=>f.competitors.includes(comp.name)?f:{...f,competitors:[...f.competitors,comp.name]});
+    setCompQuery("");
+  };
+  const compResults=compQuery.trim()?TOP50.filter(c=>!form.competitors.includes(c.name)&&(c.name.includes(compQuery)||c.biz.some(b=>b.includes(compQuery)))).slice(0,8):[];
 
   const submit=async()=>{
     if(!form.project.trim()){setErr("프로젝트명을 입력하세요");return;}
@@ -603,7 +771,7 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
 
   return (
     <div className="ci-fade">
-      {totalBids>0&&<div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:10,marginBottom:14}}>
+      {totalBids>0&&<div style={{display:"grid",gridTemplateColumns:narrow?"repeat(2,1fr)":"repeat(5,1fr)",gap:10,marginBottom:14}}>
         {[["총 입찰",`${totalBids}건`,T.teal],["우리 낙찰",`${ourWins}건`,T.green],["타사 낙찰",`${theirWins}건`,T.red],["진행중",`${ongoing}건`,T.gold],["우리 낙찰률",`${ourWinRate}%`,ourWinRate>=50?T.green:ourWinRate>=30?T.gold:T.red]].map(([l,v,c])=>(
           <div key={l} style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
             <div style={{fontSize:9,color:T.t2,marginBottom:6}}>{l}</div>
@@ -612,9 +780,9 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
         ))}
       </div>}
 
-      <div style={{display:"grid",gridTemplateColumns:showForm?"1fr 300px":"1fr",gap:14}}>
+      <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":(showForm?"1fr 300px":"1fr"),gap:14}}>
         <div>
-          {totalBids>0&&<div style={{display:"flex",gap:8,marginBottom:12,alignItems:"center"}}>
+          {totalBids>0&&<div style={{display:"flex",gap:8,marginBottom:12,alignItems:"center",flexWrap:"wrap"}}>
             {[["stats","경쟁사 통계"],["history",`이력 목록 (${totalBids}건)`]].map(([id,label])=>(
               <div key={id} onClick={()=>setTab(id)} style={{padding:"6px 14px",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:tab===id?700:400,background:tab===id?T.teal:"transparent",color:tab===id?"#FFFFFF":T.t2,border:`1px solid ${tab===id?T.teal:T.b}`,transition:"all .12s"}}>{label}</div>
             ))}
@@ -628,14 +796,14 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
                 <div style={{fontSize:14,color:T.t2}}>입찰 사례를 추가하면 통계가 자동으로 집계됩니다</div>
                 <div style={{fontSize:11,color:T.t3}}>경합 횟수 · 낙찰률 · 경합금액 · 위협도 자동 계산</div>
               </div>
-              :<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,overflow:"hidden"}}>
-                <div style={{display:"grid",gridTemplateColumns:"1.4fr 70px 72px 72px 130px 100px 72px",padding:"10px 18px",background:T.bg3,borderBottom:`1px solid ${T.b}`,fontSize:9,color:T.t2,fontWeight:700}}>
+              :<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,overflowX:"auto",overflowY:"hidden"}}>
+                <div style={{display:"grid",gridTemplateColumns:"1.4fr 70px 72px 72px 130px 100px 72px",padding:"10px 18px",background:T.bg3,borderBottom:`1px solid ${T.b}`,fontSize:9,color:T.t2,fontWeight:700,minWidth:640}}>
                   <span>경쟁사</span><span style={{textAlign:"center"}}>경합</span><span style={{textAlign:"center"}}>상대낙찰</span><span style={{textAlign:"center"}}>우리낙찰</span><span style={{textAlign:"center"}}>상대 낙찰률</span><span style={{textAlign:"center"}}>경합금액</span><span style={{textAlign:"center"}}>위협도</span>
                 </div>
                 {compStats.map(s=>(
                   <div key={s.comp.id} style={{borderBottom:`1px solid ${T.b}`}}>
                     {/* 메인 행 */}
-                    <div style={{display:"grid",gridTemplateColumns:"1.4fr 70px 72px 72px 130px 100px 72px",padding:"14px 18px",alignItems:"center"}}>
+                    <div style={{display:"grid",gridTemplateColumns:"1.4fr 70px 72px 72px 130px 100px 72px",padding:"14px 18px",alignItems:"center",minWidth:640}}>
                       <div style={{display:"flex",alignItems:"center",gap:10}}>
                         <div style={{width:8,height:34,borderRadius:3,background:s.comp.color,flexShrink:0}}/>
                         <div>
@@ -681,10 +849,13 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
                         <span style={{fontSize:9,color:s.comp.color}}>합계</span>
                         <span style={{fontSize:12,fontWeight:800,color:s.comp.color}}>{s.threat}점</span>
                       </div>
+                      {s.bd.confidence&&<div style={{display:"flex",alignItems:"center",gap:4,padding:"4px 10px",borderRadius:20,background:`${THREAT_CONF_COLOR[s.bd.confidence]}14`,border:`1px solid ${THREAT_CONF_COLOR[s.bd.confidence]}40`}}>
+                        <span style={{fontSize:9,color:THREAT_CONF_COLOR[s.bd.confidence],fontWeight:700}}>{THREAT_CONF_LABEL[s.bd.confidence]}</span>
+                      </div>}
                     </div>}
                   </div>
                 ))}
-                <div style={{padding:"8px 18px",fontSize:9,color:T.t3}}>위협도 = 경합빈도(30) + 상대낙찰률(35) + 수주금액비중(20) + 공종겹침(15) · 100점 만점</div>
+                <div style={{padding:"8px 18px",fontSize:9,color:T.t3,lineHeight:1.6}}>위협도 = 경합빈도(30) + 상대낙찰률(35, 신뢰도 보정) + 수주금액비중(20) + 공종겹침(15) · 100점 만점 · 오래된 입찰은 최신성 가중치(반감기 {THREAT_HALF_LIFE_MONTHS}개월)로 영향력이 줄어듭니다. 계산 방법론 상세는 프로필 탭의 &quot;ⓘ 계산 방법론&quot;에서 확인하세요.</div>
               </div>
           )}
 
@@ -735,16 +906,29 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
             <div><FL>공종</FL><select value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 10px",color:T.t1,fontSize:11}}>{TYPES.map(t=><option key={t}>{t}</option>)}</select></div>
             <div><FL>금액 (억원)</FL><input className="ci-input" type="number" value={form.value} onChange={e=>setForm(f=>({...f,value:e.target.value}))} placeholder="예: 1300" style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:12}}/></div>
           </div>
-          <FL>경쟁 참여사 <span style={{color:T.t3,fontWeight:400}}>({activeComps.length}개사 중 선택)</span></FL>
-          <div style={{display:"flex",flexDirection:"column",gap:5,marginBottom:11,maxHeight:"160px",overflowY:"auto"}}>
-            {activeComps.map(c=>{const sel=form.competitors.includes(c.name);return(
-              <div key={c.id} onClick={()=>toggleComp(c.name)} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 10px",borderRadius:7,cursor:"pointer",background:sel?`${c.color}18`:T.bg3,border:`1px solid ${sel?c.color+"44":T.b}`,transition:"all .12s"}}>
-                <div style={{width:5,height:5,borderRadius:"50%",background:sel?c.color:T.b,flexShrink:0}}/>
-                <span style={{fontSize:11,fontWeight:sel?700:400,color:sel?c.color:T.t2,flex:1}}>{c.name}</span>
-                <span style={{fontSize:9,color:T.t3}}>#{c.rank}</span>
+          <FL>경쟁 참여사 <span style={{color:T.t3,fontWeight:400}}>({form.competitors.length}개사 선택됨)</span></FL>
+          <input className="ci-input" value={compQuery} onChange={e=>setCompQuery(e.target.value)} placeholder="회사명·공종으로 검색해서 추가 (도급순위 50개사)" style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:12,marginBottom:8}}/>
+          {compResults.length>0&&<div style={{display:"flex",flexDirection:"column",gap:4,marginBottom:8,maxHeight:"180px",overflowY:"auto"}}>
+            {compResults.map(c=>(
+              <div key={c.id} onClick={()=>quickAddComp(c)} className="ci-card" style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",borderRadius:7,cursor:"pointer",background:T.bg3,border:`1px solid ${T.b}`}}>
+                <span style={{fontSize:9,color:T.t3,minWidth:24}}>#{c.rank}</span>
+                <span style={{fontSize:11,color:T.t1,flex:1}}>{c.name}</span>
+                <span style={{fontSize:9,color:T.t3}}>{c.biz[0]}</span>
+                <span style={{fontSize:10,color:T.teal,fontWeight:700}}>+ 추가</span>
               </div>
-            );})}
-          </div>
+            ))}
+          </div>}
+          {compQuery.trim()&&compResults.length===0&&<div style={{fontSize:10,color:T.t3,marginBottom:8}}>검색 결과 없음(이미 선택된 회사일 수 있어요)</div>}
+          {form.competitors.length>0?<div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:11}}>
+            {form.competitors.map(name=>{
+              const meta=TOP50.find(t=>t.name===name);
+              const color=meta?getColor(meta.id):T.t2;
+              return <div key={name} style={{display:"flex",alignItems:"center",gap:6,padding:"5px 10px",borderRadius:20,background:`${color}18`,border:`1px solid ${color}44`}}>
+                <span style={{fontSize:11,fontWeight:700,color}}>{name}</span>
+                <span onClick={()=>toggleComp(name)} style={{cursor:"pointer",color:T.t3,fontSize:11,lineHeight:1}}>✕</span>
+              </div>;
+            })}
+          </div>:<div style={{fontSize:10,color:T.t3,marginBottom:11}}>위 검색창에서 이 입찰에 참여한 경쟁사를 찾아 추가하세요</div>}
           {form.competitors.length>0&&<>
             <FL>투찰금액 <span style={{color:T.t3,fontWeight:400}}>(선택입력, 억원)</span></FL>
             <div style={{display:"flex",flexDirection:"column",gap:5,marginBottom:11,padding:"10px 12px",background:T.bg3,borderRadius:8,border:`1px solid ${T.b}`}}>
@@ -755,8 +939,10 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
               </div>
               {form.competitors.map(name=>{
                 const comp=activeComps.find(c=>c.name===name);
+                const meta=TOP50.find(t=>t.name===name);
+                const color=comp?.color||(meta?getColor(meta.id):T.t2);
                 return <div key={name} style={{display:"flex",alignItems:"center",gap:8}}>
-                  <div style={{minWidth:70,fontSize:10,color:comp?.color||T.t2,fontWeight:600,flexShrink:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{name.slice(0,7)}</div>
+                  <div style={{minWidth:70,fontSize:10,color,fontWeight:600,flexShrink:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{name.slice(0,7)}</div>
                   <input className="ci-input" type="number" value={form.competitorBids[name]||""} onChange={e=>setForm(f=>({...f,competitorBids:{...f.competitorBids,[name]:e.target.value}}))} placeholder="미입력" style={{flex:1,background:"rgba(0,0,0,.04)",border:`1px solid ${T.b}`,borderRadius:6,padding:"5px 9px",color:T.t1,fontSize:11}}/>
                   <span style={{fontSize:10,color:T.t3,flexShrink:0}}>억원</span>
                 </div>;
@@ -767,7 +953,7 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps}){
           <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:6,marginBottom:11}}>
             {RESULTS.map(r=>{const sel=form.result===r;const rc=RC[r];return <div key={r} onClick={()=>setForm(f=>({...f,result:r,winner:""}))} style={{padding:"7px",borderRadius:7,cursor:"pointer",background:sel?`${rc}18`:T.bg3,border:`1px solid ${sel?rc+"44":T.b}`,color:sel?rc:T.t2,fontSize:11,fontWeight:sel?700:400,textAlign:"center",transition:"all .12s"}}>{r}</div>;})}
           </div>
-          {form.result==="타사낙찰"&&<><FL>낙찰사</FL><select value={form.winner} onChange={e=>setForm(f=>({...f,winner:e.target.value}))} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 10px",color:form.winner?T.t1:T.t3,fontSize:12,marginBottom:11}}><option value="">선택하세요</option>{activeComps.map(c=><option key={c.id} value={c.name}>{c.name}</option>)}</select></>}
+          {form.result==="타사낙찰"&&<><FL>낙찰사</FL><select value={form.winner} onChange={e=>setForm(f=>({...f,winner:e.target.value}))} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 10px",color:form.winner?T.t1:T.t3,fontSize:12,marginBottom:11}}><option value="">선택하세요</option>{form.competitors.map(name=><option key={name} value={name}>{name}</option>)}</select></>}
           <FL>입찰 시기</FL>
           <input type="month" value={form.date} onChange={e=>setForm(f=>({...f,date:e.target.value}))} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:12,marginBottom:14}}/>
           {err&&<div style={{fontSize:11,color:T.red,marginBottom:10}}>⚠ {err}</div>}
@@ -867,7 +1053,7 @@ function NewsView({newsCache,fetchNews,activeComps}){
 }
 
 // ─── DART ─────────────────────────────────────────────────────
-function DartView({dartCache,fetchDart,activeComps}){
+function DartView({dartCache,fetchDart,activeComps,narrow}){
   const [selId,setSelId]=useState(activeComps[0]?.id||"");
   const comp=activeComps.find(c=>c.id===selId)||activeComps[0];
   const cache=comp?dartCache[comp.id]:null;
@@ -879,7 +1065,7 @@ function DartView({dartCache,fetchDart,activeComps}){
         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{activeComps.map(c=><div key={c.id} onClick={()=>setSelId(c.id)} style={{padding:"5px 12px",borderRadius:20,cursor:"pointer",fontSize:11,fontWeight:selId===c.id?700:400,background:selId===c.id?`${c.color}18`:T.bg2,color:selId===c.id?c.color:T.t2,border:`1px solid ${selId===c.id?c.color+"33":T.b}`,transition:"all .12s"}}>{c.name}{dartCache[c.id]?.disclosures&&<span style={{marginLeft:5,fontSize:9}}>✓</span>}</div>)}</div>
         <Btn onClick={()=>fetchDart(comp.id)} loading={cache?.loading} color={T.blue}>DART 조회</Btn>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 300px",gap:12}}>
+      <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":"1fr 300px",gap:12}}>
         <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"18px 20px",minHeight:400}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><div style={{fontSize:12,fontWeight:700}}>{comp.name} — 최근 공시 목록</div>{cache?.time&&<div style={{fontSize:10,color:T.t3}}>조회: {cache.time.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"})}</div>}</div>
           {!cache&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:14}}><div style={{fontSize:32}}>◫</div><div style={{fontSize:13,color:T.t2}}>DART 조회 버튼을 눌러 공시 데이터를 가져오세요</div></div>}

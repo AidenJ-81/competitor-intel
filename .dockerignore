@@ -1,0 +1,17 @@
+# 이미지에 절대 들어가면 안 되는 것
+.env
+.env.*
+!.env.example
+*.db
+*.db-wal
+*.db-shm
+
+# 불필요한 것
+.git
+.gitignore
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+README.md
