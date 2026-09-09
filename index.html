@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Xi C&A 경쟁사 인텔리전스</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 <style>
 *{box-sizing:border-box;}
 html,body,#root{height:100%;margin:0;padding:0;background:#F8FAFC;}
@@ -35,8 +27,10 @@ html,body,#root{height:100%;margin:0;padding:0;background:#F8FAFC;}
 .ci-add-comp-btn:hover{opacity:.88;}
 select{outline:none;cursor:pointer;}
 </style>
-</head>
-<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+
 <div id="root"></div>
 <script type="text/babel">
 const { useState, useRef, useEffect, useMemo } = React;
@@ -64,19 +58,19 @@ const TOP50=[
   {id:"sk_c",rank:8,name:"SK에코플랜트",biz:["데이터센터","반도체시설","환경","플랜트"],wins:["SK하이닉스 M16","SKT IDC 수원"],clients:["SK하이닉스","SK텔레콤","SK이노베이션"],strengths:["1분기 매출 4조8997억원으로 전년 대비 99% 증가, AI·반도체 인프라가 견인","반도체·데이터센터 중심 사업 리밸런싱 성공(IB토마토 크레딧시그널)"],weaknesses:["기존 환경·플랜트 부문 대비 PF(프로젝트파이낸싱) 부담이 재무 리스크로 지속 언급"],sources:[{t:"SK에코플랜트, 1분기 매출 4조8997억원…AI·반도체 호황에 실적 급증",u:"https://biz.heraldcorp.com/article/10739029"},{t:"[IB토마토] SK에코플랜트, 반도체 중심 재편 성공…PF는 부담",u:"https://www.ibtomato.com/ExternalView.aspx?type=1&no=18972"}],confidence:"high"},
   {id:"dl_c",rank:9,name:"DL이앤씨",biz:["주거","건축","플랜트","화학"],wins:["아크로 세티엘","DL케미칼 플랜트"],clients:["DL그룹","포스코","GS칼텍스"],strengths:["8년 연속 신용등급 'AA-' 유지, 업계 최고 수준 재무 안정성","1분기 영업이익 1574억원으로 수익성 2배 개선"],weaknesses:["보수적 재무 운용 기조로 인해 최근 외형(수주) 성장 속도는 상대적으로 완만"],sources:[{t:"DL이앤씨, 8년 연속 신용등급 'AA-' 사수(청년일보)",u:"https://www.youthdaily.co.kr/news/article.html?no=221611"},{t:"[2026 1분기 실적] DL이앤씨, 1분기 영업이익 1574억…수익성 2배 개선",u:"https://www.inthenews.co.kr/news/article.html?no=86354"}],confidence:"high"},
   {id:"hoban_c",rank:10,name:"호반건설",biz:["주거","건축"],wins:["호반써밋 광교","호반베르디움 위례"],clients:["LH","SH","각지자체"],strengths:["재계 순위 상승(자산 20조원), 전선·투자 등 비주택 사업 다각화 성공","계열 M&A(금거래소 등) 통한 영업익 급증 사례 확보"],weaknesses:["사업 다각화 속도가 빨라 계열사 리스크 분산·관리 부담이 커지는 구조"],sources:[{t:"[2026 재계순위] 호반, 자산 20조…건설 넘어 '전선·투자' 확장(FETV)",u:"https://www.fetv.co.kr/news/articleView.html?idxno=302497"},{t:"호반家, M&A 또 잭팟…금거래소도 영업익 10배 폭증",u:"https://v.daum.net/v/20251117060151991"}],confidence:"medium"},
-  {id:"kolon_c",rank:11,name:"코오롱글로벌",biz:["데이터센터","이차전지","주거","클린룸","건축"],wins:["카카오 데이터센터 안산","LG에너지솔루션 오창4공장","KT IDC 부산"],clients:["카카오","LG에너지솔루션","KT"],strengths:["1분기 영업이익 220억원으로 전년 대비 129.4% 증가","데이터센터·이차전지 설비 분야 특화 포트폴리오 강화 중"],weaknesses:["건설 부문 외 계열(코오롱인더 등) 실적 변동에 그룹 전체 민감도가 존재"],sources:[{t:"코오롱글로벌, 1분기 영업이익 220억1200만원…전년比 129.35% 증가",u:"https://www.digitaltoday.co.kr/news/articleView.html?idxno=665588"}],confidence:"medium"},
+  {id:"kolon_c",rank:11,name:"코오롱글로벌",biz:["데이터센터","이차전지","주거","클린룸","건축"],wins:[],clients:["카카오","LG에너지솔루션","KT"],strengths:["1분기 영업이익 220억원으로 전년 대비 129.4% 증가","데이터센터·이차전지 설비 분야 특화 포트폴리오 강화 중"],weaknesses:["건설 부문 외 계열(코오롱인더 등) 실적 변동에 그룹 전체 민감도가 존재"],sources:[{t:"코오롱글로벌, 1분기 영업이익 220억1200만원…전년比 129.35% 증가",u:"https://www.digitaltoday.co.kr/news/articleView.html?idxno=665588"}],confidence:"medium",radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:80},{axis:"재무",val:45},{axis:"영업력",val:72},{axis:"인력",val:65}],capabilityRating:{year:"2026",civilRank:23,civilAmount:"2조2,935억원",industrialRank:13,industrialAmount:null},creditRating:{agency:"한국기업평가",grade:"A3(기업어음·단기신용등급 기준, 장기 회사채 등급 미확인)",outlook:null,date:null},financialsDetail:{revenue:"7,505억원",assets:"3조497억원",equity:"7,229억원",liabilities:"2조3,268억원",period:"2026년 2분기(연결)"},severeAccidents:[{date:"2024-08",location:"전남 순천 벌교~주암 도로확장공사 현장",summary:"거푸집 인양·이동 중 근로자가 거푸집에 깔려 사망",source:{t:"코오롱글로벌, 2년마다 사망사고…'추락·깔림' 안전관리 다시 도마위",s:"이지경제",u:"https://www.ezyeconomy.com/news/articleView.html?idxno=239143"},note:"정확한 발생 일자(며칠)는 미공개, 2026년 8월 청주 사고 계기 후속보도로 확인됨"},{date:"2026-08-11",location:"충북 청주동남 공공주택 건설현장",summary:"안전난간대 해체 작업 중 추락, 치료 중 8월 29일 사망",source:{t:"코오롱글로벌, 청주 주택건설 현장서 근로자 추락 사망",s:"이데일리",u:"https://www.edaily.co.kr/News/Read?newsId=02774886645552896"}}]},
   {id:"hanwha_c",rank:12,name:"한화건설",biz:["주거","건축","플랜트","방산"],wins:["꿈에그린 수원","한화 방산공장 증설"],clients:["한화그룹","LH","국방부"],strengths:["영업이익률 10%대 회복, 방산 계열과의 시너지 기대","한화그룹 신사업(우주·방산) 확장에 따른 그룹 내 존재감 확대 시도"],weaknesses:["2분기 영업이익 584억원으로 전년 동기 대비 22% 감소","그룹 가치 상승에도 건설부문 존재감은 상대적으로 약하다는 평가(뉴스웨이)"],sources:[{t:"한화 건설부문, 2분기 영업익 584억원…전년比 22%↓",u:"https://www.newspim.com/news/view/20260805001062"},{t:"김동관이 그리는 미래에 건설은?···㈜한화 건설부문 존재감 시험대(뉴스웨이)",u:"https://www.newsway.co.kr/news/view?ud=2026080514595099415"}],confidence:"medium"},
   {id:"kumho_c",rank:13,name:"금호건설",biz:["주거","건축","토목"],wins:["어울림 수원 광교","금호타이어 시설"],clients:["LH","금호그룹","각지자체"],strengths:["2026년 주가 급등 국면 등 시장의 관심 회복 신호"],weaknesses:["최근 거래정지 이력 등으로 재무·주가 불확실성이 시장에서 지속 제기됨"],sources:[{t:"금호건설 주가 전망: 최근 급등·거래정지, 실적과 재무 이슈로 본 해석(불스토리)",u:"https://bullstory.io/blog/%EA%B8%88%ED%98%B8%EA%B1%B4%EC%84%A4-%EC%A3%BC%EA%B0%80-%EC%A0%84%EB%A7%9D-%EC%B5%9C%EA%B7%BC-%EA%B8%89%EB%93%B1%EA%B1%B0%EB%9E%98%EC%A0%95%EC%A7%80%EC%8B%A4%EC%A0%81%EA%B3%BC-%EC%9E%AC%EB%AC%B4-%EC%9D%B4%EC%8A%88%EB%A1%9C-%EB%B2%94%EC%9C%84"}],confidence:"low"},
   {id:"geryong_c",rank:14,name:"계룡건설산업",biz:["건축","토목","주거"],wins:["국방시설","공공건축"],clients:["국방부","행정중심복합도시","대전시"],strengths:["공공사업(관공수요) 최강자로 꼽힐 만큼 안정적 수요 기반 보유","2026년 실적 전망에 훈풍이 부는 것으로 평가"],weaknesses:["대손 572억원 발생에도 PF보증 규모가 7805억원에 달해 리스크 재확대","PBR 0.2배 수준의 극심한 저평가 상태 지속"],sources:[{t:"공공사업 최강자 계룡건설, 2026년 실적 전망 훈풍(뉴스웨이)",u:"https://www.newsway.co.kr/news/view?ud=2026010716102209303"},{t:"계룡건설 리스크 재확대…대손 572억에도 PF보증 7805억",u:"http://sateconomy.co.kr/news/view/1065599584883011"},{t:"계룡건설 회장의 내실 경영, 그러나 PBR 0.2 극심한 저평가(허핑턴포스트)",u:"https://www.huffingtonpost.kr/article/257565"}],confidence:"high"},
-  {id:"dongbu_c",rank:15,name:"동부건설",biz:["클린룸","반도체시설","GMP의약품","건축"],wins:["SK하이닉스 청주 증설","삼성바이오 5공장","셀트리온 3공장"],clients:["SK하이닉스","삼성바이오","셀트리온"],strengths:["반도체 클린룸·대형 GMP 분야 압도적 레퍼런스(삼성바이오, 셀트리온 등)","HUG 신용평가에서 5단계 상승한 'AA' 등급 획득, 흑자 전환·부채비율 동시 개선"],weaknesses:["데이터센터 사업 트랙레코드는 상대적으로 아직 부족","최근 흑자 전환은 확인됐으나 과거 수익성 악화 이력이 있어 지속성 모니터링 필요"],sources:[{t:"동부건설, HUG 신용평가 5단계 상승한 'AA' 등급 획득",u:"https://v.daum.net/v/PhDrIq5TCP"},{t:"동부건설, 본격적인 성장궤도 진입…영업이익·부채비율 동시 개선",u:"https://v.daum.net/v/20260203104109899?f=p"}],confidence:"high",radar:[{axis:"기술력",val:85},{axis:"트랙레코드",val:90},{axis:"재무",val:80},{axis:"영업력",val:80},{axis:"인력",val:75}]},
+  {id:"dongbu_c",rank:15,name:"동부건설",biz:["클린룸","반도체시설","GMP의약품","건축"],wins:[{project:"SK하이닉스 청주4캠퍼스 부속시설 건설공사",period:"2025.07 계약(725억원 규모, 착공일로부터 약 12개월·정확한 착공/준공일 비공개)",cm:null,designer:null}],clients:["SK하이닉스","삼성바이오","셀트리온"],strengths:["반도체 클린룸·대형 GMP 분야 압도적 레퍼런스(삼성바이오, 셀트리온 등)","HUG 신용평가에서 5단계 상승한 'AA' 등급 획득, 흑자 전환·부채비율 동시 개선"],weaknesses:["데이터센터 사업 트랙레코드는 상대적으로 아직 부족","최근 흑자 전환은 확인됐으나 과거 수익성 악화 이력이 있어 지속성 모니터링 필요"],sources:[{t:"동부건설, HUG 신용평가 5단계 상승한 'AA' 등급 획득",u:"https://v.daum.net/v/PhDrIq5TCP"},{t:"동부건설, 본격적인 성장궤도 진입…영업이익·부채비율 동시 개선",u:"https://v.daum.net/v/20260203104109899?f=p"}],confidence:"high",radar:[{axis:"기술력",val:85},{axis:"트랙레코드",val:90},{axis:"재무",val:80},{axis:"영업력",val:80},{axis:"인력",val:75}],capabilityRating:{year:"2026",civilRank:25,civilAmount:"2조215억원",industrialRank:14,industrialAmount:"8,622억원"},creditRating:{agency:"한국신용평가",grade:"BBB",outlook:"안정적",date:"2022-12-13(최신 정기평정 미확인, HUG 별도등급 'AA' 2026-05 상승)"},financialsDetail:{revenue:"1조307억원",assets:"1조7,757억원",equity:"5,822.2억원",liabilities:"1조1,934.8억원",period:"2026년 2분기(연결)"},severeAccidents:[{date:"2025-11",location:"서울 양천구 양천우체국 복합청사 신축현장",summary:"카고크레인 운전원 추락 사망",source:{t:"[속보] '안전 우선' 외친 동부건설 두 달 새 사망사고 2건",s:"세이프타임즈",u:"https://www.safetimes.co.kr/news/articleView.html?idxno=239231"}},{date:"2026-01-29",location:"강원 삼척의료원 이전 신축공사 현장",summary:"고소작업대 점검 중 외국인 근로자 추락 사망",source:{t:"[속보] '안전 우선' 외친 동부건설 두 달 새 사망사고 2건",s:"세이프타임즈",u:"https://www.safetimes.co.kr/news/articleView.html?idxno=239231"},note:"사고일·경위 등 언론사별 보도 다소 상이(더퍼블릭은 1/27 발생·1/30 사망·판넬취부작업으로 보도) — 정확한 사실관계는 추가 확인 권장"}]},
   {id:"halla_c",rank:16,name:"한라",biz:["주거","건축","토목"],wins:["비발디파크","용인반도체 기반시설"],clients:["현대차그룹","각지자체","LH"],strengths:["HL그룹 계열(HL디앤아이한라) 편입으로 그룹 차원 지원 기반 확보"],weaknesses:["개별 법인 단위의 최신 실적·이슈에 대한 공개 정보가 제한적"],sources:[{t:"2026년 건설산업의 7대 주요 이슈(건설산업연구원)",u:"https://www.cerik.re.kr/uploads/report/3037/%EA%B1%B4%EC%84%A4%EB%8F%99%ED%96%A5%EB%B8%8C%EB%A6%AC%ED%95%91%201038%ED%98%B8.pdf"}],confidence:"low"},
   {id:"hanyang_c",rank:17,name:"한양",biz:["주거","건축"],wins:["수자인 광교","한양 수자인 동탄"],clients:["LH","SH","각지자체"],strengths:["영업이익률 10%대의 업계 최상위권 원가 경쟁력 보유(BS한양)","건설 부문 호실적을 발판으로 에너지 투자 등 사업 확장 모색"],weaknesses:["신용평가사가 등급 전망(아웃룩)을 조정한 사례가 있어 모니터링 필요"],sources:[{t:"'영업이익률 10%' BS한양, 기대감 더 남았다",u:"https://v.daum.net/v/20251119064914672"},{t:"'아웃룩 조정' BS한양, 건설 호실적 발판 '에너지 투자'로 반등 모색(블로터)",u:"https://www.bloter.net/news/articleView.html?idxno=636603"}],confidence:"high"},
   {id:"taeyoung_c",rank:18,name:"태영건설",biz:["주거","건축","환경"],wins:["데시앙 판교","환경플랜트 수원"],clients:["LH","환경부","각지자체"],strengths:["부채비율 720%→488%로 대폭 개선, 흑자 전환에 성공(V자 반등)","PF 정리와 재고자산 매각을 통한 워크아웃 조기 졸업 가능성 부각"],weaknesses:["여전히 워크아웃(기업개선작업) 상태로 신용등급이 'B' 수준에 머물러 있음","2년 연속 'B' 등급을 받아 워크아웃 말년까지 리스크 관리가 필요"],sources:[{t:"부채비율 720%→488%···태영건설, 워크아웃 졸업 초읽기(뉴스웨이)",u:"https://newsway.co.kr/news/view?ud=2026060514225940077"},{t:"[단독]태영건설, 2년 연속 'B' 받고 워크아웃 '말년' 달린다",u:"https://news.bizwatch.co.kr/article/real_estate/2026/05/28/0025"},{t:"'흑자전환' 태영건설, PF 정리하고 재고자산 털어내기 본격화",u:"https://www.topdaily.kr/articles/102257"}],confidence:"high"},
   {id:"kcc_c",rank:19,name:"KCC건설",biz:["주거","건축","인테리어"],wins:["KCC스위첸 동탄","주상복합 여의도"],clients:["KCC그룹","LH","각지자체"],strengths:["KCC그룹 계열 지원 기반(도료·건자재 계열사와의 연계) 보유"],weaknesses:["모기업 KCC 실적 기준 건설 부진 영향으로 영업이익이 15% 감소한 것으로 나타남"],sources:[{t:"KCC, 건설 부진에 영업익 15% 감소…보유주식에 순익은 급증",u:"http://sateconomy.co.kr/news/view/1065599724890461"}],confidence:"medium"},
-  {id:"sungdo_c",rank:20,name:"성도이엔지",biz:["GMP의약품","반도체 클린룸","연구시설"],wins:["유한양행 오송 증설","대웅제약 안산 GMP","SK바이오팜 이천"],clients:["유한양행","대웅제약","SK바이오팜"],strengths:["GMP 의약품·반도체 클린룸 등 소수정예 특화 분야 트랙레코드(유한양행, 대웅제약, SK바이오팜)","제약사 네트워크가 견고해 반복 수주 가능성이 높음"],weaknesses:["소규모 재무 구조로 대형사 대비 자금 동원력이 제한적","전문 인력 풀이 제한적이라 동시 다발 프로젝트 대응에 한계"],sources:[{t:"회사 소개 및 수주 실적 기반 — 개별 법인 단위 최신 재무기사는 검색으로 추가 확인되지 않음(기존 자료 유지)",u:"https://www.sungdo.co.kr"}],confidence:"medium",radar:[{axis:"기술력",val:80},{axis:"트랙레코드",val:75},{axis:"재무",val:65},{axis:"영업력",val:72},{axis:"인력",val:60}]},
+  {id:"sungdo_c",rank:20,name:"성도이엔지",biz:["GMP의약품","반도체 클린룸","연구시설"],wins:[],clients:["유한양행","대웅제약","SK바이오팜"],strengths:["GMP 의약품·반도체 클린룸 등 소수정예 특화 분야 트랙레코드(유한양행, 대웅제약, SK바이오팜)","제약사 네트워크가 견고해 반복 수주 가능성이 높음"],weaknesses:["소규모 재무 구조로 대형사 대비 자금 동원력이 제한적","전문 인력 풀이 제한적이라 동시 다발 프로젝트 대응에 한계"],sources:[{t:"회사 소개 및 수주 실적 기반 — 개별 법인 단위 최신 재무기사는 검색으로 추가 확인되지 않음(기존 자료 유지)",u:"https://www.sungdo.co.kr"}],confidence:"medium",radar:[{axis:"기술력",val:80},{axis:"트랙레코드",val:75},{axis:"재무",val:65},{axis:"영업력",val:72},{axis:"인력",val:60}],capabilityRating:{year:"2026",civilRank:44,civilAmount:"8,831억원",industrialRank:null,industrialAmount:null},creditRating:{agency:null,grade:null,outlook:null,date:null},financialsDetail:{revenue:"7,434억원",assets:"6,716억원",equity:"약 4,322억원(부채비율 55.4% 역산, 공시 확정치 아님)",liabilities:"약 2,394억원(부채비율 55.4% 역산, 공시 확정치 아님)",period:"2025년(연간)"},severeAccidents:[{date:"2023-02-14",location:"인천 영종도 복합물류센터 건립현장",summary:"자재정리 중 이탈한 철근 반동으로 약 10m 추락 사망",source:{t:"성도이엔지 시공…영종도 물류센터서 노동자 추락사",s:"일요주간",u:"https://www.ilyoweekly.co.kr/news/newsview.php?ncode=1065596205290717"}},{date:"2023-11-30",location:"경남 창원 공장 신축현장",summary:"파일 항타 작업 중 용접부 이음부 낙하로 사망",source:{t:"'매출 1조원 목표' 중대재해 리스크에 발목잡힌 '성도이엔지'",s:"백세시대",u:"https://www.100ssd.co.kr/news/articleView.html?idxno=105076"}}]},
   {id:"hyundaieng_c",rank:21,name:"현대엔지니어링",biz:["플랜트","산업시설","건축","해외"],wins:["HMG 울산EV공장","사우디 플랜트"],clients:["현대차그룹","한국가스공사","해외"],strengths:["2026년 시공능력평가 4위로 도약(악재를 극복한 실적 반등)","플랜트 역량을 앞세워 현대차그룹 내 위상 확대 중"],weaknesses:["유동부채가 약 6조원 규모로 재무 경고등이 켜진 상태(허핑턴포스트)","엔지니어링 중심으로 사업 포트폴리오를 재편 중이라 과도기적 리스크 존재"],sources:[{t:"현대엔지니어링, 악재 뚫고 시평 4위…미래사업으로 반등 승부수(아시아투데이)",u:"https://www.asiatoday.co.kr/kn/view.php?key=20260802010000185"},{t:"주우정 현대엔지니어링 플랜트 앞세워 체급 올리지만…6조 유동부채 재무 경고등(허핑턴포스트)",u:"https://www.huffingtonpost.kr/article/257781"},{t:"[단독]현대엔지니어링, 하반기 사업 포트폴리오 재편(머니투데이)",u:"https://www.mt.co.kr/estate/2026/05/28/2026052814573719374"}],confidence:"high"},
   {id:"samsungeng_c",rank:22,name:"삼성엔지니어링",biz:["플랜트","화학","산업시설","해외"],wins:["삼성전자 평택 EUV","사우디 가스처리"],clients:["삼성전자","사우디아람코","해외"],strengths:["하반기 해외 플랜트 수주 모멘텀에 대한 시장 기대감 확대(삼성E&A)"],weaknesses:["해외 플랜트 특성상 환율·발주국 정세 등 대외 변수에 노출도가 높음"],sources:[{t:"삼성E&A, 하반기 해외 플랜트 수주 모멘텀 기대감",u:"https://www.theguru.co.kr/news/article.html?no=105531"}],confidence:"medium"},
-  {id:"sgc_c",rank:23,name:"SGC E&C",biz:["GMP의약품","바이오","식품공장","화학플랜트"],wins:["GC녹십자 오창","CJ제일제당 인천2공장","롯데바이오로직스 송도"],clients:["GC녹십자","CJ제일제당","롯데바이오"],strengths:["바이오·식품공장 특화 및 GMP 설계 내재화 역량 보유(GC녹십자, CJ제일제당, 롯데바이오)","안정적인 재무 구조(기존 자료 기준 부채비율 관리 양호)"],weaknesses:["데이터센터·대형 반도체 분야 미진출로 포트폴리오 다각화가 제한적","개별 법인 단위의 2025~2026년 최신 실적 기사가 추가로 검증되지 않음"],sources:[{t:"회사 사업 영역 및 수주 실적 기반 — 최신 재무기사는 검색으로 추가 확인되지 않음(기존 자료 유지)",u:"https://www.sgcecnc.com"}],confidence:"medium",radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:72},{axis:"재무",val:80},{axis:"영업력",val:70},{axis:"인력",val:68}]},
+  {id:"sgc_c",rank:23,name:"SGC E&C",biz:["GMP의약품","바이오","식품공장","화학플랜트"],wins:[],clients:["GC녹십자","CJ제일제당","롯데바이오"],strengths:["바이오·식품공장 특화 및 GMP 설계 내재화 역량 보유(GC녹십자, CJ제일제당, 롯데바이오)","안정적인 재무 구조(기존 자료 기준 부채비율 관리 양호)"],weaknesses:["데이터센터·대형 반도체 분야 미진출로 포트폴리오 다각화가 제한적","개별 법인 단위의 2025~2026년 최신 실적 기사가 추가로 검증되지 않음"],sources:[{t:"회사 사업 영역 및 수주 실적 기반 — 최신 재무기사는 검색으로 추가 확인되지 않음(기존 자료 유지)",u:"https://www.sgcecnc.com"}],confidence:"medium",radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:72},{axis:"재무",val:35},{axis:"영업력",val:70},{axis:"인력",val:68}],capabilityRating:{year:"2026",civilRank:45,civilAmount:"8,782억원",industrialRank:15,industrialAmount:null},creditRating:{agency:null,grade:null,outlook:null,date:null},financialsDetail:{revenue:"1조3,420억원",assets:"1조3,639억원",equity:"3,321억원",liabilities:"1조318억원",period:"2025년(연결, 연간)"},severeAccidents:[{date:"2023-10-10",location:"경기 시흥 정왕동 복합물류센터 신축현장",summary:"고소작업대가 레미콘 트럭에 걸려 붕괴, 추락 사망",source:{t:"8개월 영업정지 '철퇴' SGC이테크건설, 한달 못가 또 사망사고",s:"경인일보",u:"https://www.kyeongin.com/article/1659201"}},{date:"2023-11-22",location:"인천 검단 AA10-2블록 아파트 건설현장",summary:"안전대 미착용 상태로 11층에서 추락 사망",source:{t:"SGC이테크건설, '안전 불감증' 만연 잇따른 공사현장 사망사고…왜?",s:"백세시대",u:"https://www.100ssd.co.kr/news/articleView.html?idxno=104884"},note:"층수·추락지점 표현이 매체별로 다소 상이(일요주간은 12층·테라스로 보도)"}]},
   {id:"hanwhaeng_c",rank:24,name:"한화엔지니어링",biz:["플랜트","산업시설","건축"],wins:["한화 방산시설","석유화학 플랜트"],clients:["한화그룹","한국중부발전","ADNOC"],strengths:["한화그룹 방산·에너지 계열과의 사업 연계 가능성"],weaknesses:["검색 결과 '한화엔지니어링' 단독 법인의 2025~2026년 재무·실적 뉴스를 특정하지 못함(검증 제한적, 유사 계열사인 한화엔진·한화오션과 혼동 주의)"],sources:[{t:"검증 시도 결과 특정 법인 뉴스 미검출 — 참고용 그룹 계열 정보만 확인",u:"https://www.hanwhaocean.com/investors/ea/"}],confidence:"low"},
   {id:"gsear_c",rank:25,name:"GS이앤알",biz:["환경","에너지","리사이클"],wins:["폐기물처리시설","바이오가스 플랜트"],clients:["환경부","각지자체","SK"],strengths:["GS그룹 에너지 계열과의 사업 연계(환경·리사이클 분야)"],weaknesses:["검색 결과 최신(2025~2026년) 재무·실적 뉴스가 거의 없고, 확인된 기사는 2020년 '해외 자원개발 올스톱' 보도가 가장 최근 수준(검증 제한적)"],sources:[{t:"GS E&R 해외 자원개발 올스톱 예고…회사채 영향은(더벨, 2020년)",u:"https://thebell.co.kr/free/content/ArticleView.asp?key=202002250859274560105830&lcode=00"}],confidence:"low"},
   {id:"dongwon_c",rank:26,name:"동원개발",biz:["주거","건축"],wins:["동원로얄듀크 광교","동원베네스트 마곡"],clients:["LH","SH","각지자체"],strengths:["10년간 연결자본이 꾸준히 증가해 온 안정적 성장 이력(블로터)"],weaknesses:["최근 현금창출력이 둔화되고 있다는 평가(블로터)"],sources:[{t:"[동원개발 경영셈법]⑤ 10년간 불어난 연결 자본, 둔화된 현금창출력(블로터)",u:"https://www.bloter.net/news/articleView.html?idxno=669466"}],confidence:"high"},
@@ -216,6 +210,113 @@ function calcThreat(bids,comps){
 // ─── API ──────────────────────────────────────────────────────
 const API_URL="/api/messages";
 const MODEL="claude-sonnet-4-6";
+
+// ─── 서버 백엔드 어댑터 ───────────────────────────────────────
+// Claude Artifact의 claude.use("db") / claude.use("sample") 을 대체한다.
+// 호출 인터페이스를 동일하게 맞췄으므로 아래 컴포넌트 코드는 수정하지 않았다.
+//
+//  · settings/*  → GET/PUT /api/settings/{key}
+//  · bids/*      → GET/POST /api/bids, PATCH·DELETE /api/bids/{id}
+//  · news/{id}   → GET /api/news?company=   (네이버 API 실시간 조회)
+//  · dart/{id}   → GET /api/dart?company=   (DART 오픈API 실시간 조회)
+//
+// news/dart 는 Artifact판에서 "담당자가 저장한 스냅샷"이었지만, 자체 서버에서는
+// 기존 방식대로 네이버·DART API를 직접 호출해 실시간 데이터를 쓴다.
+
+const BID_POLL_MS=20000;   // 입찰이력 동기화 주기(서버에 실시간 푸시가 없으므로 폴링)
+
+async function jfetch(url,opts){
+  const res=await fetch(url,opts);
+  const data=await res.json().catch(()=>({}));
+  if(data&&data.error) throw new Error(data.error.message||"서버 오류");
+  if(!res.ok) throw new Error(`서버 오류 (HTTP ${res.status})`);
+  return data;
+}
+const compNameById=id=>(TOP50.find(c=>c.id===id)||{}).name||id;
+
+// Firestore 스타일 doc() 핸들 — .get() / .set() / .update() / .delete()
+function docRef(path){
+  const [coll,id]=path.split("/");
+  const snap=v=>({exists:v!=null,data:()=>v});
+  return {
+    async get(){
+      if(coll==="settings"){
+        const d=await jfetch(`/api/settings/${encodeURIComponent(id)}`);
+        return snap(d.value==null?null:{value:d.value});
+      }
+      if(coll==="bids"){
+        const d=await jfetch("/api/bids");
+        return snap((d.bids||[]).find(b=>b.id===id)||null);
+      }
+      if(coll==="news"){
+        const d=await jfetch(`/api/news?company=${encodeURIComponent(compNameById(id))}`);
+        return snap(d.articles&&d.articles.length?{articles:d.articles,time:new Date().toISOString()}:null);
+      }
+      if(coll==="dart"){
+        const d=await jfetch(`/api/dart?company=${encodeURIComponent(compNameById(id))}`);
+        return snap(d.disclosures&&d.disclosures.length?{...d,time:new Date().toISOString()}:null);
+      }
+      return snap(null);
+    },
+    async set(value){
+      if(coll==="settings"){
+        return jfetch(`/api/settings/${encodeURIComponent(id)}`,{method:"PUT",
+          headers:{"Content-Type":"application/json"},body:JSON.stringify({value:value.value})});
+      }
+      if(coll==="bids"){
+        return jfetch("/api/bids",{method:"POST",
+          headers:{"Content-Type":"application/json"},body:JSON.stringify(value)});
+      }
+      throw new Error(`저장할 수 없는 경로: ${path}`);
+    },
+    async update(patch){
+      if(coll==="bids"){
+        return jfetch(`/api/bids/${encodeURIComponent(id)}`,{method:"PATCH",
+          headers:{"Content-Type":"application/json"},body:JSON.stringify(patch)});
+      }
+      throw new Error(`수정할 수 없는 경로: ${path}`);
+    },
+    async delete(){
+      if(coll==="bids") return jfetch(`/api/bids/${encodeURIComponent(id)}`,{method:"DELETE"});
+      throw new Error(`삭제할 수 없는 경로: ${path}`);
+    },
+  };
+}
+
+const SERVER_DB={
+  doc:path=>docRef(path),
+  collection:name=>({
+    doc:id=>docRef(`${name}/${id}`),
+    // Artifact의 실시간 구독 대체 — 즉시 1회 + 이후 주기적 폴링
+    onSnapshot(onNext,onError){
+      let alive=true;
+      const pull=async()=>{
+        if(!alive)return;
+        try{
+          const d=await jfetch(`/api/${name}`);
+          const items=d[name]||[];
+          if(alive)onNext({docs:items.map(x=>({id:x.id,data:()=>x}))});
+        }catch(e){ if(alive&&onError)onError(e); }
+      };
+      pull();
+      const t=setInterval(pull,BID_POLL_MS);
+      return()=>{alive=false;clearInterval(t);};
+    },
+  }),
+};
+
+// claude.use("sample") 대체 — 함수로도, .json() 으로도 호출된다.
+async function serverSample(prompt,opts){
+  const d=await jfetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({prompt,websearch:!!(opts&&opts.websearch)})});
+  return d.text||"";
+}
+serverSample.json=async function(prompt,opts){
+  const d=await jfetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({prompt,json:true,websearch:!!(opts&&opts.websearch)})});
+  return d.json;
+};
+
 async function searchWithClaude(sys,prompt){
   const res=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:MODEL,max_tokens:2000,system:sys,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]})});
   const data=await res.json();
@@ -231,7 +332,7 @@ function parseJSON(raw){
 }
 
 // ─── SVG Radar ────────────────────────────────────────────────
-function RadarSVG({data,color}){
+function RadarSVG({data,color,overlay}){
   const S=180,cx=90,cy=90,R=58,n=data.length;
   const ang=i=>(i*2*Math.PI)/n-Math.PI/2;
   const pt=(i,v)=>({x:cx+(v/100)*R*Math.cos(ang(i)),y:cy+(v/100)*R*Math.sin(ang(i))});
@@ -240,13 +341,17 @@ function RadarSVG({data,color}){
   const rp=r=>data.map((_,i)=>{const rr=(r/100)*R;return `${i===0?'M':'L'} ${cx+rr*Math.cos(ang(i))} ${cy+rr*Math.sin(ang(i))}`;}).join(' ')+' Z';
   const vp=data.map((d,i)=>pt(i,d.val));
   const poly=vp.map((p,i)=>`${i===0?'M':'L'} ${p.x} ${p.y}`).join(' ')+' Z';
+  const ovp=overlay?overlay.data.map((d,i)=>pt(i,d.val)):null;
+  const ovPoly=ovp?ovp.map((p,i)=>`${i===0?'M':'L'} ${p.x} ${p.y}`).join(' ')+' Z':null;
   return (
     <svg width={S} height={S} viewBox={`0 0 ${S} ${S}`} style={{display:'block',margin:'0 auto'}}>
-      {[25,50,75,100].map(r=><path key={r} d={rp(r)} fill="none" stroke="#1A3458" strokeWidth="0.5"/>)}
-      {data.map((_,i)=>{const a=ax(i);return <line key={i} x1={cx} y1={cy} x2={a.x} y2={a.y} stroke="#1A3458" strokeWidth="0.5"/>;})}
+      {[25,50,75,100].map(r=><path key={r} d={rp(r)} fill="none" stroke={T.b} strokeWidth="0.5"/>)}
+      {data.map((_,i)=>{const a=ax(i);return <line key={i} x1={cx} y1={cy} x2={a.x} y2={a.y} stroke={T.b} strokeWidth="0.5"/>;})}
+      {ovPoly&&<path d={ovPoly} fill="none" stroke={overlay.color} strokeWidth={1.5} strokeDasharray="4 3"/>}
+      {ovp&&ovp.map((p,i)=><circle key={"ov"+i} cx={p.x} cy={p.y} r={2.5} fill={overlay.color}/>)}
       <path d={poly} fill={color} fillOpacity={0.18} stroke={color} strokeWidth={1.5}/>
       {vp.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={3} fill={color}/>)}
-      {data.map((d,i)=>{const l=lb(i);return <text key={i} x={l.x} y={l.y} textAnchor="middle" dominantBaseline="middle" fontSize="9" fill="#6D90B8">{d.axis}</text>;})}
+      {data.map((d,i)=>{const l=lb(i);return <text key={i} x={l.x} y={l.y} textAnchor="middle" dominantBaseline="middle" fontSize="9" fill={T.t3}>{d.axis}</text>;})}
     </svg>
   );
 }
@@ -281,24 +386,120 @@ function App(){
   const threatScores=useMemo(()=>bids.length>0?calcThreat(bids,activeComps):activeComps.map(c=>({...c,threat:0,breakdown:null})),[bids,activeComps]);
   const selComp=activeComps.find(c=>c.id===selId)||activeComps[0];
 
-  useEffect(()=>{chatEnd.current?.scrollIntoView({behavior:"smooth"});},[msgs]);
+  // 자체 백엔드(FastAPI) 연동. Artifact의 claude.use("db"/"sample")와
+  // 동일한 인터페이스를 SERVER_DB / serverSample 이 제공하므로 호출부는 그대로 둔다.
+  const [dbApi,setDbApi]=useState(null);
+  const [sampleApi,setSampleApi]=useState(null);
   useEffect(()=>{
-    (async()=>{
-      try{const r=await fetch("/api/bids");const d=await r.json();if(Array.isArray(d.bids))setBids(d.bids);}catch{}
-      try{const r=await fetch("/api/settings/tracked");const d=await r.json();if(Array.isArray(d.value)&&d.value.length)setTracked(d.value);}catch{}
-    })();
+    setDbApi(SERVER_DB);
+    setSampleApi(()=>serverSample);
   },[]);
 
-  // 서버(SQLite) 저장 — 팀 공유. 입찰이력은 건별 추가/삭제로 서로 덮어쓰지 않음.
+  useEffect(()=>{chatEnd.current?.scrollIntoView({behavior:"smooth"});},[msgs]);
+
+  // 입찰 이력 — 실시간 구독(팀원 누구든 추가/삭제하면 모두에게 즉시 반영)
+  useEffect(()=>{
+    if(!dbApi) return;
+    const unsub=dbApi.collection("bids").onSnapshot(
+      snap=>setBids(snap.docs.map(d=>d.data())),
+      ()=>{}
+    );
+    return unsub;
+  },[dbApi]);
+
+  // 추적 경쟁사 설정 — 최초 1회 로드
+  useEffect(()=>{
+    if(!dbApi) return;
+    (async()=>{
+      try{
+        const snap=await dbApi.doc("settings/tracked").get();
+        const v=snap.exists?snap.data()?.value:null;
+        if(Array.isArray(v)&&v.length)setTracked(v);
+      }catch{}
+    })();
+  },[dbApi]);
+
+  // Xi C&A 역량 레이더 기준값(default) — 팀이 직접 조정 가능, DB에 공유 저장
+  const XI_BASELINE_DEFAULT=[{axis:"기술력",val:70},{axis:"트랙레코드",val:70},{axis:"재무",val:70},{axis:"영업력",val:70},{axis:"인력",val:70}];
+  const [xiBaseline,setXiBaseline]=useState(XI_BASELINE_DEFAULT);
+  useEffect(()=>{
+    if(!dbApi) return;
+    (async()=>{
+      try{
+        const snap=await dbApi.doc("settings/xiBaseline").get();
+        const v=snap.exists?snap.data()?.value:null;
+        if(Array.isArray(v)&&v.length===5)setXiBaseline(v);
+      }catch{}
+    })();
+  },[dbApi]);
+  const saveXiBaseline=async n=>{
+    setXiBaseline(n);
+    if(!dbApi) return;
+    try{await dbApi.doc("settings/xiBaseline").set({value:n});}catch{}
+  };
+
+  // 신규투자 관련 DART 핵심 키워드 — 팀 공유, 대시보드 표기에 사용
+  const KEYWORDS_DEFAULT=["신규시설투자","유형자산 취득","타법인 출자","증설","신축","공장 신설","시설투자","합병","유상증자"];
+  const [dartKeywords,setDartKeywords]=useState(KEYWORDS_DEFAULT);
+  useEffect(()=>{
+    if(!dbApi) return;
+    (async()=>{
+      try{
+        const snap=await dbApi.doc("settings/dartKeywords").get();
+        const v=snap.exists?snap.data()?.value:null;
+        if(Array.isArray(v)&&v.length)setDartKeywords(v);
+      }catch{}
+    })();
+  },[dbApi]);
+  const saveDartKeywords=async n=>{
+    setDartKeywords(n);
+    if(!dbApi) return;
+    try{await dbApi.doc("settings/dartKeywords").set({value:n});}catch{}
+  };
+
+  // 팀 공유 저장. 입찰이력은 건별 문서로 저장되어 서로 덮어쓰지 않습니다.
   const addBid=async bid=>{
-    setBids(p=>[...p,bid]);
-    try{await fetch("/api/bids",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(bid)});}catch{}
+    if(!dbApi) return;
+    try{await dbApi.collection("bids").doc(bid.id).set(bid);}catch{}
   };
   const removeBid=async id=>{
-    setBids(p=>p.filter(b=>b.id!==id));
-    try{await fetch(`/api/bids/${id}`,{method:"DELETE"});}catch{}
+    if(!dbApi) return;
+    try{await dbApi.doc(`bids/${id}`).delete();}catch{}
   };
-  const saveTracked=async n=>{try{await fetch("/api/settings/tracked",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({value:n})});}catch{}};
+  const saveTracked=async n=>{
+    if(!dbApi) return;
+    try{await dbApi.doc("settings/tracked").set({value:n});}catch{}
+  };
+
+  // RFP 위험도 분석 — 저장된 RFP 텍스트를 Claude(뷰어 본인 계정)에게 분석시키고, 결과를 팀 공유 DB에 저장
+  const RFP_RUBRIC=`[검토 카테고리 12가지]
+1. 손해배상·지체상금 — 상한 유무, 과도한 요율(예: 일 0.5% 초과, 총액 제한 없음)
+2. 하자담보책임(하자보수) — 기간 과도(구조체 10년 초과·일반 5년 초과) 또는 범위 불명확
+3. 계약해지 — 발주처 일방적/무귀책 해지권 + 위약금 미보상, 해지 시 기성고 정산 불리
+4. 대금지급 조건 — 선급금 없음/낮음, 기성금 지급주기 과도(60일 초과), 유보금 과다(5% 초과), 지연이자 미보장
+5. 설계변경·추가공사 정산 — 발주처 일방적 지시 후 정산 거부/제한 조항
+6. 불가항력 — 면책 범위 협소·불인정
+7. 지식재산권·설계도서 귀속 — 시공사 노하우까지 발주처 귀속
+8. 하도급 통제 — 원가 전면 공개 요구, 하도급 승인 지연 시 책임 전가
+9. 이행보증·하자보증 — 보증비율 과도(15% 초과), 보증기간 과도
+10. 분쟁해결 — 발주처 소재지 전속 관할, 중재 배제, 클레임 통지기한 과도하게 짧음(7일 이내 등)
+11. 안전·환경 책임 전가 — 발주처 귀책 사고까지 시공사 전적 책임
+12. 기타 이례조항 — 발주처의 일방적 계약조건 변경권, 과다한 배상예정액 등
+
+[등급 기준 — S가 가장 위험]
+S등급(매우 위험): 치명적(critical) 조항 1건 이상
+A등급(위험): 중대(major) 조항 1건 이상(치명적 없음)
+B등급(주의): 경미한(minor) 조항만 발견
+C등급(낮음): 특이 리스크 없음, 통상적 계약조건`;
+  const runRfpAnalysis=async(bidId,rfpText)=>{
+    if(!sampleApi) throw new Error("AI 분석 기능을 사용할 수 없습니다");
+    if(!rfpText||!rfpText.trim()) throw new Error("분석할 RFP 텍스트가 없습니다");
+    const prompt=`당신은 Xi C&A(GS그룹 계열, GMP 의약품·클린룸·데이터센터·이차전지·산업플랜트 전문 EPC 기업) 영업팀을 위한 RFP·계약조건 리스크 검토 전문가입니다. 아래 RFP/계약조건 원문을 검토해 독소조항·리스크 요인을 분석하고 전체 위험도를 S/A/B/C 등급으로 산정하세요.\n\n${RFP_RUBRIC}\n\n[출력 형식] 설명 없이 JSON만 반환:\n{"grade":"S|A|B|C","findings":[{"category":"카테고리명","severity":"critical|major|minor","clause_excerpt":"원문에서 발췌한 짧은 문구","issue":"무엇이 문제인지","recommendation":"협상·대응 방안"}],"summary":"2~3문장 총평"}\n\n[RFP/계약조건 원문]\n"""\n${rfpText.slice(0,40000)}\n"""`;
+    const result=await sampleApi.json(prompt,{modelTier:"complex"});
+    const analysis={...result,analyzedAt:new Date().toISOString()};
+    if(dbApi){try{await dbApi.doc(`bids/${bidId}`).update({rfpAnalysis:analysis});}catch{}}
+    return analysis;
+  };
   // 다른 화면(입찰 이력 등)에서 설정 패널을 열지 않고도 바로 경쟁사를 추가할 때 사용
   const addCompetitor=id=>{
     if(tracked.includes(id)) return;
@@ -307,29 +508,56 @@ function App(){
     saveTracked(next);
   };
 
+  // 뉴스/DART는 자체 백엔드가 없는 이 미리보기에서는 실시간 크롤링이 불가능하므로,
+  // 담당자가 주기적으로 조사해 저장해 둔 스냅샷(Artifact DB)을 읽어옵니다.
   const fetchNews=async id=>{
     const comp=activeComps.find(c=>c.id===id);if(!comp)return;
     setNewsCache(p=>({...p,[id]:{...p[id],loading:true,error:null}}));
     try{
-      const res=await fetch(`/api/news?company=${encodeURIComponent(comp.name)}`);
-      const data=await res.json();
-      if(data.error) throw new Error(data.error.message||"오류");
-      if(data.articles)setNewsCache(p=>({...p,[id]:{articles:data.articles,loading:false,error:null,time:new Date()}}));
-      else throw new Error("데이터 없음");
-    }catch(e){setNewsCache(p=>({...p,[id]:{...p[id],loading:false,error:e.message}}));}
+      const db=SERVER_DB;
+      const snap=await db.doc(`news/${id}`).get();
+      const data=snap.exists?snap.data():null;
+      if(data?.articles?.length)setNewsCache(p=>({...p,[id]:{articles:data.articles,loading:false,error:null,time:data.time?new Date(data.time):new Date()}}));
+      else throw new Error("아직 조사된 뉴스 스냅샷이 없습니다. 담당자에게 갱신을 요청하세요.");
+    }catch(e){setNewsCache(p=>({...p,[id]:{...p[id],loading:false,error:e.message||"오류"}}));}
   };
 
   const fetchDart=async id=>{
     const comp=activeComps.find(c=>c.id===id);if(!comp)return;
     setDartCache(p=>({...p,[id]:{...p[id],loading:true,error:null}}));
     try{
-      const res=await fetch(`/api/dart?company=${encodeURIComponent(comp.name)}`);
-      const data=await res.json();
-      if(data.error) throw new Error(data.error.message||"오류");
-      if(data.disclosures)setDartCache(p=>({...p,[id]:{...data,loading:false,error:null,time:new Date()}}));
-      else throw new Error("데이터 없음");
-    }catch(e){setDartCache(p=>({...p,[id]:{...p[id],loading:false,error:e.message}}));}
+      const db=SERVER_DB;
+      const snap=await db.doc(`dart/${id}`).get();
+      const data=snap.exists?snap.data():null;
+      if(data?.disclosures?.length)setDartCache(p=>({...p,[id]:{...data,loading:false,error:null,time:data.time?new Date(data.time):new Date()}}));
+      else throw new Error("아직 조사된 DART 공시 스냅샷이 없습니다. 담당자에게 갱신을 요청하세요.");
+    }catch(e){setDartCache(p=>({...p,[id]:{...p[id],loading:false,error:e.message||"오류"}}));}
   };
+
+  // 대시보드의 "신규 투자 관련 공시" 위젯을 위해, 추적 중인 경쟁사의 DART 스냅샷을 미리 불러옵니다
+  // (사용자가 DART 탭을 열지 않아도 대시보드에서 바로 보이도록).
+  useEffect(()=>{
+    if(!dbApi||!activeComps.length) return;
+    activeComps.forEach(async c=>{
+      if(dartCache[c.id]) return;
+      try{
+        const snap=await dbApi.doc(`dart/${c.id}`).get();
+        const data=snap.exists?snap.data():null;
+        if(data?.disclosures?.length)setDartCache(p=>p[c.id]?p:({...p,[c.id]:{...data,loading:false,error:null,time:data.time?new Date(data.time):new Date()}}));
+      }catch{}
+    });
+  },[dbApi,activeComps]);
+
+  // 등록된 핵심 키워드에 매칭되는 신규투자 관련 공시(모든 추적 경쟁사) — 대시보드 표기용
+  const investmentDisclosures=useMemo(()=>{
+    const out=[];
+    activeComps.forEach(c=>{
+      (dartCache[c.id]?.disclosures||[]).forEach(d=>{
+        if(dartKeywords.some(k=>k&&(d.title||"").includes(k)))out.push({...d,compId:c.id,compName:c.name,compColor:c.color});
+      });
+    });
+    return out.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  },[activeComps,dartCache,dartKeywords]);
 
   const fetchPipeline=async()=>{
     setPipelineCache(p=>({...p,loading:true,error:null}));
@@ -362,12 +590,12 @@ function App(){
         <Header view={view} bidsCount={bids.length} trackedCount={tracked.length} narrow={narrow}/>
         <div style={{flex:1,overflow:isChat?"hidden":"auto"}}>
           {!isChat&&<div style={{padding:narrow?"14px 12px":"20px 22px"}}>
-            {view==="overview"&&<Overview setView={setView} setSelId={setSelId} threatScores={threatScores} bidsCount={bids.length} activeComps={activeComps} onSettings={()=>setShowSettings(true)} narrow={narrow}/>}
-            {view==="profiles"&&<Profiles selComp={selComp} setSelId={setSelId} threatScores={threatScores} activeComps={activeComps} narrow={narrow}/>}
-            {view==="bids"&&<BidHistory bids={bids} addBid={addBid} removeBid={removeBid} threatScores={threatScores} activeComps={activeComps} addCompetitor={addCompetitor} narrow={narrow}/>}
+            {view==="overview"&&<Overview setView={setView} setSelId={setSelId} threatScores={threatScores} bidsCount={bids.length} activeComps={activeComps} onSettings={()=>setShowSettings(true)} narrow={narrow} investmentDisclosures={investmentDisclosures}/>}
+            {view==="profiles"&&<Profiles selComp={selComp} setSelId={setSelId} threatScores={threatScores} activeComps={activeComps} narrow={narrow} xiBaseline={xiBaseline} saveXiBaseline={saveXiBaseline}/>}
+            {view==="bids"&&<BidHistory bids={bids} addBid={addBid} removeBid={removeBid} threatScores={threatScores} activeComps={activeComps} addCompetitor={addCompetitor} narrow={narrow} runRfpAnalysis={runRfpAnalysis} rfpRubric={RFP_RUBRIC} sampleReady={!!sampleApi}/>}
             {view==="pipeline"&&<Pipeline pipelineCache={pipelineCache} fetchPipeline={fetchPipeline} activeComps={activeComps}/>}
-            {view==="news"&&<NewsView newsCache={newsCache} fetchNews={fetchNews} activeComps={activeComps}/>}
-            {view==="dart"&&<DartView dartCache={dartCache} fetchDart={fetchDart} activeComps={activeComps} narrow={narrow}/>}
+            {view==="news"&&<NewsView newsCache={newsCache} fetchNews={fetchNews} activeComps={activeComps} sampleApi={sampleApi}/>}
+            {view==="dart"&&<DartView dartCache={dartCache} fetchDart={fetchDart} activeComps={activeComps} narrow={narrow} dartKeywords={dartKeywords} saveDartKeywords={saveDartKeywords}/>}
           </div>}
           {isChat&&<ChatView msgs={msgs} input={chatIn} setInput={setChatIn} onSend={sendChat} loading={chatLoading} chatEnd={chatEnd}/>}
         </div>
@@ -482,7 +710,7 @@ function Header({view,bidsCount,trackedCount,narrow}){
 }
 
 // ─── OVERVIEW ─────────────────────────────────────────────────
-function Overview({setView,setSelId,threatScores,bidsCount,activeComps,onSettings,narrow}){
+function Overview({setView,setSelId,threatScores,bidsCount,activeComps,onSettings,narrow,investmentDisclosures}){
   const sorted=[...threatScores].sort((a,b)=>b.threat-a.threat);
   const top=sorted[0];
   return (
@@ -501,6 +729,22 @@ function Overview({setView,setSelId,threatScores,bidsCount,activeComps,onSetting
         <span style={{fontSize:16}}>◑</span>
         <span style={{fontSize:11,color:T.gold}}>입찰 이력을 추가하면 경쟁사별 위협도가 자동으로 계산됩니다.</span>
         <span onClick={()=>setView("bids")} style={{fontSize:11,color:T.gold,cursor:"pointer",marginLeft:"auto",textDecoration:"underline"}}>이력 추가 →</span>
+      </div>}
+
+      {investmentDisclosures?.length>0&&<div style={{background:T.bg2,border:`1px solid ${T.gold}30`,borderRadius:10,padding:"14px 18px",marginBottom:14}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <div style={{fontSize:11,fontWeight:700,color:T.gold}}>💰 신규 투자 관련 공시 <span style={{fontWeight:400,color:T.t3}}>({investmentDisclosures.length}건 · 등록 키워드 매칭)</span></div>
+          <span onClick={()=>setView("dart")} style={{fontSize:10,color:T.t3,cursor:"pointer",textDecoration:"underline"}}>DART 탭에서 키워드 관리 →</span>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+          {investmentDisclosures.slice(0,6).map((d,i)=>(
+            <div key={i} style={{display:"flex",gap:10,alignItems:"center",background:T.bg3,borderRadius:7,padding:"8px 12px"}}>
+              <span style={{padding:"2px 8px",borderRadius:4,background:`${d.compColor}14`,border:`1px solid ${d.compColor}25`,fontSize:9,color:d.compColor,fontWeight:700,flexShrink:0}}>{d.compName}</span>
+              <div style={{fontSize:11,flex:1}}>{d.link?<a href={d.link} target="_blank" rel="noopener noreferrer" style={{color:T.t1,textDecoration:"none"}}>{d.title} <span style={{fontSize:9,color:T.blue}}>↗</span></a>:d.title}</div>
+              <span style={{fontSize:9,color:T.t3,flexShrink:0}}>{d.date}</span>
+            </div>
+          ))}
+        </div>
       </div>}
 
       <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":"220px 1fr",gap:12}}>
@@ -609,10 +853,14 @@ function SourceList({sources}){
   );
 }
 
-function Profiles({selComp,setSelId,threatScores,activeComps,narrow}){
+function Profiles({selComp,setSelId,threatScores,activeComps,narrow,xiBaseline,saveXiBaseline}){
   const [showMethod,setShowMethod]=useState(false);
+  const [editBaseline,setEditBaseline]=useState(false);
+  const [draft,setDraft]=useState(null);
   if(!selComp) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,color:T.t2}}>경쟁사를 설정에서 추가하세요</div>;
   const ts=threatScores.find(t=>t.id===selComp.id)||selComp;
+  const startEdit=()=>{setDraft(xiBaseline.map(a=>({...a})));setEditBaseline(true);};
+  const saveEdit=()=>{saveXiBaseline(draft);setEditBaseline(false);};
   return (
     <div className="ci-fade" style={{display:"grid",gridTemplateColumns:narrow?"1fr":"185px 1fr",gap:14}}>
       <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:10,height:"fit-content",maxHeight:"80vh",overflowY:"auto"}}>
@@ -648,8 +896,29 @@ function Profiles({selComp,setSelId,threatScores,activeComps,narrow}){
         {showMethod&&<MethodologyPanel onClose={()=>setShowMethod(false)}/>}
         <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":(selComp.radar?"1.1fr 1fr":"1fr"),gap:12}}>
           {selComp.radar&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px"}}>
-            <div style={{fontSize:11,fontWeight:700,marginBottom:10}}>역량 레이더</div>
-            <RadarSVG data={selComp.radar} color={selComp.color}/>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <div style={{fontSize:11,fontWeight:700}}>역량 레이더 <span style={{fontWeight:400,color:T.t3}}>(Xi C&A 기준 대비)</span></div>
+              {!editBaseline&&<span onClick={startEdit} style={{cursor:"pointer",fontSize:9,color:T.t3,border:`1px solid ${T.b}`,borderRadius:20,padding:"2px 8px"}}>Xi C&A 기준값 수정</span>}
+            </div>
+            <RadarSVG data={selComp.radar} color={selComp.color} overlay={{data:xiBaseline,color:T.teal}}/>
+            <div style={{display:"flex",justifyContent:"center",gap:16,marginTop:6}}>
+              <div style={{display:"flex",alignItems:"center",gap:5}}><span style={{width:10,height:10,borderRadius:3,background:selComp.color}}/><span style={{fontSize:9,color:T.t2}}>{selComp.name}</span></div>
+              <div style={{display:"flex",alignItems:"center",gap:5}}><span style={{width:10,height:0,borderTop:`2px dashed ${T.teal}`}}/><span style={{fontSize:9,color:T.t2}}>Xi C&A 기준</span></div>
+            </div>
+            {editBaseline&&<div className="ci-fade" style={{marginTop:12,paddingTop:12,borderTop:`1px solid ${T.b}`,display:"flex",flexDirection:"column",gap:7}}>
+              {draft.map((a,i)=>(
+                <div key={a.axis} style={{display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{width:56,fontSize:10,color:T.t2,flexShrink:0}}>{a.axis}</span>
+                  <input type="range" min="0" max="100" value={a.val} onChange={e=>setDraft(d=>d.map((x,xi)=>xi===i?{...x,val:Number(e.target.value)}:x))} style={{flex:1}}/>
+                  <span style={{width:26,fontSize:10,color:T.teal,fontWeight:700,textAlign:"right"}}>{a.val}</span>
+                </div>
+              ))}
+              <div style={{display:"flex",gap:8,marginTop:4}}>
+                <div onClick={saveEdit} style={{flex:1,padding:"6px",borderRadius:7,background:T.teal,color:"#FFFFFF",fontSize:11,fontWeight:700,textAlign:"center",cursor:"pointer"}}>저장</div>
+                <div onClick={()=>setEditBaseline(false)} style={{flex:1,padding:"6px",borderRadius:7,background:T.bg3,border:`1px solid ${T.b}`,color:T.t2,fontSize:11,textAlign:"center",cursor:"pointer"}}>취소</div>
+              </div>
+              <div style={{fontSize:9,color:T.t3}}>팀 전체에 공유 저장됩니다. 5개 축은 참고용 자체 평가치이며 객관적 산정 근거는 없습니다.</div>
+            </div>}
           </div>}
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
             {ts.breakdown&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
@@ -692,14 +961,81 @@ function Profiles({selComp,setSelId,threatScores,activeComps,narrow}){
             </div>}
           </div>
         </div>
-        {(selComp.wins||selComp.clients)&&<div style={{display:"grid",gridTemplateColumns:narrow?"1fr":"1fr 1fr",gap:12}}>
-          {selComp.wins&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
+        {((selComp.wins&&selComp.wins.length>0)||selComp.clients)&&<div style={{display:"grid",gridTemplateColumns:(narrow||!(selComp.wins&&selComp.wins.length>0))?"1fr":"1fr 1fr",gap:12}}>
+          {selComp.wins&&selComp.wins.length>0&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
             <div style={{fontSize:11,fontWeight:700,marginBottom:10}}>주요 수주 실적</div>
-            {selComp.wins.map(w=><div key={w} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:8,fontSize:11,color:T.t2}}><div style={{width:5,height:5,borderRadius:"50%",background:selComp.color,marginTop:4,flexShrink:0}}/>{w}</div>)}
+            {selComp.wins.map((w,i)=>{
+              const isObj=typeof w==="object"&&w!==null;
+              const name=isObj?w.project:w;
+              const meta=isObj?[w.period&&`공사기간 ${w.period}`,w.cm&&`CM ${w.cm}`,w.designer&&`설계 ${w.designer}`].filter(Boolean):[];
+              return <div key={name+i} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:8}}>
+                <div style={{width:5,height:5,borderRadius:"50%",background:selComp.color,marginTop:5,flexShrink:0}}/>
+                <div>
+                  <div style={{fontSize:11,color:T.t2}}>{name}</div>
+                  {meta.length>0&&<div style={{fontSize:9,color:T.t3,marginTop:2}}>{meta.join(" · ")}</div>}
+                </div>
+              </div>;
+            })}
+            <div style={{fontSize:9,color:T.t3,marginTop:4}}>※ 공개 자료로 시공사 확인이 가능한 실적만 표시(확인 안 된 사례는 제외) · CM·설계사는 확인된 경우에만 표기</div>
           </div>}
           {selComp.clients&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
             <div style={{fontSize:11,fontWeight:700,marginBottom:10}}>주요 발주처</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:7}}>{selComp.clients.map(cl=><span key={cl} style={{padding:"4px 10px",borderRadius:20,background:T.bg3,border:`1px solid ${selComp.color}25`,fontSize:11}}>{cl}</span>)}</div>
+          </div>}
+        </div>}
+
+        {(selComp.capabilityRating||selComp.creditRating||selComp.financialsDetail)&&<div style={{display:"grid",gridTemplateColumns:narrow?"1fr":"1fr 1fr 1fr",gap:12}}>
+          {selComp.capabilityRating&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
+            <div style={{fontSize:11,fontWeight:700,marginBottom:10}}>시공능력평가액 <span style={{fontWeight:400,color:T.t3}}>({selComp.capabilityRating.year||"—"}.7)</span></div>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              <div style={{background:T.bg3,borderRadius:7,padding:"8px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div><div style={{fontSize:10,color:T.t2}}>토건</div>{selComp.capabilityRating.civilRank&&<div style={{fontSize:9,color:T.t3}}>{selComp.capabilityRating.civilRank}위</div>}</div>
+                <div style={{fontSize:12,fontWeight:700,color:selComp.color}}>{selComp.capabilityRating.civilAmount||"—"}</div>
+              </div>
+              <div style={{background:T.bg3,borderRadius:7,padding:"8px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div><div style={{fontSize:10,color:T.t2}}>산업설비(산설)</div>{selComp.capabilityRating.industrialRank&&<div style={{fontSize:9,color:T.t3}}>{selComp.capabilityRating.industrialRank}위</div>}</div>
+                <div style={{fontSize:12,fontWeight:700,color:selComp.color}}>{selComp.capabilityRating.industrialAmount||"—"}</div>
+              </div>
+            </div>
+            <div style={{fontSize:9,color:T.t3,marginTop:8}}>대한건설협회 매년 7월말 발표 기준 · 자동갱신 불가, 담당자가 연 1회 재조사·반영</div>
+          </div>}
+          {selComp.creditRating&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
+            <div style={{fontSize:11,fontWeight:700,marginBottom:10}}>신용도</div>
+            {selComp.creditRating.grade?<>
+              <div style={{fontSize:13,fontWeight:800,color:selComp.color}}>{selComp.creditRating.grade}</div>
+              <div style={{fontSize:10,color:T.t2,marginTop:2}}>{selComp.creditRating.agency}{selComp.creditRating.outlook?` · ${selComp.creditRating.outlook}`:""}</div>
+              {selComp.creditRating.date&&<div style={{fontSize:9,color:T.t3,marginTop:6}}>기준: {selComp.creditRating.date}</div>}
+            </>:<div style={{fontSize:11,color:T.t3}}>확인된 공식 신용등급 없음</div>}
+          </div>}
+          {selComp.financialsDetail&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
+            <div style={{fontSize:11,fontWeight:700,marginBottom:10}}>재무제표 요약</div>
+            <div style={{display:"flex",flexDirection:"column",gap:6}}>
+              {[["매출액",selComp.financialsDetail.revenue,T.teal],["자산총계",selComp.financialsDetail.assets,T.blue],["자본총계",selComp.financialsDetail.equity,T.green],["부채총계",selComp.financialsDetail.liabilities,T.red]].map(([k,v,c])=>(
+                <div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:11}}><span style={{color:T.t2}}>{k}</span><span style={{fontWeight:700,color:c}}>{v||"—"}</span></div>
+              ))}
+            </div>
+            {selComp.financialsDetail.period&&<div style={{fontSize:9,color:T.t3,marginTop:8,textAlign:"right"}}>기준: {selComp.financialsDetail.period}</div>}
+          </div>}
+        </div>}
+
+        {selComp.severeAccidents&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
+          <div style={{fontSize:11,fontWeight:700,marginBottom:10,color:selComp.severeAccidents.length?T.red:T.t2}}>최근 3년 중대재해 이력 <span style={{fontWeight:400,color:T.t3}}>({selComp.severeAccidents.length}건)</span></div>
+          {selComp.severeAccidents.length===0&&<div style={{fontSize:11,color:T.t2}}>확인된 중대재해 이력 없음</div>}
+          {selComp.severeAccidents.length>0&&<div style={{overflowX:"auto"}}>
+            <div style={{display:"grid",gridTemplateColumns:"78px 1fr 1.7fr 130px",gap:10,padding:"0 4px 6px",borderBottom:`1px solid ${T.b}`,fontSize:9,color:T.t2,fontWeight:700,minWidth:560}}>
+              <span>발생일</span><span>현장</span><span>사고 내용</span><span>출처</span>
+            </div>
+            {selComp.severeAccidents.map((a,i)=>(
+              <div key={i} style={{display:"grid",gridTemplateColumns:"78px 1fr 1.7fr 130px",gap:10,padding:"9px 4px",borderBottom:i<selComp.severeAccidents.length-1?`1px solid ${T.b}`:"none",minWidth:560,alignItems:"start"}}>
+                <span style={{fontSize:10,color:T.t3}}>{a.date}</span>
+                <span style={{fontSize:10.5,color:T.t2}}>{a.location}</span>
+                <div>
+                  <div style={{fontSize:10.5,color:T.t1}}>{a.summary}</div>
+                  {a.note&&<div style={{fontSize:9,color:T.t3,marginTop:3}}>※ {a.note}</div>}
+                </div>
+                <div>{a.source?<a href={a.source.u} target="_blank" rel="noopener noreferrer" style={{fontSize:9,color:T.blue,textDecoration:"none"}}>🔗 {a.source.s}</a>:<span style={{fontSize:9,color:T.t3}}>—</span>}</div>
+              </div>
+            ))}
           </div>}
         </div>}
       </div>
@@ -708,16 +1044,72 @@ function Profiles({selComp,setSelId,threatScores,activeComps,narrow}){
 }
 
 // ─── 입찰 이력 ────────────────────────────────────────────────
-function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetitor,narrow}){
+const RFP_GRADE_COLOR={S:T.red,A:T.gold,B:T.blue,C:T.green};
+const RFP_GRADE_LABEL={S:"매우 위험",A:"위험",B:"주의",C:"낮음"};
+const RFP_SEV_COLOR={critical:T.red,major:T.gold,minor:T.t2};
+const RFP_SEV_LABEL={critical:"치명적",major:"중대",minor:"경미"};
+const RFP_MAX_CHARS=40000;
+
+// ─── RFP 위험도 등급 기준 패널 ───────────────────────────────────
+function RfpMethodologyPanel({rubric,onClose}){
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.65)",zIndex:210,display:"flex",justifyContent:"center",alignItems:"center",padding:20}} onClick={onClose}>
+      <div className="ci-fade" style={{width:"min(560px,94vw)",maxHeight:"85vh",overflowY:"auto",background:T.bg1,borderRadius:12,border:`1px solid ${T.b}`}} onClick={e=>e.stopPropagation()}>
+        <div style={{padding:"18px 22px",borderBottom:`1px solid ${T.b}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{fontSize:15,fontWeight:700}}>ⓘ RFP 위험도 등급 기준</div>
+          <div onClick={onClose} style={{cursor:"pointer",color:T.t2,fontSize:18,lineHeight:1}}>✕</div>
+        </div>
+        <div style={{padding:"18px 22px",display:"flex",flexDirection:"column",gap:12}}>
+          <div style={{fontSize:11,color:T.t2,lineHeight:1.6}}>저장된 RFP·계약조건 텍스트를 AI(뷰어 본인 Claude 계정)가 아래 기준으로 검토합니다. 실시간 생성 결과이므로 참고용이며, 최종 판단은 반드시 법무·계약 담당자 검토를 거치세요.</div>
+          <div style={{display:"flex",flexDirection:"column",gap:6}}>
+            {["S","A","B","C"].map(g=>(
+              <div key={g} style={{display:"flex",alignItems:"center",gap:10,background:T.bg3,border:`1px solid ${T.b}`,borderRadius:8,padding:"9px 12px"}}>
+                <span style={{width:26,height:26,borderRadius:7,background:`${RFP_GRADE_COLOR[g]}18`,border:`1px solid ${RFP_GRADE_COLOR[g]}45`,color:RFP_GRADE_COLOR[g],fontWeight:800,fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{g}</span>
+                <span style={{fontSize:11,color:T.t1,fontWeight:600}}>{RFP_GRADE_LABEL[g]}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{fontSize:10.5,color:T.t2,lineHeight:1.6}}>S=치명적(critical) 조항 1건 이상 · A=중대(major) 조항 1건 이상(치명적 없음) · B=경미한(minor) 조항만 발견 · C=특이 리스크 없음</div>
+          <div style={{borderTop:`1px solid ${T.b}`,paddingTop:12,whiteSpace:"pre-wrap",fontSize:10.5,color:T.t2,lineHeight:1.7}}>{rubric}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetitor,narrow,runRfpAnalysis,rfpRubric,sampleReady}){
   const TYPES=["GMP의약품","반도체시설","데이터센터","이차전지","산업플랜트","산업시설","기타"];
   const RESULTS=["우리낙찰","타사낙찰","진행중","유찰"];
   const RC={우리낙찰:T.green,타사낙찰:T.red,진행중:T.gold,유찰:T.t2};
-  const INIT={project:"",type:"GMP의약품",value:"",competitors:[],ourBid:"",competitorBids:{},result:"진행중",winner:"",date:""};
+  const INIT={project:"",type:"GMP의약품",value:"",competitors:[],ourBid:"",competitorBids:{},result:"진행중",winner:"",date:"",rfpText:"",rfpFileName:""};
   const [form,setForm]=useState(INIT);
   const [err,setErr]=useState("");
   const [showForm,setShowForm]=useState(true);
+  const [editingId,setEditingId]=useState(null);
   const [tab,setTab]=useState("stats");
   const [compQuery,setCompQuery]=useState("");
+  const [showGradeInfo,setShowGradeInfo]=useState(false);
+  const [analyzing,setAnalyzing]=useState({});
+  const [analyzeErr,setAnalyzeErr]=useState({});
+  const [expandedRfp,setExpandedRfp]=useState({});
+
+  const onRfpFile=e=>{
+    const file=e.target.files?.[0];if(!file)return;
+    if(!/\.(txt|md)$/i.test(file.name)){setErr("RFP 파일은 .txt 또는 .md만 자동 인식됩니다. PDF는 뷰어에서 텍스트를 복사해 아래에 붙여넣어 주세요.");return;}
+    const reader=new FileReader();
+    reader.onload=()=>setForm(f=>({...f,rfpText:String(reader.result||"").slice(0,RFP_MAX_CHARS),rfpFileName:file.name}));
+    reader.readAsText(file);
+  };
+
+  const doAnalyze=async b=>{
+    setAnalyzeErr(p=>({...p,[b.id]:null}));
+    setAnalyzing(p=>({...p,[b.id]:true}));
+    try{
+      await runRfpAnalysis(b.id,b.rfpText);
+      setExpandedRfp(p=>({...p,[b.id]:true}));
+    }catch(e){setAnalyzeErr(p=>({...p,[b.id]:e.message||"분석 실패"}));}
+    finally{setAnalyzing(p=>({...p,[b.id]:false}));}
+  };
 
   const toggleComp=name=>setForm(f=>{
     if(f.competitors.includes(name)){
@@ -740,10 +1132,18 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
     if(!form.competitors.length){setErr("경쟁사를 최소 1개 선택하세요");return;}
     if(form.result==="타사낙찰"&&!form.winner){setErr("낙찰사를 선택하세요");return;}
     setErr("");
-    const bid={id:Date.now().toString()+Math.random().toString(36).slice(2,7),project:form.project.trim(),type:form.type,value:parseFloat(form.value)||0,ourBid:parseFloat(form.ourBid)||0,competitorBids:Object.fromEntries(Object.entries(form.competitorBids).map(([k,v])=>[k,parseFloat(v)||0]).filter(([,v])=>v>0)),competitors:[...form.competitors],result:form.result,winner:form.result==="타사낙찰"?form.winner:"",date:form.date||new Date().toISOString().slice(0,7)};
-    await addBid(bid);setForm(INIT);setShowForm(false);setTab("stats");
+    const newRfpText=form.rfpText?form.rfpText.slice(0,RFP_MAX_CHARS):"";
+    const editingOrig=editingId?bids.find(b=>b.id===editingId):null;
+    const keepAnalysis=editingOrig&&editingOrig.rfpAnalysis&&editingOrig.rfpText===newRfpText;
+    const bid={id:editingId||(Date.now().toString()+Math.random().toString(36).slice(2,7)),project:form.project.trim(),type:form.type,value:parseFloat(form.value)||0,ourBid:parseFloat(form.ourBid)||0,competitorBids:Object.fromEntries(Object.entries(form.competitorBids).map(([k,v])=>[k,parseFloat(v)||0]).filter(([,v])=>v>0)),competitors:[...form.competitors],result:form.result,winner:form.result==="타사낙찰"?form.winner:"",date:form.date||new Date().toISOString().slice(0,10),rfpText:newRfpText,rfpFileName:form.rfpFileName||"",...(keepAnalysis?{rfpAnalysis:editingOrig.rfpAnalysis}:{})};
+    await addBid(bid);setForm(INIT);setEditingId(null);setShowForm(false);setTab("stats");
   };
-  const remove=async id=>{await removeBid(id);};
+  const remove=async id=>{if(editingId===id){setForm(INIT);setEditingId(null);}await removeBid(id);};
+  const startEdit=b=>{
+    setForm({project:b.project,type:b.type,value:b.value?String(b.value):"",competitors:[...b.competitors],ourBid:b.ourBid?String(b.ourBid):"",competitorBids:Object.fromEntries(Object.entries(b.competitorBids||{}).map(([k,v])=>[k,String(v)])),result:b.result,winner:b.winner||"",date:b.date||"",rfpText:b.rfpText||"",rfpFileName:b.rfpFileName||""});
+    setEditingId(b.id);setErr("");setShowForm(true);
+  };
+  const cancelEdit=()=>{setForm(INIT);setEditingId(null);setErr("");};
 
   const totalBids=bids.length;
   const ourWins=bids.filter(b=>b.result==="우리낙찰").length;
@@ -786,7 +1186,7 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
             {[["stats","경쟁사 통계"],["history",`이력 목록 (${totalBids}건)`]].map(([id,label])=>(
               <div key={id} onClick={()=>setTab(id)} style={{padding:"6px 14px",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:tab===id?700:400,background:tab===id?T.teal:"transparent",color:tab===id?"#FFFFFF":T.t2,border:`1px solid ${tab===id?T.teal:T.b}`,transition:"all .12s"}}>{label}</div>
             ))}
-            <div style={{marginLeft:"auto"}}><Btn onClick={()=>setShowForm(v=>!v)} color={T.teal}>{showForm?"폼 닫기":"+ 사례 추가"}</Btn></div>
+            <div style={{marginLeft:"auto"}}><Btn onClick={()=>{if(showForm){cancelEdit();setShowForm(false);}else{setShowForm(true);}}} color={T.teal}>{showForm?"폼 닫기":"+ 사례 추가"}</Btn></div>
           </div>}
 
           {(tab==="stats"||!totalBids)&&(
@@ -868,6 +1268,7 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
                       <div style={{fontSize:12,fontWeight:600}}>{b.project}</div>
                       <div style={{display:"flex",gap:6,alignItems:"center"}}>
                         <span style={{padding:"1px 7px",borderRadius:4,background:`${rc}14`,border:`1px solid ${rc}25`,fontSize:9,color:rc,fontWeight:700}}>{b.result}</span>
+                        <span onClick={()=>startEdit(b)} style={{fontSize:9,color:T.teal,cursor:"pointer",padding:"1px 6px",border:`1px solid ${T.teal}44`,borderRadius:4}}>수정</span>
                         <span onClick={()=>remove(b.id)} style={{fontSize:13,color:T.t3,cursor:"pointer",padding:"1px 6px"}}>✕</span>
                       </div>
                     </div>
@@ -891,6 +1292,35 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
                       </div>
                     }
                     {b.competitors.length>0&&<div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{b.competitors.map(c=>{const comp=activeComps.find(x=>x.name===c);return <span key={c} style={{padding:"1px 7px",borderRadius:4,background:`${comp?.color||T.t2}14`,border:`1px solid ${comp?.color||T.t2}25`,fontSize:9,color:comp?.color||T.t2}}>⚔ {c}</span>;})}</div>}
+                    {b.rfpText&&<div style={{marginTop:8,paddingTop:8,borderTop:`1px solid ${T.b}`}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                        <span style={{fontSize:9,color:T.t3,fontWeight:700}}>📄 RFP {b.rfpFileName?`(${b.rfpFileName})`:"첨부됨"}</span>
+                        {b.rfpAnalysis?.grade&&<span onClick={()=>setExpandedRfp(p=>({...p,[b.id]:!p[b.id]}))} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"2px 9px",borderRadius:20,background:`${RFP_GRADE_COLOR[b.rfpAnalysis.grade]}18`,border:`1px solid ${RFP_GRADE_COLOR[b.rfpAnalysis.grade]}45`}}>
+                          <span style={{fontSize:11,fontWeight:800,color:RFP_GRADE_COLOR[b.rfpAnalysis.grade]}}>{b.rfpAnalysis.grade}</span>
+                          <span style={{fontSize:9,color:RFP_GRADE_COLOR[b.rfpAnalysis.grade]}}>{RFP_GRADE_LABEL[b.rfpAnalysis.grade]}</span>
+                          <span style={{fontSize:9,color:T.t3}}>{expandedRfp[b.id]?"▲":"▼"}</span>
+                        </span>}
+                        {!b.rfpAnalysis&&<span onClick={()=>!analyzing[b.id]&&sampleReady&&doAnalyze(b)} title={sampleReady?"":"AI 분석 기능을 사용할 수 없습니다"} style={{cursor:sampleReady?"pointer":"not-allowed",padding:"2px 9px",borderRadius:20,background:`${T.purple}14`,border:`1px solid ${T.purple}35`,fontSize:9,color:T.purple,fontWeight:700,opacity:analyzing[b.id]?0.6:!sampleReady?0.5:1}}>{analyzing[b.id]?"분석 중...":"AI 위험도 분석"}</span>}
+                        {b.rfpAnalysis&&<span onClick={()=>!analyzing[b.id]&&doAnalyze(b)} style={{cursor:"pointer",fontSize:9,color:T.t3,textDecoration:"underline"}}>{analyzing[b.id]?"재분석 중...":"재분석"}</span>}
+                        <span onClick={()=>setShowGradeInfo(true)} style={{cursor:"pointer",fontSize:9,color:T.t3,border:`1px solid ${T.b}`,borderRadius:20,padding:"1px 7px"}}>ⓘ 등급기준</span>
+                      </div>
+                      {analyzeErr[b.id]&&<div style={{fontSize:10,color:T.red,marginTop:6}}>⚠ {analyzeErr[b.id]}</div>}
+                      {b.rfpAnalysis&&expandedRfp[b.id]&&<div className="ci-fade" style={{marginTop:8,display:"flex",flexDirection:"column",gap:6}}>
+                        {b.rfpAnalysis.summary&&<div style={{fontSize:10.5,color:T.t2,lineHeight:1.6,background:"rgba(0,0,0,.04)",borderRadius:6,padding:"8px 10px"}}>{b.rfpAnalysis.summary}</div>}
+                        {(b.rfpAnalysis.findings||[]).map((f,i)=>(
+                          <div key={i} style={{background:"rgba(0,0,0,.04)",borderRadius:6,padding:"8px 10px",borderLeft:`2px solid ${RFP_SEV_COLOR[f.severity]||T.t2}`}}>
+                            <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:4,flexWrap:"wrap"}}>
+                              <span style={{fontSize:9,fontWeight:700,color:RFP_SEV_COLOR[f.severity]||T.t2}}>{RFP_SEV_LABEL[f.severity]||f.severity}</span>
+                              <span style={{fontSize:9,color:T.t3}}>· {f.category}</span>
+                            </div>
+                            {f.clause_excerpt&&<div style={{fontSize:10,color:T.t3,fontStyle:"italic",marginBottom:3}}>"{f.clause_excerpt}"</div>}
+                            <div style={{fontSize:10.5,color:T.t1,marginBottom:3}}>{f.issue}</div>
+                            {f.recommendation&&<div style={{fontSize:10,color:T.teal}}>→ {f.recommendation}</div>}
+                          </div>
+                        ))}
+                        {b.rfpAnalysis.analyzedAt&&<div style={{fontSize:9,color:T.t3,textAlign:"right"}}>분석 시점: {new Date(b.rfpAnalysis.analyzedAt).toLocaleString("ko-KR")}</div>}
+                      </div>}
+                    </div>}
                   </div>
                 );})}
               </div>
@@ -898,8 +1328,11 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
           )}
         </div>
 
-        {showForm&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"18px 20px",height:"fit-content",flexShrink:0}}>
-          <div style={{fontSize:12,fontWeight:700,marginBottom:14}}>+ 입찰 사례 추가</div>
+        {showForm&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,padding:"18px 20px",height:"fit-content",flexShrink:0,...(editingId?{outline:`1px solid ${T.teal}55`,borderRadius:10}:{borderRadius:10})}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+            <div style={{fontSize:12,fontWeight:700}}>{editingId?"✎ 입찰 사례 수정":"+ 입찰 사례 추가"}</div>
+            {editingId&&<span onClick={cancelEdit} style={{fontSize:9,color:T.t3,cursor:"pointer",textDecoration:"underline"}}>수정 취소</span>}
+          </div>
           <FL>프로젝트명</FL>
           <input className="ci-input" value={form.project} onChange={e=>setForm(f=>({...f,project:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&submit()} placeholder="예: 풍림무약 천안공장" style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:12,marginBottom:11}}/>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:11}}>
@@ -955,11 +1388,24 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
           </div>
           {form.result==="타사낙찰"&&<><FL>낙찰사</FL><select value={form.winner} onChange={e=>setForm(f=>({...f,winner:e.target.value}))} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 10px",color:form.winner?T.t1:T.t3,fontSize:12,marginBottom:11}}><option value="">선택하세요</option>{form.competitors.map(name=><option key={name} value={name}>{name}</option>)}</select></>}
           <FL>입찰 시기</FL>
-          <input type="month" value={form.date} onChange={e=>setForm(f=>({...f,date:e.target.value}))} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:12,marginBottom:14}}/>
+          <input type="date" value={form.date} onChange={e=>setForm(f=>({...f,date:e.target.value}))} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:12,marginBottom:14}}/>
+
+          <FL>RFP·계약조건 첨부 <span style={{color:T.t3,fontWeight:400}}>(선택 — 저장 후 AI 위험도 분석 가능)</span></FL>
+          <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6}}>
+            <label style={{flexShrink:0,padding:"7px 12px",borderRadius:7,background:T.bg3,border:`1px solid ${T.b}`,fontSize:11,color:T.t2,cursor:"pointer"}}>
+              파일 선택(.txt/.md)
+              <input type="file" accept=".txt,.md" onChange={onRfpFile} style={{display:"none"}}/>
+            </label>
+            {form.rfpFileName&&<span style={{fontSize:10,color:T.teal,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>✓ {form.rfpFileName}</span>}
+          </div>
+          <textarea value={form.rfpText} onChange={e=>setForm(f=>({...f,rfpText:e.target.value.slice(0,RFP_MAX_CHARS),rfpFileName:f.rfpFileName&&e.target.value!==f.rfpText?"":f.rfpFileName}))} placeholder="PDF·HWP 등은 뷰어에서 본문 텍스트를 복사해 여기에 붙여넣으세요 (핵심 조항 위주도 가능)" rows={4} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:11,marginBottom:4,resize:"vertical",fontFamily:"inherit"}}/>
+          <div style={{fontSize:9,color:T.t3,marginBottom:14,textAlign:"right"}}>{form.rfpText.length.toLocaleString()} / {RFP_MAX_CHARS.toLocaleString()}자</div>
+
           {err&&<div style={{fontSize:11,color:T.red,marginBottom:10}}>⚠ {err}</div>}
-          <div onClick={submit} style={{width:"100%",padding:"10px",borderRadius:8,background:T.teal,color:"#FFFFFF",fontWeight:700,fontSize:12,textAlign:"center",cursor:"pointer"}}>추가</div>
+          <div onClick={submit} style={{width:"100%",padding:"10px",borderRadius:8,background:T.teal,color:"#FFFFFF",fontWeight:700,fontSize:12,textAlign:"center",cursor:"pointer"}}>{editingId?"수정 완료":"추가"}</div>
         </div>}
       </div>
+      {showGradeInfo&&<RfpMethodologyPanel rubric={rfpRubric} onClose={()=>setShowGradeInfo(false)}/>}
     </div>
   );
 }
@@ -1025,53 +1471,153 @@ function Pipeline({pipelineCache,fetchPipeline,activeComps}){
 }
 
 // ─── NEWS ─────────────────────────────────────────────────────
-function NewsView({newsCache,fetchNews,activeComps}){
+function NewsView({newsCache,fetchNews,activeComps,sampleApi}){
   const [selId,setSelId]=useState(activeComps[0]?.id||"");
   const comp=activeComps.find(c=>c.id===selId)||activeComps[0];
   const cache=comp?newsCache[comp.id]:null;
   const SEV={high:[T.red,"긴급"],medium:[T.gold,"주의"],low:[T.t2,"정보"]};
   const CAT={수주:"#20D9A0",재무:"#F59E0B",인사:"#8B5CF6",전략:"#3BACED",기타:"#6D90B8"};
+  const [kw,setKw]=useState("");
+  const [catFilter,setCatFilter]=useState("전체");
+  const [dateFrom,setDateFrom]=useState("");
+  const [dateTo,setDateTo]=useState("");
+  const [summary,setSummary]=useState({});
+  const [summarizing,setSummarizing]=useState(false);
+  const [summarizeErr,setSummarizeErr]=useState(null);
+
   if(!comp) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,color:T.t2}}>경쟁사를 설정에서 추가하세요</div>;
+
+  const filtered=(cache?.articles||[]).filter(a=>
+    (catFilter==="전체"||a.category===catFilter)&&
+    (!kw.trim()||`${a.title} ${a.summary}`.toLowerCase().includes(kw.trim().toLowerCase()))&&
+    (!dateFrom||a.date>=dateFrom)&&(!dateTo||a.date<=dateTo)
+  );
+
+  const doSummarize=async()=>{
+    if(!sampleApi||!filtered.length)return;
+    setSummarizing(true);setSummarizeErr(null);
+    try{
+      const prompt=`아래는 "${comp.name}"에 대한 최신 뉴스 목록입니다. Xi C&A(GMP·클린룸·데이터센터·이차전지·산업플랜트 EPC사) 영업팀 관점에서 핵심 흐름을 3~5개 불릿으로 한국어로 요약해주세요. 설명 없이 요약 텍스트만 출력하세요.\n\n${filtered.map(a=>`- [${a.date}] ${a.title}: ${a.summary}`).join("\n")}`;
+      const res=await sampleApi(prompt,{modelTier:"quick"});
+      setSummary(p=>({...p,[comp.id]:res.text}));
+    }catch(e){setSummarizeErr(e.message||"요약 실패");}
+    finally{setSummarizing(false);}
+  };
+
   return (
     <div className="ci-fade">
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{activeComps.map(c=><div key={c.id} onClick={()=>setSelId(c.id)} style={{padding:"5px 12px",borderRadius:20,cursor:"pointer",fontSize:11,fontWeight:selId===c.id?700:400,background:selId===c.id?`${c.color}18`:T.bg2,color:selId===c.id?c.color:T.t2,border:`1px solid ${selId===c.id?c.color+"33":T.b}`,transition:"all .12s"}}>{c.name}{newsCache[c.id]?.articles&&<span style={{marginLeft:5,fontSize:9}}>✓</span>}</div>)}</div>
-        <Btn onClick={()=>fetchNews(comp.id)} loading={cache?.loading} color={comp.color}>{comp.name} 수집</Btn>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14,flexWrap:"wrap",gap:8}}>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{activeComps.map(c=><div key={c.id} onClick={()=>setSelId(c.id)} style={{padding:"5px 12px",borderRadius:20,cursor:"pointer",fontSize:11,fontWeight:selId===c.id?700:400,background:selId===c.id?`${c.color}18`:T.bg2,color:selId===c.id?c.color:T.t2,border:`1px solid ${selId===c.id?c.color+"33":T.b}`,transition:"all .12s"}}>{c.name}{c.capabilityRating?.civilAmount&&<span style={{marginLeft:5,fontSize:9,color:T.t3}}>· 토건 {c.capabilityRating.civilAmount}</span>}{newsCache[c.id]?.articles&&<span style={{marginLeft:5,fontSize:9}}>✓</span>}</div>)}</div>
+        <Btn onClick={()=>fetchNews(comp.id)} loading={cache?.loading} color={comp.color}>{comp.name} 불러오기</Btn>
       </div>
+      <div style={{fontSize:10,color:T.t3,marginBottom:10}}>※ 실시간 크롤링이 아닌, 담당자가 주기적으로 조사해 저장한 스냅샷입니다. 최신 갱신이 필요하면 담당자에게 요청하세요.</div>
       <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"18px 20px",minHeight:400}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,flexWrap:"wrap",gap:8}}>
           <div style={{fontSize:12,fontWeight:700}}>{comp.name} — 최신 뉴스</div>
-          {cache?.time&&<div style={{fontSize:10,color:T.t3}}>수집: {cache.time.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"})}</div>}
+          {cache?.time&&<div style={{fontSize:10,color:T.t3}}>조사 시점: {cache.time.toLocaleDateString("ko-KR")}</div>}
         </div>
-        {!cache&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:14}}><div style={{fontSize:32}}>◐</div><div style={{fontSize:13,color:T.t2}}>수집 버튼을 눌러 실시간 뉴스를 가져오세요</div></div>}
-        {cache?.loading&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:16}}><div style={{width:36,height:36,border:`3px solid ${comp.color}30`,borderTop:`3px solid ${comp.color}`,borderRadius:"50%"}} className="ci-spin"/><div style={{fontSize:13,color:T.t2}}>네이버 뉴스에서 {comp.name} 기사 검색 중...</div></div>}
+        {cache?.articles&&!cache?.loading&&<>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:8,alignItems:"center"}}>
+            <input value={kw} onChange={e=>setKw(e.target.value)} placeholder="키워드 검색(제목·요약)" className="ci-input" style={{flex:"1 1 160px",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"6px 10px",color:T.t1,fontSize:11}}/>
+            <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"6px 8px",color:T.t1,fontSize:11}}/>
+            <span style={{fontSize:10,color:T.t3}}>~</span>
+            <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={{background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"6px 8px",color:T.t1,fontSize:11}}/>
+            <span onClick={doSummarize} title={sampleApi?"":"AI 요약 기능을 사용할 수 없습니다"} style={{cursor:sampleApi&&filtered.length?"pointer":"not-allowed",padding:"6px 12px",borderRadius:7,background:`${T.purple}14`,border:`1px solid ${T.purple}35`,fontSize:11,color:T.purple,fontWeight:700,opacity:sampleApi?1:0.5}}>{summarizing?"요약 중...":"✨ AI 요약"}</span>
+          </div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:14}}>
+            {["전체",...Object.keys(CAT)].map(c=><span key={c} onClick={()=>setCatFilter(c)} style={{cursor:"pointer",padding:"3px 10px",borderRadius:20,fontSize:10,fontWeight:catFilter===c?700:400,background:catFilter===c?`${CAT[c]||T.teal}18`:T.bg3,color:catFilter===c?(CAT[c]||T.teal):T.t2,border:`1px solid ${catFilter===c?(CAT[c]||T.teal)+"44":T.b}`}}>{c}</span>)}
+            <span style={{fontSize:10,color:T.t3,alignSelf:"center",marginLeft:4}}>{filtered.length}건 표시</span>
+          </div>
+          {summarizeErr&&<div style={{fontSize:11,color:T.red,marginBottom:10}}>⚠ {summarizeErr}</div>}
+          {summary[comp.id]&&<div className="ci-fade" style={{background:`${T.purple}0C`,border:`1px solid ${T.purple}30`,borderRadius:9,padding:"12px 14px",marginBottom:14,fontSize:11.5,color:T.t1,lineHeight:1.7,whiteSpace:"pre-wrap"}}><div style={{fontSize:9,fontWeight:700,color:T.purple,marginBottom:6}}>✨ AI 요약 (표시된 {filtered.length}건 기준)</div>{summary[comp.id]}</div>}
+        </>}
+        {!cache&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:14}}><div style={{fontSize:32}}>◐</div><div style={{fontSize:13,color:T.t2}}>버튼을 눌러 조사된 뉴스를 불러오세요</div></div>}
+        {cache?.loading&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:16}}><div style={{width:36,height:36,border:`3px solid ${comp.color}30`,borderTop:`3px solid ${comp.color}`,borderRadius:"50%"}} className="ci-spin"/><div style={{fontSize:13,color:T.t2}}>{comp.name} 뉴스 스냅샷 불러오는 중...</div></div>}
         {cache?.error&&!cache?.loading&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",height:200,justifyContent:"center",gap:10}}><div style={{fontSize:13,color:T.red}}>⚠ {cache.error}</div><Btn onClick={()=>fetchNews(comp.id)} color={comp.color}>다시 시도</Btn></div>}
-        {cache?.articles&&!cache?.loading&&<div style={{display:"flex",flexDirection:"column",gap:10}}>{cache.articles.map((a,i)=>{const [sevC,sevL]=SEV[a.severity]||[T.t2,"정보"];const catC=CAT[a.category]||T.t2;return <div key={i} className="ci-fade" style={{background:T.bg3,borderRadius:9,padding:"14px 16px",borderLeft:`3px solid ${sevC}`}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}><div style={{display:"flex",gap:7,alignItems:"center",flexWrap:"wrap"}}><span style={{padding:"2px 8px",borderRadius:4,background:`${comp.color}14`,border:`1px solid ${comp.color}25`,fontSize:9,color:comp.color,fontWeight:700}}>{comp.name}</span><span style={{padding:"2px 8px",borderRadius:4,background:`${catC}14`,border:`1px solid ${catC}25`,fontSize:9,color:catC}}>{a.category}</span><span style={{padding:"2px 8px",borderRadius:4,background:`${sevC}14`,border:`1px solid ${sevC}25`,fontSize:9,color:sevC,fontWeight:700}}>{sevL}</span></div><div style={{display:"flex",gap:10,alignItems:"center",flexShrink:0}}><span style={{fontSize:10,color:T.t2}}>{a.source}</span><span style={{fontSize:10,color:T.t3}}>{a.date}</span></div></div><div style={{fontSize:13,fontWeight:600,marginBottom:6}}>{a.link?<a href={a.link} target="_blank" rel="noopener noreferrer" style={{color:T.t1,textDecoration:"none"}}>{a.title} <span style={{fontSize:10,color:comp.color}}>↗</span></a>:a.title}</div><div style={{fontSize:11,color:T.t2,lineHeight:1.65}}>{a.summary}</div></div>;})} </div>}
+        {cache?.articles&&!cache?.loading&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {filtered.length===0&&<div style={{fontSize:11,color:T.t3,textAlign:"center",padding:"30px 0"}}>조건에 맞는 뉴스가 없습니다</div>}
+          {filtered.map((a,i)=>{const [sevC,sevL]=SEV[a.severity]||[T.t2,"정보"];const catC=CAT[a.category]||T.t2;return <div key={i} className="ci-fade" style={{background:T.bg3,borderRadius:9,padding:"14px 16px",borderLeft:`3px solid ${sevC}`}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}><div style={{display:"flex",gap:7,alignItems:"center",flexWrap:"wrap"}}><span style={{padding:"2px 8px",borderRadius:4,background:`${comp.color}14`,border:`1px solid ${comp.color}25`,fontSize:9,color:comp.color,fontWeight:700}}>{comp.name}</span><span style={{padding:"2px 8px",borderRadius:4,background:`${catC}14`,border:`1px solid ${catC}25`,fontSize:9,color:catC}}>{a.category}</span><span style={{padding:"2px 8px",borderRadius:4,background:`${sevC}14`,border:`1px solid ${sevC}25`,fontSize:9,color:sevC,fontWeight:700}}>{sevL}</span></div><div style={{display:"flex",gap:10,alignItems:"center",flexShrink:0}}><span style={{fontSize:10,color:T.t2}}>{a.source}</span><span style={{fontSize:10,color:T.t3}}>{a.date}</span></div></div><div style={{fontSize:13,fontWeight:600,marginBottom:6}}>{a.link?<a href={a.link} target="_blank" rel="noopener noreferrer" style={{color:T.t1,textDecoration:"none"}}>{a.title} <span style={{fontSize:10,color:comp.color}}>↗</span></a>:a.title}</div><div style={{fontSize:11,color:T.t2,lineHeight:1.65}}>{a.summary}</div></div>;})} </div>}
       </div>
     </div>
   );
 }
 
 // ─── DART ─────────────────────────────────────────────────────
-function DartView({dartCache,fetchDart,activeComps,narrow}){
+function DartView({dartCache,fetchDart,activeComps,narrow,dartKeywords,saveDartKeywords}){
   const [selId,setSelId]=useState(activeComps[0]?.id||"");
   const comp=activeComps.find(c=>c.id===selId)||activeComps[0];
   const cache=comp?dartCache[comp.id]:null;
   const TC={"사업보고서":"#20D9A0","분기보고서":"#3BACED","주요사항보고":"#EF4444","임원선임":"#8B5CF6","수시공시":"#F59E0B","기타":"#6D90B8"};
+  const [kw,setKw]=useState("");
+  const [dateFrom,setDateFrom]=useState("");
+  const [dateTo,setDateTo]=useState("");
+  const [showKwSettings,setShowKwSettings]=useState(false);
+  const [kwDraft,setKwDraft]=useState("");
+  const [expandedDetail,setExpandedDetail]=useState({});
   if(!comp) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,color:T.t2}}>경쟁사를 설정에서 추가하세요</div>;
+
+  const isInvestment=d=>dartKeywords.some(k=>k&&(d.title||"").includes(k));
+  const filtered=(cache?.disclosures||[]).filter(d=>
+    (!kw.trim()||(d.title||"").toLowerCase().includes(kw.trim().toLowerCase()))&&
+    (!dateFrom||d.date>=dateFrom)&&(!dateTo||d.date<=dateTo)
+  );
+  const addKw=()=>{
+    const v=kwDraft.trim();if(!v||dartKeywords.includes(v))return;
+    saveDartKeywords([...dartKeywords,v]);setKwDraft("");
+  };
+  const removeKw=k=>saveDartKeywords(dartKeywords.filter(x=>x!==k));
+
   return (
     <div className="ci-fade">
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14,flexWrap:"wrap",gap:8}}>
         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{activeComps.map(c=><div key={c.id} onClick={()=>setSelId(c.id)} style={{padding:"5px 12px",borderRadius:20,cursor:"pointer",fontSize:11,fontWeight:selId===c.id?700:400,background:selId===c.id?`${c.color}18`:T.bg2,color:selId===c.id?c.color:T.t2,border:`1px solid ${selId===c.id?c.color+"33":T.b}`,transition:"all .12s"}}>{c.name}{dartCache[c.id]?.disclosures&&<span style={{marginLeft:5,fontSize:9}}>✓</span>}</div>)}</div>
-        <Btn onClick={()=>fetchDart(comp.id)} loading={cache?.loading} color={T.blue}>DART 조회</Btn>
+        <div style={{display:"flex",gap:8}}>
+          <span onClick={()=>setShowKwSettings(v=>!v)} style={{cursor:"pointer",fontSize:10,color:T.t2,border:`1px solid ${T.b}`,borderRadius:20,padding:"5px 12px",whiteSpace:"nowrap"}}>⚙ 신규투자 키워드 ({dartKeywords.length})</span>
+          <Btn onClick={()=>fetchDart(comp.id)} loading={cache?.loading} color={T.blue}>DART 불러오기</Btn>
+        </div>
       </div>
+      {showKwSettings&&<div className="ci-fade" style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px",marginBottom:12}}>
+        <div style={{fontSize:11,fontWeight:700,marginBottom:8}}>신규 투자 관련 핵심 키워드 (팀 공유, 대시보드 표기 기준)</div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
+          {dartKeywords.map(k=><span key={k} style={{display:"flex",alignItems:"center",gap:5,padding:"3px 10px",borderRadius:20,background:`${T.gold}14`,border:`1px solid ${T.gold}35`,fontSize:10,color:T.gold}}>{k}<span onClick={()=>removeKw(k)} style={{cursor:"pointer",color:T.t3}}>✕</span></span>)}
+        </div>
+        <div style={{display:"flex",gap:6}}>
+          <input value={kwDraft} onChange={e=>setKwDraft(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addKw()} placeholder="예: 신규시설투자, 증설" style={{flex:1,background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"6px 10px",color:T.t1,fontSize:11}}/>
+          <div onClick={addKw} style={{padding:"6px 14px",borderRadius:7,background:T.teal,color:"#FFFFFF",fontSize:11,fontWeight:700,cursor:"pointer"}}>추가</div>
+        </div>
+        <div style={{fontSize:9,color:T.t3,marginTop:8}}>공시 제목에 이 키워드가 포함되면 "신규투자" 배지가 붙고, 대시보드의 "신규 투자 관련 공시" 위젯에도 표시됩니다.</div>
+      </div>}
+      <div style={{fontSize:10,color:T.t3,marginBottom:10}}>※ 실시간 크롤링이 아닌, 담당자가 주기적으로 조사해 저장한 스냅샷입니다. 최신 갱신이 필요하면 담당자에게 요청하세요.</div>
       <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":"1fr 300px",gap:12}}>
         <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"18px 20px",minHeight:400}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><div style={{fontSize:12,fontWeight:700}}>{comp.name} — 최근 공시 목록</div>{cache?.time&&<div style={{fontSize:10,color:T.t3}}>조회: {cache.time.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"})}</div>}</div>
-          {!cache&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:14}}><div style={{fontSize:32}}>◫</div><div style={{fontSize:13,color:T.t2}}>DART 조회 버튼을 눌러 공시 데이터를 가져오세요</div></div>}
-          {cache?.loading&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:16}}><div style={{width:36,height:36,border:`3px solid ${T.blue}30`,borderTop:`3px solid ${T.blue}`,borderRadius:"50%"}} className="ci-spin"/><div style={{fontSize:13,color:T.t2}}>DART 공시 데이터 수집 중...</div></div>}
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14,flexWrap:"wrap",gap:8}}><div style={{fontSize:12,fontWeight:700}}>{comp.name} — 최근 공시 목록</div>{cache?.time&&<div style={{fontSize:10,color:T.t3}}>조사 시점: {cache.time.toLocaleDateString("ko-KR")}</div>}</div>
+          {cache?.disclosures&&!cache?.loading&&<div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:12,alignItems:"center"}}>
+            <input value={kw} onChange={e=>setKw(e.target.value)} placeholder="공시 제목 키워드 검색" style={{flex:"1 1 140px",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"6px 10px",color:T.t1,fontSize:11}}/>
+            <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"6px 8px",color:T.t1,fontSize:11}}/>
+            <span style={{fontSize:10,color:T.t3}}>~</span>
+            <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={{background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"6px 8px",color:T.t1,fontSize:11}}/>
+            <span style={{fontSize:10,color:T.t3}}>{filtered.length}건</span>
+          </div>}
+          {!cache&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:14}}><div style={{fontSize:32}}>◫</div><div style={{fontSize:13,color:T.t2}}>DART 조회 버튼을 눌러 조사된 공시 데이터를 불러오세요</div></div>}
+          {cache?.loading&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,gap:16}}><div style={{width:36,height:36,border:`3px solid ${T.blue}30`,borderTop:`3px solid ${T.blue}`,borderRadius:"50%"}} className="ci-spin"/><div style={{fontSize:13,color:T.t2}}>DART 공시 스냅샷 불러오는 중...</div></div>}
           {cache?.error&&!cache?.loading&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",height:200,justifyContent:"center",gap:10}}><div style={{fontSize:13,color:T.red}}>⚠ {cache.error}</div><Btn onClick={()=>fetchDart(comp.id)} color={T.blue}>다시 시도</Btn></div>}
-          {cache?.disclosures&&!cache?.loading&&<div style={{display:"flex",flexDirection:"column",gap:8}}>{cache.disclosures.map((d,i)=>{const tC=TC[d.type]||T.t2;return <div key={i} style={{background:T.bg3,borderRadius:8,padding:"11px 14px",display:"flex",gap:12,alignItems:"center"}}><span style={{padding:"2px 8px",borderRadius:4,background:`${tC}14`,border:`1px solid ${tC}25`,fontSize:9,color:tC,fontWeight:700,flexShrink:0,whiteSpace:"nowrap"}}>{d.type}</span><div style={{fontSize:12,fontWeight:600,flex:1}}>{d.link?<a href={d.link} target="_blank" rel="noopener noreferrer" style={{color:T.t1,textDecoration:"none"}}>{d.title} <span style={{fontSize:10,color:T.blue}}>↗</span></a>:d.title}</div><div style={{fontSize:10,color:T.t3,flexShrink:0}}>{d.date}</div></div>;})} </div>}
+          {cache?.disclosures&&!cache?.loading&&<div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {filtered.length===0&&<div style={{fontSize:11,color:T.t3,textAlign:"center",padding:"30px 0"}}>조건에 맞는 공시가 없습니다</div>}
+            {filtered.map((d,i)=>{const tC=TC[d.type]||T.t2;const inv=isInvestment(d);const hasDetail=!!d.detail;return <div key={i} style={{background:T.bg3,borderRadius:8,padding:"11px 14px"}}>
+              <div style={{display:"flex",gap:12,alignItems:"center"}}>
+                <span style={{padding:"2px 8px",borderRadius:4,background:`${tC}14`,border:`1px solid ${tC}25`,fontSize:9,color:tC,fontWeight:700,flexShrink:0,whiteSpace:"nowrap"}}>{d.type}</span>
+                {inv&&<span style={{padding:"2px 8px",borderRadius:4,background:`${T.gold}14`,border:`1px solid ${T.gold}35`,fontSize:9,color:T.gold,fontWeight:700,flexShrink:0,whiteSpace:"nowrap"}}>💰 신규투자</span>}
+                <div style={{fontSize:12,fontWeight:600,flex:1}}>{d.link?<a href={d.link} target="_blank" rel="noopener noreferrer" style={{color:T.t1,textDecoration:"none"}}>{d.title} <span style={{fontSize:10,color:T.blue}}>↗</span></a>:d.title}</div>
+                <div style={{fontSize:10,color:T.t3,flexShrink:0}}>{d.date}</div>
+                {hasDetail&&<span onClick={()=>setExpandedDetail(p=>({...p,[comp.id+i]:!p[comp.id+i]}))} style={{cursor:"pointer",fontSize:9,color:T.blue,flexShrink:0,textDecoration:"underline"}}>{expandedDetail[comp.id+i]?"접기":"상세보기"}</span>}
+              </div>
+              {hasDetail&&expandedDetail[comp.id+i]&&<div className="ci-fade" style={{marginTop:9,paddingTop:9,borderTop:`1px solid ${T.b}`,display:"grid",gridTemplateColumns:narrow?"1fr":"1fr 1fr",gap:6}}>
+                {[["계약상대방",d.detail.counterparty],["계약금액",d.detail.amount],["매출액 대비",d.detail.ratio_pct?`${d.detail.ratio_pct}%`:null],["계약기간",d.detail.period],["계약목적물",d.detail.subject]].filter(([,v])=>v).map(([k,v])=>(
+                  <div key={k} style={{fontSize:10.5,color:T.t2}}><span style={{color:T.t3}}>{k}</span> · <span style={{color:T.t1,fontWeight:600}}>{v}</span></div>
+                ))}
+              </div>}
+            </div>;})}
+          </div>}
         </div>
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px"}}>
@@ -1122,5 +1668,3 @@ function FL({children}){return <div style={{fontSize:10,color:T.t2,marginBottom:
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
-</body>
-</html>

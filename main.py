@@ -34,6 +34,28 @@ NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET", "")
 ANTHROPIC_API_KEY   = os.getenv("ANTHROPIC_API_KEY", "")
 ANTHROPIC_VERSION   = os.getenv("ANTHROPIC_VERSION", "2023-06-01")
 
+# ── 웍스AI (사내 AI 게이트웨이) ────────────────────────────────
+# AI_PROVIDER: "wrks"(웍스만) | "anthropic"(Anthropic만) | "auto"(웍스 우선, 실패 시 Anthropic 폴백)
+AI_PROVIDER      = os.getenv("AI_PROVIDER", "auto").lower()
+WRKS_API_KEY     = os.getenv("WRKS_API_KEY", "")
+WRKS_AGENT_ID    = os.getenv("WRKS_AGENT_ID", "")
+WRKS_BASE_URL    = os.getenv("WRKS_BASE_URL", "https://gateway-api.wrks.ai").rstrip("/")
+WRKS_ACTOR_EMAIL = os.getenv("WRKS_ACTOR_EMAIL", "")   # System API Key일 때만 동작
+WRKS_MODEL_ID    = os.getenv("WRKS_MODEL_ID", "")      # 미지정 시 에이전트 기본 모델
+
+# 공용 API 키 만료일(YYYY-MM-DD). 만료 임박 시 /api/health 와 화면 배너로 경고한다.
+# 발급 화면 기준 공용 API = 2027-09-09 만료.
+WRKS_KEY_EXPIRES = os.getenv("WRKS_KEY_EXPIRES", "2027-09-09")
+KEY_WARN_DAYS    = int(os.getenv("KEY_WARN_DAYS", "45"))
+
+def key_days_left():
+    """공용 API 키 만료까지 남은 일수. 파싱 실패 시 None."""
+    try:
+        y, m, d = (int(x) for x in WRKS_KEY_EXPIRES.split("-"))
+        return (date(y, m, d) - date.today()).days
+    except Exception:
+        return None
+
 # 데이터 저장 경로 (Coolify 퍼시스턴트 볼륨을 이 경로에 마운트하면 재배포에도 유지)
 DB_PATH = os.getenv("DB_PATH", "/data/constructai.db")
 
@@ -296,23 +318,262 @@ async def get_dart(company: str = "", corp_code: str = ""):
     financials, summary = await fetch_financials(code)
     return {"disclosures": disclosures, "financials": financials, "summary": summary, "corp_code": code}
 
-# ── /api/messages : Anthropic 패스스루 (파이프라인 + 챗봇) ───
-@app.post("/api/messages")
-async def messages(req: Request):
-    if not ANTHROPIC_API_KEY:
-        raise HTTPException(500, "ANTHROPIC_API_KEY 환경변수 미설정")
-    body = await req.body()
+# ── 웍스AI 클라이언트 ────────────────────────────────────────
+class WrksError(Exception):
+    """웍스AI 호출 실패. expired=True 면 API 키 만료/인증 문제."""
+    def __init__(self, message, expired=False):
+        super().__init__(message)
+        self.message = message
+        self.expired = expired
+
+def _wrks_headers():
+    h = {"API-KEY": WRKS_API_KEY, "Content-Type": "application/json"}
+    # Actor 헤더는 System API Key 에서만 동작한다. 공용 API가 System 타입이 아니면
+    # 서버가 거부할 수 있으므로 환경변수로 명시했을 때만 붙인다.
+    if WRKS_ACTOR_EMAIL:
+        h["X-Actor-User-Email"] = WRKS_ACTOR_EMAIL
+    return h
+
+# 웍스 내부 도구 키
+TOOL_WEB_SEARCH = "wrks__search_web"
+ALL_INTERNAL_TOOLS = [
+    "wrks__run_code", "wrks__generate_image", TOOL_WEB_SEARCH,
+    "wrks__render_visualization", "wrks__summarize_document",
+]
+
+async def wrks_chat(message: str, websearch: bool = False, timeout: int = 180) -> str:
+    """
+    웍스AI 에이전트에 단발 질의하고 텍스트만 돌려준다.
+    chatId 를 쓰지 않는 무상태 호출 — 대화 맥락은 message 안에 직접 담는다.
+    (대화가 서버에 계속 쌓이는 것을 막고, 기존 프런트 동작과 동일하게 유지)
+    """
+    if not WRKS_API_KEY:
+        raise WrksError("WRKS_API_KEY 환경변수가 설정되지 않았습니다.")
+    if not WRKS_AGENT_ID:
+        raise WrksError("WRKS_AGENT_ID 환경변수가 설정되지 않았습니다. "
+                        "/api/wrks/agents 로 사용 가능한 에이전트 ID를 확인하세요.")
+
+    payload = {"message": message, "agentId": str(WRKS_AGENT_ID)}
+    if WRKS_MODEL_ID:
+        try:
+            payload["modelId"] = int(WRKS_MODEL_ID)
+        except ValueError:
+            pass
+    # 웹검색이 필요 없는 요청에서는 내부 웹검색 도구를 꺼서 불필요한 호출·지연을 막는다.
+    if websearch:
+        payload["enabledInternalTools"] = [TOOL_WEB_SEARCH]
+    else:
+        payload["disabledInternalTools"] = [TOOL_WEB_SEARCH]
+
+    try:
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            r = await client.post(f"{WRKS_BASE_URL}/v2/chat/json",
+                                  json=payload, headers=_wrks_headers())
+    except httpx.HTTPError as e:
+        raise WrksError(f"웍스AI 연결 실패: {e}")
+
+    if r.status_code in (401, 403):
+        raise WrksError("웍스AI 인증 실패 — API 키가 만료되었거나 유효하지 않습니다.", expired=True)
+    if r.status_code >= 400:
+        raise WrksError(f"웍스AI 오류 (HTTP {r.status_code})")
+
+    try:
+        data = r.json()
+    except Exception:
+        raise WrksError("웍스AI 응답을 해석할 수 없습니다.")
+
+    if data.get("result") == "error":
+        code = data.get("code", "")
+        msg = data.get("message") or f"웍스AI 오류 ({code})"
+        # E2304/E2305 = 에이전트 없음/권한 없음 → 설정 문제로 안내
+        if code in ("E2304", "E2305"):
+            msg = f"에이전트 접근 불가 ({code}). WRKS_AGENT_ID 설정을 확인하세요."
+        raise WrksError(msg, expired=code in ("E1001", "E1002"))
+
+    d = data.get("data") or {}
+    # parts 에서 텍스트만 모은다. 도구가 만든 파일 등 다른 파트 타입은 무시한다.
+    parts = d.get("parts") or []
+    texts = [p.get("text", "") for p in parts
+             if isinstance(p, dict) and p.get("type") == "text"]
+    text = "".join(texts).strip()
+    if not text:
+        text = (d.get("message") or "").strip()
+    if not text:
+        raise WrksError("웍스AI가 빈 응답을 반환했습니다.")
+    return text
+
+def _flatten_anthropic(body: dict) -> tuple:
+    """
+    Anthropic Messages 형식 요청을 웍스AI용 단일 문자열로 평탄화한다.
+    반환: (message, websearch_needed)
+    """
+    system = (body.get("system") or "").strip()
+    msgs = body.get("messages") or []
+    websearch = any(
+        (t or {}).get("type", "").startswith("web_search")
+        for t in (body.get("tools") or [])
+    )
+
+    lines = []
+    if system:
+        lines.append(f"[역할·지침]\n{system}\n")
+    if len(msgs) > 1:
+        lines.append("[이전 대화]")
+        for m in msgs[:-1]:
+            who = "사용자" if m.get("role") == "user" else "assistant"
+            c = m.get("content")
+            if isinstance(c, list):   # Anthropic content 블록 배열 대응
+                c = "".join(b.get("text", "") for b in c if isinstance(b, dict))
+            lines.append(f"{who}: {c}")
+        lines.append("")
+    last = msgs[-1] if msgs else {}
+    c = last.get("content", "")
+    if isinstance(c, list):
+        c = "".join(b.get("text", "") for b in c if isinstance(b, dict))
+    lines.append(f"[요청]\n{c}")
+    return "\n".join(lines), websearch
+
+async def _anthropic_passthrough(body_bytes: bytes):
+    """AI_PROVIDER=anthropic 또는 웍스 실패 시 폴백."""
     async with httpx.AsyncClient(timeout=120) as client:
         r = await client.post(
             "https://api.anthropic.com/v1/messages",
-            content=body,
+            content=body_bytes,
             headers={
                 "Content-Type": "application/json",
                 "x-api-key": ANTHROPIC_API_KEY,
                 "anthropic-version": ANTHROPIC_VERSION,
             },
         )
-    return Response(content=r.content, status_code=r.status_code, media_type="application/json")
+    return Response(content=r.content, status_code=r.status_code,
+                    media_type="application/json")
+
+def _as_anthropic(text: str):
+    """웍스 응답을 프런트가 기대하는 Anthropic 형태로 감싼다."""
+    return {"content": [{"type": "text", "text": text}]}
+
+def _as_error(msg: str):
+    """
+    프런트는 파이프라인에서 data.error.message 를, 챗봇에서 content[0].text 를 읽는다.
+    두 곳 모두에 같은 안내가 뜨도록 양쪽에 넣는다.
+    """
+    return {"error": {"message": msg}, "content": [{"type": "text", "text": f"⚠️ {msg}"}]}
+
+# ── /api/messages : Anthropic 형식 요청을 웍스AI로 중계 ───────
+@app.post("/api/messages")
+async def messages(req: Request):
+    raw = await req.body()
+    try:
+        body = json.loads(raw or b"{}")
+    except Exception:
+        raise HTTPException(400, "잘못된 JSON 요청")
+
+    if AI_PROVIDER == "anthropic":
+        if not ANTHROPIC_API_KEY:
+            return _as_error("ANTHROPIC_API_KEY 환경변수 미설정")
+        return await _anthropic_passthrough(raw)
+
+    message, websearch = _flatten_anthropic(body)
+    try:
+        text = await wrks_chat(message, websearch=websearch)
+        return _as_anthropic(text)
+    except WrksError as e:
+        # auto 모드: 웍스가 죽었을 때 Anthropic 키가 있으면 자동 폴백
+        if AI_PROVIDER == "auto" and ANTHROPIC_API_KEY:
+            try:
+                return await _anthropic_passthrough(raw)
+            except Exception:
+                pass
+        return _as_error(e.message)
+
+# ── /api/ai : Artifact sample API 대체 (RFP 분석 · 뉴스 요약) ─
+@app.post("/api/ai")
+async def ai(req: Request):
+    """
+    body: {prompt: str, json: bool, websearch: bool}
+    json=true 면 모델 출력에서 JSON 을 추출해 {json: {...}} 로 반환한다.
+    """
+    body = await req.json()
+    prompt = (body.get("prompt") or "").strip()
+    if not prompt:
+        raise HTTPException(400, "prompt 가 필요합니다.")
+    want_json = bool(body.get("json"))
+    websearch = bool(body.get("websearch"))
+
+    if want_json:
+        prompt += "\n\n※ 설명·머리말·코드펜스 없이 JSON 객체 하나만 출력하세요."
+
+    try:
+        text = await wrks_chat(prompt, websearch=websearch)
+    except WrksError as e:
+        return {"error": {"message": e.message}}
+
+    if not want_json:
+        return {"text": text}
+
+    parsed = _extract_json(text)
+    if parsed is None:
+        return {"error": {"message": "AI 응답에서 JSON을 찾지 못했습니다."}, "raw": text[:500]}
+    return {"json": parsed}
+
+def _extract_json(text: str):
+    """모델이 코드펜스나 설명을 섞어 보내도 JSON 객체를 뽑아낸다."""
+    t = re.sub(r"```(?:json)?", "", text).strip()
+    try:
+        return json.loads(t)
+    except Exception:
+        pass
+    start = t.find("{")
+    if start == -1:
+        return None
+    depth, in_str, esc = 0, False, False
+    for i in range(start, len(t)):
+        ch = t[i]
+        if in_str:
+            if esc:      esc = False
+            elif ch == "\\": esc = True
+            elif ch == '"':  in_str = False
+            continue
+        if ch == '"':   in_str = True
+        elif ch == "{": depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                try:
+                    return json.loads(t[start:i + 1])
+                except Exception:
+                    return None
+    return None
+
+# ── /api/wrks/agents : 에이전트 ID 확인용 (키는 노출 안 됨) ───
+@app.get("/api/wrks/agents")
+async def wrks_agents():
+    if not WRKS_API_KEY:
+        return {"error": {"message": "WRKS_API_KEY 환경변수 미설정"}}
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            r = await client.get(f"{WRKS_BASE_URL}/v2/agents", headers=_wrks_headers())
+    except httpx.HTTPError as e:
+        return {"error": {"message": f"연결 실패: {e}"}}
+    if r.status_code in (401, 403):
+        return {"error": {"message": "인증 실패 — API 키를 확인하세요."}}
+    try:
+        return r.json()
+    except Exception:
+        return {"error": {"message": f"응답 해석 실패 (HTTP {r.status_code})"}}
+
+# ── /api/wrks/agents/{id} : MCP 도구 인증 상태 확인 ───────────
+@app.get("/api/wrks/agents/{agent_id}")
+async def wrks_agent_detail(agent_id: str):
+    if not WRKS_API_KEY:
+        return {"error": {"message": "WRKS_API_KEY 환경변수 미설정"}}
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            r = await client.get(f"{WRKS_BASE_URL}/v2/agents/{agent_id}",
+                                 headers=_wrks_headers())
+        return r.json()
+    except Exception as e:
+        return {"error": {"message": str(e)}}
 
 # ── 입찰 이력 (팀 공유, 건별 저장) ───────────────────────────
 @app.get("/api/bids")
@@ -331,6 +592,27 @@ async def add_bid(req: Request):
     conn = _connect()
     conn.execute("INSERT OR REPLACE INTO bids (id, data) VALUES (?, ?)",
                  (bid_id, json.dumps(bid, ensure_ascii=False)))
+    conn.commit()
+    conn.close()
+    return {"bid": bid}
+
+@app.patch("/api/bids/{bid_id}")
+async def patch_bid(bid_id: str, req: Request):
+    """
+    기존 입찰 건에 필드를 병합한다 (RFP 분석 결과 저장용).
+    전체 덮어쓰기가 아니라 병합이므로, 다른 사람이 같은 건의 다른 필드를
+    수정 중이어도 그 값이 날아가지 않는다.
+    """
+    patch = await req.json()
+    conn = _connect()
+    row = conn.execute("SELECT data FROM bids WHERE id = ?", (bid_id,)).fetchone()
+    if not row:
+        conn.close()
+        raise HTTPException(404, "해당 입찰 건이 없습니다.")
+    bid = json.loads(row["data"])
+    bid.update(patch)
+    conn.execute("UPDATE bids SET data = ? WHERE id = ?",
+                 (json.dumps(bid, ensure_ascii=False), bid_id))
     conn.commit()
     conn.close()
     return {"bid": bid}
@@ -364,13 +646,36 @@ async def put_setting(key: str, req: Request):
 # ── 헬스체크 ─────────────────────────────────────────────────
 @app.get("/api/health")
 async def health():
+    days = key_days_left()
+    db_ok, db_err = True, None
+    try:
+        conn = _connect()
+        conn.execute("SELECT 1").fetchone()
+        conn.close()
+    except Exception as e:
+        db_ok, db_err = False, str(e)
+
+    warn = None
+    if days is not None:
+        if days < 0:
+            warn = f"웍스AI 공용 API 키가 {WRKS_KEY_EXPIRES}자로 만료되었습니다. 재발급이 필요합니다."
+        elif days <= KEY_WARN_DAYS:
+            warn = f"웍스AI 공용 API 키가 {days}일 뒤({WRKS_KEY_EXPIRES}) 만료됩니다. 재발급을 요청하세요."
+
     return {
         "status": "ok",
+        "provider": AI_PROVIDER,
         "keys": {
+            "wrks": bool(WRKS_API_KEY),
+            "wrks_agent": bool(WRKS_AGENT_ID),
             "anthropic": bool(ANTHROPIC_API_KEY),
             "dart": bool(DART_API_KEY),
             "naver": bool(NAVER_CLIENT_ID and NAVER_CLIENT_SECRET),
         },
+        "wrks_key_expires": WRKS_KEY_EXPIRES,
+        "wrks_key_days_left": days,
+        "warning": warn,
+        "db": {"ok": db_ok, "path": DB_PATH, "error": db_err},
     }
 
 # ── 프런트엔드 ───────────────────────────────────────────────
