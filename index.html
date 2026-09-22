@@ -30,6 +30,11 @@ select{outline:none;cursor:pointer;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<!-- RFP 첨부파일 파싱용(PDF/Word/Excel/PPT) — 하나라도 로드 실패 시 해당 형식만 비활성화되고 나머지는 정상 동작 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <div id="root"></div>
 <script type="text/babel">
@@ -58,19 +63,19 @@ const TOP50=[
   {id:"sk_c",rank:8,name:"SK에코플랜트",biz:["데이터센터","반도체시설","환경","플랜트"],wins:["SK하이닉스 M16","SKT IDC 수원"],clients:["SK하이닉스","SK텔레콤","SK이노베이션"],strengths:["1분기 매출 4조8997억원으로 전년 대비 99% 증가, AI·반도체 인프라가 견인","반도체·데이터센터 중심 사업 리밸런싱 성공(IB토마토 크레딧시그널)"],weaknesses:["기존 환경·플랜트 부문 대비 PF(프로젝트파이낸싱) 부담이 재무 리스크로 지속 언급"],sources:[{t:"SK에코플랜트, 1분기 매출 4조8997억원…AI·반도체 호황에 실적 급증",u:"https://biz.heraldcorp.com/article/10739029"},{t:"[IB토마토] SK에코플랜트, 반도체 중심 재편 성공…PF는 부담",u:"https://www.ibtomato.com/ExternalView.aspx?type=1&no=18972"}],confidence:"high"},
   {id:"dl_c",rank:9,name:"DL이앤씨",biz:["주거","건축","플랜트","화학"],wins:["아크로 세티엘","DL케미칼 플랜트"],clients:["DL그룹","포스코","GS칼텍스"],strengths:["8년 연속 신용등급 'AA-' 유지, 업계 최고 수준 재무 안정성","1분기 영업이익 1574억원으로 수익성 2배 개선"],weaknesses:["보수적 재무 운용 기조로 인해 최근 외형(수주) 성장 속도는 상대적으로 완만"],sources:[{t:"DL이앤씨, 8년 연속 신용등급 'AA-' 사수(청년일보)",u:"https://www.youthdaily.co.kr/news/article.html?no=221611"},{t:"[2026 1분기 실적] DL이앤씨, 1분기 영업이익 1574억…수익성 2배 개선",u:"https://www.inthenews.co.kr/news/article.html?no=86354"}],confidence:"high"},
   {id:"hoban_c",rank:10,name:"호반건설",biz:["주거","건축"],wins:["호반써밋 광교","호반베르디움 위례"],clients:["LH","SH","각지자체"],strengths:["재계 순위 상승(자산 20조원), 전선·투자 등 비주택 사업 다각화 성공","계열 M&A(금거래소 등) 통한 영업익 급증 사례 확보"],weaknesses:["사업 다각화 속도가 빨라 계열사 리스크 분산·관리 부담이 커지는 구조"],sources:[{t:"[2026 재계순위] 호반, 자산 20조…건설 넘어 '전선·투자' 확장(FETV)",u:"https://www.fetv.co.kr/news/articleView.html?idxno=302497"},{t:"호반家, M&A 또 잭팟…금거래소도 영업익 10배 폭증",u:"https://v.daum.net/v/20251117060151991"}],confidence:"medium"},
-  {id:"kolon_c",rank:11,name:"코오롱글로벌",biz:["데이터센터","이차전지","주거","클린룸","건축"],wins:[],clients:["카카오","LG에너지솔루션","KT"],strengths:["1분기 영업이익 220억원으로 전년 대비 129.4% 증가","데이터센터·이차전지 설비 분야 특화 포트폴리오 강화 중"],weaknesses:["건설 부문 외 계열(코오롱인더 등) 실적 변동에 그룹 전체 민감도가 존재"],sources:[{t:"코오롱글로벌, 1분기 영업이익 220억1200만원…전년比 129.35% 증가",u:"https://www.digitaltoday.co.kr/news/articleView.html?idxno=665588"}],confidence:"medium",radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:80},{axis:"재무",val:45},{axis:"영업력",val:72},{axis:"인력",val:65}],capabilityRating:{year:"2026",civilRank:23,civilAmount:"2조2,935억원",industrialRank:13,industrialAmount:null},creditRating:{agency:"한국기업평가",grade:"A3(기업어음·단기신용등급 기준, 장기 회사채 등급 미확인)",outlook:null,date:null},financialsDetail:{revenue:"7,505억원",assets:"3조497억원",equity:"7,229억원",liabilities:"2조3,268억원",period:"2026년 2분기(연결)"},severeAccidents:[{date:"2024-08",location:"전남 순천 벌교~주암 도로확장공사 현장",summary:"거푸집 인양·이동 중 근로자가 거푸집에 깔려 사망",source:{t:"코오롱글로벌, 2년마다 사망사고…'추락·깔림' 안전관리 다시 도마위",s:"이지경제",u:"https://www.ezyeconomy.com/news/articleView.html?idxno=239143"},note:"정확한 발생 일자(며칠)는 미공개, 2026년 8월 청주 사고 계기 후속보도로 확인됨"},{date:"2026-08-11",location:"충북 청주동남 공공주택 건설현장",summary:"안전난간대 해체 작업 중 추락, 치료 중 8월 29일 사망",source:{t:"코오롱글로벌, 청주 주택건설 현장서 근로자 추락 사망",s:"이데일리",u:"https://www.edaily.co.kr/News/Read?newsId=02774886645552896"}}]},
+  {id:"kolon_c",rank:11,name:"코오롱글로벌",biz:["데이터센터","이차전지","주거","클린룸","건축"],wins:[{project:"서울 면목동 망우5구역 가로주택정비사업",period:"2026.09 수주(아파트 314세대, 약 1,046억원·2025년말 연결매출 대비 3.90%)",cm:null,designer:null}],clients:["카카오","LG에너지솔루션","KT"],strengths:["2026년 2분기 영업이익 522억원(전년比 173.6%↑)·순이익 323억원으로 흑자전환, 1분기(220억원, +129.4%)에 이어 원가율 개선(87.7%)에 힘입어 실적 개선 지속","데이터센터·이차전지 설비 분야 특화 포트폴리오 강화 중, 2026년 신규수주 4.5조원·영업이익 1,200억원 목표 제시","2026년 9월 서울 면목동 가로주택정비사업(약 1,046억원) 등 정비사업 수주로 주택 부문 파이프라인도 확보"],weaknesses:["건설 부문 외 계열(코오롱인더 등) 실적 변동에 그룹 전체 민감도가 존재","2025년 말 기준 부채비율 332%로 업계 위험기준(200%)을 크게 상회, PF 우발부채(1조183억원)가 자본총계(6,844억원)를 초과","2025년 4분기 대규모 손실(영업손실 527억원·순손실 1,496억원) 여파로 2026년 상반기 임원 26명 중 13명이 교체되는 대규모 인사 쇄신이 단행돼 조직 안정성 리스크 존재"],sources:[{t:"코오롱글로벌, 1분기 영업이익 220억1200만원…전년比 129.35% 증가",u:"https://www.digitaltoday.co.kr/news/articleView.html?idxno=665588"},{t:"코오롱글로벌, 1046억원 규모 서울 면목동 가로주택정비사업 수주",u:"https://www.cbci.co.kr/news/articleView.html?idxno=604782"},{t:"코오롱, 위기의 코오롱글로벌 쇄신책은 인사 칼바람?",u:"https://www.newsway.co.kr/news/view?ud=2026081913592247288"},{t:"코오롱글로벌 2분기 영업익 522억원…전년比 173.6%↑",u:"https://www.sentv.co.kr/article/view/sentv202608130004"},{t:"코오롱글로벌, 부채비율 300% 상회…빅배스·풍력발전 육성으로 체질개선 나선다",u:"https://m.ceoscoredaily.com/page/view/2026050716384021406"}],confidence:"high",radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:80},{axis:"재무",val:45},{axis:"영업력",val:72},{axis:"인력",val:65}],capabilityRating:{year:"2026",civilRank:23,civilAmount:"2조2,935억원",industrialRank:13,industrialAmount:null},creditRating:{agency:"한국기업평가",grade:"A3(기업어음·단기신용등급 기준, 장기 회사채 등급 미확인)",outlook:null,date:null},financialsDetail:{revenue:"7,505억원",assets:"3조497억원",equity:"7,229억원",liabilities:"2조3,268억원",period:"2026년 2분기(연결)"},severeAccidents:[{date:"2024-08",location:"전남 순천 벌교~주암 도로확장공사 현장",summary:"거푸집 인양·이동 중 근로자가 거푸집에 깔려 사망",source:{t:"코오롱글로벌, 2년마다 사망사고…'추락·깔림' 안전관리 다시 도마위",s:"이지경제",u:"https://www.ezyeconomy.com/news/articleView.html?idxno=239143"},note:"정확한 발생 일자(며칠)는 미공개, 2026년 8월 청주 사고 계기 후속보도로 확인됨"},{date:"2026-08-11",location:"충북 청주동남 공공주택 건설현장",summary:"안전난간대 해체 작업 중 추락, 치료 중 8월 29일 사망",source:{t:"코오롱글로벌, 청주 주택건설 현장서 근로자 추락 사망",s:"이데일리",u:"https://www.edaily.co.kr/News/Read?newsId=02774886645552896"}}]},
   {id:"hanwha_c",rank:12,name:"한화건설",biz:["주거","건축","플랜트","방산"],wins:["꿈에그린 수원","한화 방산공장 증설"],clients:["한화그룹","LH","국방부"],strengths:["영업이익률 10%대 회복, 방산 계열과의 시너지 기대","한화그룹 신사업(우주·방산) 확장에 따른 그룹 내 존재감 확대 시도"],weaknesses:["2분기 영업이익 584억원으로 전년 동기 대비 22% 감소","그룹 가치 상승에도 건설부문 존재감은 상대적으로 약하다는 평가(뉴스웨이)"],sources:[{t:"한화 건설부문, 2분기 영업익 584억원…전년比 22%↓",u:"https://www.newspim.com/news/view/20260805001062"},{t:"김동관이 그리는 미래에 건설은?···㈜한화 건설부문 존재감 시험대(뉴스웨이)",u:"https://www.newsway.co.kr/news/view?ud=2026080514595099415"}],confidence:"medium"},
   {id:"kumho_c",rank:13,name:"금호건설",biz:["주거","건축","토목"],wins:["어울림 수원 광교","금호타이어 시설"],clients:["LH","금호그룹","각지자체"],strengths:["2026년 주가 급등 국면 등 시장의 관심 회복 신호"],weaknesses:["최근 거래정지 이력 등으로 재무·주가 불확실성이 시장에서 지속 제기됨"],sources:[{t:"금호건설 주가 전망: 최근 급등·거래정지, 실적과 재무 이슈로 본 해석(불스토리)",u:"https://bullstory.io/blog/%EA%B8%88%ED%98%B8%EA%B1%B4%EC%84%A4-%EC%A3%BC%EA%B0%80-%EC%A0%84%EB%A7%9D-%EC%B5%9C%EA%B7%BC-%EA%B8%89%EB%93%B1%EA%B1%B0%EB%9E%98%EC%A0%95%EC%A7%80%EC%8B%A4%EC%A0%81%EA%B3%BC-%EC%9E%AC%EB%AC%B4-%EC%9D%B4%EC%8A%88%EB%A1%9C-%EB%B2%94%EC%9C%84"}],confidence:"low"},
   {id:"geryong_c",rank:14,name:"계룡건설산업",biz:["건축","토목","주거"],wins:["국방시설","공공건축"],clients:["국방부","행정중심복합도시","대전시"],strengths:["공공사업(관공수요) 최강자로 꼽힐 만큼 안정적 수요 기반 보유","2026년 실적 전망에 훈풍이 부는 것으로 평가"],weaknesses:["대손 572억원 발생에도 PF보증 규모가 7805억원에 달해 리스크 재확대","PBR 0.2배 수준의 극심한 저평가 상태 지속"],sources:[{t:"공공사업 최강자 계룡건설, 2026년 실적 전망 훈풍(뉴스웨이)",u:"https://www.newsway.co.kr/news/view?ud=2026010716102209303"},{t:"계룡건설 리스크 재확대…대손 572억에도 PF보증 7805억",u:"http://sateconomy.co.kr/news/view/1065599584883011"},{t:"계룡건설 회장의 내실 경영, 그러나 PBR 0.2 극심한 저평가(허핑턴포스트)",u:"https://www.huffingtonpost.kr/article/257565"}],confidence:"high"},
-  {id:"dongbu_c",rank:15,name:"동부건설",biz:["클린룸","반도체시설","GMP의약품","건축"],wins:[{project:"SK하이닉스 청주4캠퍼스 부속시설 건설공사",period:"2025.07 계약(725억원 규모, 착공일로부터 약 12개월·정확한 착공/준공일 비공개)",cm:null,designer:null}],clients:["SK하이닉스","삼성바이오","셀트리온"],strengths:["반도체 클린룸·대형 GMP 분야 압도적 레퍼런스(삼성바이오, 셀트리온 등)","HUG 신용평가에서 5단계 상승한 'AA' 등급 획득, 흑자 전환·부채비율 동시 개선"],weaknesses:["데이터센터 사업 트랙레코드는 상대적으로 아직 부족","최근 흑자 전환은 확인됐으나 과거 수익성 악화 이력이 있어 지속성 모니터링 필요"],sources:[{t:"동부건설, HUG 신용평가 5단계 상승한 'AA' 등급 획득",u:"https://v.daum.net/v/PhDrIq5TCP"},{t:"동부건설, 본격적인 성장궤도 진입…영업이익·부채비율 동시 개선",u:"https://v.daum.net/v/20260203104109899?f=p"}],confidence:"high",radar:[{axis:"기술력",val:85},{axis:"트랙레코드",val:90},{axis:"재무",val:80},{axis:"영업력",val:80},{axis:"인력",val:75}],capabilityRating:{year:"2026",civilRank:25,civilAmount:"2조215억원",industrialRank:14,industrialAmount:"8,622억원"},creditRating:{agency:"한국신용평가",grade:"BBB",outlook:"안정적",date:"2022-12-13(최신 정기평정 미확인, HUG 별도등급 'AA' 2026-05 상승)"},financialsDetail:{revenue:"1조307억원",assets:"1조7,757억원",equity:"5,822.2억원",liabilities:"1조1,934.8억원",period:"2026년 2분기(연결)"},severeAccidents:[{date:"2025-11",location:"서울 양천구 양천우체국 복합청사 신축현장",summary:"카고크레인 운전원 추락 사망",source:{t:"[속보] '안전 우선' 외친 동부건설 두 달 새 사망사고 2건",s:"세이프타임즈",u:"https://www.safetimes.co.kr/news/articleView.html?idxno=239231"}},{date:"2026-01-29",location:"강원 삼척의료원 이전 신축공사 현장",summary:"고소작업대 점검 중 외국인 근로자 추락 사망",source:{t:"[속보] '안전 우선' 외친 동부건설 두 달 새 사망사고 2건",s:"세이프타임즈",u:"https://www.safetimes.co.kr/news/articleView.html?idxno=239231"},note:"사고일·경위 등 언론사별 보도 다소 상이(더퍼블릭은 1/27 발생·1/30 사망·판넬취부작업으로 보도) — 정확한 사실관계는 추가 확인 권장"}]},
+  {id:"dongbu_c",rank:15,name:"동부건설",biz:["클린룸","반도체시설","GMP의약품","건축"],wins:[{project:"SK하이닉스 청주4캠퍼스 부속시설 건설공사",period:"2025.07 계약(725억원 규모, 착공일로부터 약 12개월·정확한 착공/준공일 비공개)",cm:null,designer:null},{project:"남부내륙철도 제10공구 + 고양창릉·양주고읍 공공주택사업",period:"2026.07 계약(철도 약 2,710억원 + 공공주택 약 5,677억원·1,732가구, 합산 약 8,387억원 규모)",cm:null,designer:null}],clients:["SK하이닉스","삼성바이오","셀트리온"],strengths:["반도체 클린룸·대형 GMP 분야 압도적 레퍼런스(삼성바이오, 셀트리온 등)","HUG 신용평가에서 5단계 상승한 'AA' 등급 획득, 2026년 상반기 매출 +24.3%·영업이익 +69.2%·순이익 +266.5%로 실적 개선 지속","2026년 상반기 철도·공공주택 등 8,300억원대 신규 수주로 누적 수주 약 2조400억원(역대 최대 상반기 실적), HJ중공업 투자 관련 파생 리스크(자금보충의무)도 소멸돼 재무 부담 추가 경감"],weaknesses:["데이터센터 사업 트랙레코드는 상대적으로 아직 부족","최근 흑자 전환은 확인됐으나 과거 수익성 악화 이력이 있어 지속성 모니터링 필요","2026년 초 두 달 새 현장 사망사고 2건이 발생해 중대재해처벌법 위반 여부 조사가 진행 중, 안전관리 리스크가 부각됨"],sources:[{t:"동부건설, HUG 신용평가 5단계 상승한 'AA' 등급 획득",u:"https://v.daum.net/v/PhDrIq5TCP"},{t:"동부건설, 본격적인 성장궤도 진입…영업이익·부채비율 동시 개선",u:"https://v.daum.net/v/20260203104109899?f=p"},{t:"동부건설, 8300억원대 철도·공공주택 수주",u:"https://biz.heraldcorp.com/article/10826924"},{t:"동부건설, 상반기 영업이익 282억…전년比 69.2%↑",u:"https://www.1conomynews.co.kr/news/articleView.html?idxno=49986"},{t:"HJ중공업 투자 '자금보충의무' 소멸…동부건설, 파생 리스크 털어냈다",u:"https://www.ebn.co.kr/news/articleView.html?idxno=1693521"}],confidence:"high",radar:[{axis:"기술력",val:85},{axis:"트랙레코드",val:90},{axis:"재무",val:80},{axis:"영업력",val:80},{axis:"인력",val:75}],capabilityRating:{year:"2026",civilRank:25,civilAmount:"2조215억원",industrialRank:14,industrialAmount:"8,622억원"},creditRating:{agency:"한국신용평가",grade:"BBB",outlook:"안정적",date:"2022-12-13(최신 정기평정 미확인, HUG 별도등급 'AA' 2026-05 상승)"},financialsDetail:{revenue:"1조307억원",assets:"1조7,757억원",equity:"5,822.2억원",liabilities:"1조1,934.8억원",period:"2026년 2분기(연결)"},severeAccidents:[{date:"2025-11",location:"서울 양천구 양천우체국 복합청사 신축현장",summary:"카고크레인 운전원 추락 사망",source:{t:"[속보] '안전 우선' 외친 동부건설 두 달 새 사망사고 2건",s:"세이프타임즈",u:"https://www.safetimes.co.kr/news/articleView.html?idxno=239231"}},{date:"2026-01-29",location:"강원 삼척의료원 이전 신축공사 현장",summary:"고소작업대 점검 중 외국인 근로자 추락 사망",source:{t:"[속보] '안전 우선' 외친 동부건설 두 달 새 사망사고 2건",s:"세이프타임즈",u:"https://www.safetimes.co.kr/news/articleView.html?idxno=239231"},note:"사고일·경위 등 언론사별 보도 다소 상이(더퍼블릭은 1/27 발생·1/30 사망·판넬취부작업으로 보도) — 정확한 사실관계는 추가 확인 권장"}]},
   {id:"halla_c",rank:16,name:"한라",biz:["주거","건축","토목"],wins:["비발디파크","용인반도체 기반시설"],clients:["현대차그룹","각지자체","LH"],strengths:["HL그룹 계열(HL디앤아이한라) 편입으로 그룹 차원 지원 기반 확보"],weaknesses:["개별 법인 단위의 최신 실적·이슈에 대한 공개 정보가 제한적"],sources:[{t:"2026년 건설산업의 7대 주요 이슈(건설산업연구원)",u:"https://www.cerik.re.kr/uploads/report/3037/%EA%B1%B4%EC%84%A4%EB%8F%99%ED%96%A5%EB%B8%8C%EB%A6%AC%ED%95%91%201038%ED%98%B8.pdf"}],confidence:"low"},
   {id:"hanyang_c",rank:17,name:"한양",biz:["주거","건축"],wins:["수자인 광교","한양 수자인 동탄"],clients:["LH","SH","각지자체"],strengths:["영업이익률 10%대의 업계 최상위권 원가 경쟁력 보유(BS한양)","건설 부문 호실적을 발판으로 에너지 투자 등 사업 확장 모색"],weaknesses:["신용평가사가 등급 전망(아웃룩)을 조정한 사례가 있어 모니터링 필요"],sources:[{t:"'영업이익률 10%' BS한양, 기대감 더 남았다",u:"https://v.daum.net/v/20251119064914672"},{t:"'아웃룩 조정' BS한양, 건설 호실적 발판 '에너지 투자'로 반등 모색(블로터)",u:"https://www.bloter.net/news/articleView.html?idxno=636603"}],confidence:"high"},
   {id:"taeyoung_c",rank:18,name:"태영건설",biz:["주거","건축","환경"],wins:["데시앙 판교","환경플랜트 수원"],clients:["LH","환경부","각지자체"],strengths:["부채비율 720%→488%로 대폭 개선, 흑자 전환에 성공(V자 반등)","PF 정리와 재고자산 매각을 통한 워크아웃 조기 졸업 가능성 부각"],weaknesses:["여전히 워크아웃(기업개선작업) 상태로 신용등급이 'B' 수준에 머물러 있음","2년 연속 'B' 등급을 받아 워크아웃 말년까지 리스크 관리가 필요"],sources:[{t:"부채비율 720%→488%···태영건설, 워크아웃 졸업 초읽기(뉴스웨이)",u:"https://newsway.co.kr/news/view?ud=2026060514225940077"},{t:"[단독]태영건설, 2년 연속 'B' 받고 워크아웃 '말년' 달린다",u:"https://news.bizwatch.co.kr/article/real_estate/2026/05/28/0025"},{t:"'흑자전환' 태영건설, PF 정리하고 재고자산 털어내기 본격화",u:"https://www.topdaily.kr/articles/102257"}],confidence:"high"},
   {id:"kcc_c",rank:19,name:"KCC건설",biz:["주거","건축","인테리어"],wins:["KCC스위첸 동탄","주상복합 여의도"],clients:["KCC그룹","LH","각지자체"],strengths:["KCC그룹 계열 지원 기반(도료·건자재 계열사와의 연계) 보유"],weaknesses:["모기업 KCC 실적 기준 건설 부진 영향으로 영업이익이 15% 감소한 것으로 나타남"],sources:[{t:"KCC, 건설 부진에 영업익 15% 감소…보유주식에 순익은 급증",u:"http://sateconomy.co.kr/news/view/1065599724890461"}],confidence:"medium"},
-  {id:"sungdo_c",rank:20,name:"성도이엔지",biz:["GMP의약품","반도체 클린룸","연구시설"],wins:[],clients:["유한양행","대웅제약","SK바이오팜"],strengths:["GMP 의약품·반도체 클린룸 등 소수정예 특화 분야 트랙레코드(유한양행, 대웅제약, SK바이오팜)","제약사 네트워크가 견고해 반복 수주 가능성이 높음"],weaknesses:["소규모 재무 구조로 대형사 대비 자금 동원력이 제한적","전문 인력 풀이 제한적이라 동시 다발 프로젝트 대응에 한계"],sources:[{t:"회사 소개 및 수주 실적 기반 — 개별 법인 단위 최신 재무기사는 검색으로 추가 확인되지 않음(기존 자료 유지)",u:"https://www.sungdo.co.kr"}],confidence:"medium",radar:[{axis:"기술력",val:80},{axis:"트랙레코드",val:75},{axis:"재무",val:65},{axis:"영업력",val:72},{axis:"인력",val:60}],capabilityRating:{year:"2026",civilRank:44,civilAmount:"8,831억원",industrialRank:null,industrialAmount:null},creditRating:{agency:null,grade:null,outlook:null,date:null},financialsDetail:{revenue:"7,434억원",assets:"6,716억원",equity:"약 4,322억원(부채비율 55.4% 역산, 공시 확정치 아님)",liabilities:"약 2,394억원(부채비율 55.4% 역산, 공시 확정치 아님)",period:"2025년(연간)"},severeAccidents:[{date:"2023-02-14",location:"인천 영종도 복합물류센터 건립현장",summary:"자재정리 중 이탈한 철근 반동으로 약 10m 추락 사망",source:{t:"성도이엔지 시공…영종도 물류센터서 노동자 추락사",s:"일요주간",u:"https://www.ilyoweekly.co.kr/news/newsview.php?ncode=1065596205290717"}},{date:"2023-11-30",location:"경남 창원 공장 신축현장",summary:"파일 항타 작업 중 용접부 이음부 낙하로 사망",source:{t:"'매출 1조원 목표' 중대재해 리스크에 발목잡힌 '성도이엔지'",s:"백세시대",u:"https://www.100ssd.co.kr/news/articleView.html?idxno=105076"}}]},
+  {id:"sungdo_c",rank:20,name:"성도이엔지",biz:["GMP의약품","반도체 클린룸","연구시설"],wins:[{project:"공장 신축공사",period:"2024.09 수주(약 852억원, 직전 매출액 대비 12.56%)",cm:null,designer:null}],clients:["유한양행","대웅제약","SK바이오팜"],strengths:["GMP 의약품·반도체 클린룸 등 소수정예 특화 분야 트랙레코드(유한양행, 대웅제약, SK바이오팜)","제약사 네트워크가 견고해 반복 수주 가능성이 높음, 美 매출이 2022년 49억원→2024년 1,573억원으로 급증하는 등 해외 클린룸 사업도 빠르게 확대","삼성전자 평택캠퍼스 5공장·4공장 2단계, SK하이닉스 용인 클러스터 등 반도체 신공장 투자가 2026년 재개되며 관련 클린룸·유틸리티 공사 수주 확대가 기대됨"],weaknesses:["소규모 재무 구조로 대형사 대비 자금 동원력이 제한적","전문 인력 풀이 제한적이라 동시 다발 프로젝트 대응에 한계","2024년 사상 최대 매출(약 9,996억원)로 '매출 1조원' 목표에 근접했으나 2025년에는 대형 수주 공백 등으로 매출이 약 7,434억원(-25.6%)으로 감소, 목표 달성이 다시 멀어짐"],sources:[{t:"성도이엔지, 반도체 신공장 투자 재개에 수주 채비 본격화",u:"https://www.etoday.co.kr/news/view/2554076"},{t:"[산업 플랜트 EPC 건설사 분석] 성도이엔지, '매출 1조' 문턱에서 뒷걸음질",u:"https://www.thebell.co.kr/front/newsview.asp?key=202603111531546440109359"},{t:"성도이엔지, 美 매출 3배 급증…클린룸 사업 확장으로 1조 벽 넘는다",u:"https://www.etoday.co.kr/news/view/2464259"},{t:"성도이엔지 수주공시 - 공장 신축 852억원(매출액대비 12.56%)",u:"https://www.hankyung.com/article/202409306906L"}],confidence:"high",radar:[{axis:"기술력",val:80},{axis:"트랙레코드",val:75},{axis:"재무",val:65},{axis:"영업력",val:72},{axis:"인력",val:60}],capabilityRating:{year:"2026",civilRank:44,civilAmount:"8,831억원",industrialRank:null,industrialAmount:null},creditRating:{agency:null,grade:null,outlook:null,date:null},financialsDetail:{revenue:"7,434억원",assets:"6,716억원",equity:"약 4,322억원(부채비율 55.4% 역산, 공시 확정치 아님)",liabilities:"약 2,394억원(부채비율 55.4% 역산, 공시 확정치 아님)",period:"2025년(연간)"},severeAccidents:[{date:"2023-02-14",location:"인천 영종도 복합물류센터 건립현장",summary:"자재정리 중 이탈한 철근 반동으로 약 10m 추락 사망",source:{t:"성도이엔지 시공…영종도 물류센터서 노동자 추락사",s:"일요주간",u:"https://www.ilyoweekly.co.kr/news/newsview.php?ncode=1065596205290717"}},{date:"2023-11-30",location:"경남 창원 공장 신축현장",summary:"파일 항타 작업 중 용접부 이음부 낙하로 사망",source:{t:"'매출 1조원 목표' 중대재해 리스크에 발목잡힌 '성도이엔지'",s:"백세시대",u:"https://www.100ssd.co.kr/news/articleView.html?idxno=105076"}}]},
   {id:"hyundaieng_c",rank:21,name:"현대엔지니어링",biz:["플랜트","산업시설","건축","해외"],wins:["HMG 울산EV공장","사우디 플랜트"],clients:["현대차그룹","한국가스공사","해외"],strengths:["2026년 시공능력평가 4위로 도약(악재를 극복한 실적 반등)","플랜트 역량을 앞세워 현대차그룹 내 위상 확대 중"],weaknesses:["유동부채가 약 6조원 규모로 재무 경고등이 켜진 상태(허핑턴포스트)","엔지니어링 중심으로 사업 포트폴리오를 재편 중이라 과도기적 리스크 존재"],sources:[{t:"현대엔지니어링, 악재 뚫고 시평 4위…미래사업으로 반등 승부수(아시아투데이)",u:"https://www.asiatoday.co.kr/kn/view.php?key=20260802010000185"},{t:"주우정 현대엔지니어링 플랜트 앞세워 체급 올리지만…6조 유동부채 재무 경고등(허핑턴포스트)",u:"https://www.huffingtonpost.kr/article/257781"},{t:"[단독]현대엔지니어링, 하반기 사업 포트폴리오 재편(머니투데이)",u:"https://www.mt.co.kr/estate/2026/05/28/2026052814573719374"}],confidence:"high"},
   {id:"samsungeng_c",rank:22,name:"삼성엔지니어링",biz:["플랜트","화학","산업시설","해외"],wins:["삼성전자 평택 EUV","사우디 가스처리"],clients:["삼성전자","사우디아람코","해외"],strengths:["하반기 해외 플랜트 수주 모멘텀에 대한 시장 기대감 확대(삼성E&A)"],weaknesses:["해외 플랜트 특성상 환율·발주국 정세 등 대외 변수에 노출도가 높음"],sources:[{t:"삼성E&A, 하반기 해외 플랜트 수주 모멘텀 기대감",u:"https://www.theguru.co.kr/news/article.html?no=105531"}],confidence:"medium"},
-  {id:"sgc_c",rank:23,name:"SGC E&C",biz:["GMP의약품","바이오","식품공장","화학플랜트"],wins:[],clients:["GC녹십자","CJ제일제당","롯데바이오"],strengths:["바이오·식품공장 특화 및 GMP 설계 내재화 역량 보유(GC녹십자, CJ제일제당, 롯데바이오)","안정적인 재무 구조(기존 자료 기준 부채비율 관리 양호)"],weaknesses:["데이터센터·대형 반도체 분야 미진출로 포트폴리오 다각화가 제한적","개별 법인 단위의 2025~2026년 최신 실적 기사가 추가로 검증되지 않음"],sources:[{t:"회사 사업 영역 및 수주 실적 기반 — 최신 재무기사는 검색으로 추가 확인되지 않음(기존 자료 유지)",u:"https://www.sgcecnc.com"}],confidence:"medium",radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:72},{axis:"재무",val:35},{axis:"영업력",val:70},{axis:"인력",val:68}],capabilityRating:{year:"2026",civilRank:45,civilAmount:"8,782억원",industrialRank:15,industrialAmount:null},creditRating:{agency:null,grade:null,outlook:null,date:null},financialsDetail:{revenue:"1조3,420억원",assets:"1조3,639억원",equity:"3,321억원",liabilities:"1조318억원",period:"2025년(연결, 연간)"},severeAccidents:[{date:"2023-10-10",location:"경기 시흥 정왕동 복합물류센터 신축현장",summary:"고소작업대가 레미콘 트럭에 걸려 붕괴, 추락 사망",source:{t:"8개월 영업정지 '철퇴' SGC이테크건설, 한달 못가 또 사망사고",s:"경인일보",u:"https://www.kyeongin.com/article/1659201"}},{date:"2023-11-22",location:"인천 검단 AA10-2블록 아파트 건설현장",summary:"안전대 미착용 상태로 11층에서 추락 사망",source:{t:"SGC이테크건설, '안전 불감증' 만연 잇따른 공사현장 사망사고…왜?",s:"백세시대",u:"https://www.100ssd.co.kr/news/articleView.html?idxno=104884"},note:"층수·추락지점 표현이 매체별로 다소 상이(일요주간은 12층·테라스로 보도)"}]},
+  {id:"sgc_c",rank:23,name:"SGC E&C",biz:["GMP의약품","바이오","식품공장","화학플랜트"],wins:[{project:"셀트리온 제약공장 신·증축",period:"약 1,183억원 규모(2025~2026년 국내 착공분)",cm:null,designer:null},{project:"인천 반도체 후공정 증설공사",period:"약 626억원 규모(2025~2026년 국내 착공분)",cm:null,designer:null}],clients:["GC녹십자","CJ제일제당","롯데바이오"],strengths:["바이오·식품공장 특화 및 GMP 설계 내재화 역량 보유(GC녹십자, CJ제일제당, 롯데바이오)","2025년 매출 1조3,420억원(+11.3%)·영업이익 527억원(+399%)으로 해외 플랜트·공공사업 확대에 힘입어 7분기 연속 영업흑자, 공공사업 수주 비중도 2023년 17%→2025년 39%로 매년 확대","셀트리온 제약공장·인천 반도체 후공정 증설 등 첨단산업 분야 수주로 반도체 섹터 진입 시작, 1년간 국내 착공 규모 약 1조원 달성"],weaknesses:["영업이익 개선에도 이자비용 급증 등 영업외비용으로 순손실이 지속(2025년 순손실 645억원), 2025년 상반기 영업활동현금흐름도 -1,008억원 기록","2023년 인천·안성 물류센터 채무 인수 여파로 부채비율이 300%를 상회(2025년 310.7%), 모회사 SGC에너지의 자금지원과 신종자본증권 발행에 의존해 재무구조 개선 중","순손실 지속으로 코스닥 우량기업부에서 중견기업부로 강등된 바 있어 오너 3세 이우성 대표의 재무 정상화 리더십이 시험대에 올라 있음"],sources:[{t:"SGC E&C, 공공·해외 프로젝트 쌍끌이···영업익 4배 급증",u:"https://www.newsway.co.kr/news/view?ud=2026022014484688006"},{t:"SGC이앤씨 \"공공사업 수주 비중 39%까지 늘어나\"",u:"https://www.hankyung.com/article/202601198931i"},{t:"SGC E&C, 1년새 국내 착공 현장 1조원…첨단산업·공공수주 확대",u:"https://www.sentv.co.kr/article/view/sentv202601120123"},{t:"SGC E&C, 수주 확대에도 '순손실·재무부담'…이우성 대표 리더십 시험대",u:"https://www.greened.kr/news/articleView.html?idxno=339164"},{t:"\"부채비율 낮추자\"…GS·롯데건설·한라·SGC이앤씨, 신종자본증권 잇단 발행",u:"https://www.ceoscoredaily.com/page/view/2025121815560154015"}],confidence:"high",radar:[{axis:"기술력",val:78},{axis:"트랙레코드",val:72},{axis:"재무",val:35},{axis:"영업력",val:70},{axis:"인력",val:68}],capabilityRating:{year:"2026",civilRank:45,civilAmount:"8,782억원",industrialRank:15,industrialAmount:null},creditRating:{agency:null,grade:null,outlook:null,date:null},financialsDetail:{revenue:"1조3,420억원",assets:"1조3,639억원",equity:"3,321억원",liabilities:"1조318억원",period:"2025년(연결, 연간)"},severeAccidents:[{date:"2023-10-10",location:"경기 시흥 정왕동 복합물류센터 신축현장",summary:"고소작업대가 레미콘 트럭에 걸려 붕괴, 추락 사망",source:{t:"8개월 영업정지 '철퇴' SGC이테크건설, 한달 못가 또 사망사고",s:"경인일보",u:"https://www.kyeongin.com/article/1659201"}},{date:"2023-11-22",location:"인천 검단 AA10-2블록 아파트 건설현장",summary:"안전대 미착용 상태로 11층에서 추락 사망",source:{t:"SGC이테크건설, '안전 불감증' 만연 잇따른 공사현장 사망사고…왜?",s:"백세시대",u:"https://www.100ssd.co.kr/news/articleView.html?idxno=104884"},note:"층수·추락지점 표현이 매체별로 다소 상이(일요주간은 12층·테라스로 보도)"}]},
   {id:"hanwhaeng_c",rank:24,name:"한화엔지니어링",biz:["플랜트","산업시설","건축"],wins:["한화 방산시설","석유화학 플랜트"],clients:["한화그룹","한국중부발전","ADNOC"],strengths:["한화그룹 방산·에너지 계열과의 사업 연계 가능성"],weaknesses:["검색 결과 '한화엔지니어링' 단독 법인의 2025~2026년 재무·실적 뉴스를 특정하지 못함(검증 제한적, 유사 계열사인 한화엔진·한화오션과 혼동 주의)"],sources:[{t:"검증 시도 결과 특정 법인 뉴스 미검출 — 참고용 그룹 계열 정보만 확인",u:"https://www.hanwhaocean.com/investors/ea/"}],confidence:"low"},
   {id:"gsear_c",rank:25,name:"GS이앤알",biz:["환경","에너지","리사이클"],wins:["폐기물처리시설","바이오가스 플랜트"],clients:["환경부","각지자체","SK"],strengths:["GS그룹 에너지 계열과의 사업 연계(환경·리사이클 분야)"],weaknesses:["검색 결과 최신(2025~2026년) 재무·실적 뉴스가 거의 없고, 확인된 기사는 2020년 '해외 자원개발 올스톱' 보도가 가장 최근 수준(검증 제한적)"],sources:[{t:"GS E&R 해외 자원개발 올스톱 예고…회사채 영향은(더벨, 2020년)",u:"https://thebell.co.kr/free/content/ArticleView.asp?key=202002250859274560105830&lcode=00"}],confidence:"low"},
   {id:"dongwon_c",rank:26,name:"동원개발",biz:["주거","건축"],wins:["동원로얄듀크 광교","동원베네스트 마곡"],clients:["LH","SH","각지자체"],strengths:["10년간 연결자본이 꾸준히 증가해 온 안정적 성장 이력(블로터)"],weaknesses:["최근 현금창출력이 둔화되고 있다는 평가(블로터)"],sources:[{t:"[동원개발 경영셈법]⑤ 10년간 불어난 연결 자본, 둔화된 현금창출력(블로터)",u:"https://www.bloter.net/news/articleView.html?idxno=669466"}],confidence:"high"},
@@ -205,6 +210,72 @@ function calcThreat(bids,comps){
 
     return {...comp,threat:freq+wr+val+type,breakdown:{freq,wr,val,type,cnt:rawInvolved,wCnt:rawWon,compWonAmt,confidence,globalWinRate:Math.round(globalWinRate*100)}};
   });
+}
+
+// ─── 수주 가능성 예측(참고용, 규칙 기반) ────────────────────────
+// "진행중" 입찰 1건에 대해, 보유 데이터만으로 Xi C&A의 수주 가능성을 0~100점으로 추정한다.
+// 통계·머신러닝 예측이 아니라 사람이 검증 가능한 규칙(가중합)이며, 데이터가 적을수록 신뢰도가 낮다(참고용 — 최종 판단은 담당자 몫).
+const WIN_WEIGHTS={comp:40,type:25,cap:25,hist:10};
+function calcWinChance(bid,allBids,activeComps,threatScores,xiBaseline){
+  // ① 경쟁강도 역산(40점) — 이 건에 참여한 경쟁사들의 평균 위협도가 낮을수록 높은 점수. 경쟁사 미입력 시 중립값(30) 적용.
+  const compEntries=(bid.competitors||[]).map(name=>{
+    const comp=activeComps.find(x=>x.name===name);
+    const ts=comp?threatScores.find(t=>t.id===comp.id):null;
+    return {comp,threat:ts?.threat??0,ts};
+  });
+  const avgThreat=compEntries.length?compEntries.reduce((s,e)=>s+e.threat,0)/compEntries.length:30;
+  const compScore=Math.round(WIN_WEIGHTS.comp*(1-Math.min(100,avgThreat)/100));
+
+  // ② 공종 적합도(25점) — Xi C&A 주력 공종(XI_TYPES: GMP·반도체·데이터센터·이차전지·산업플랜트) 여부
+  const typeScore=XI_TYPES.includes(bid.type)?WIN_WEIGHTS.type:(bid.type==="산업시설"?Math.round(WIN_WEIGHTS.type*0.6):Math.round(WIN_WEIGHTS.type*0.25));
+
+  // ③ 역량 비교 우위(25점) — Xi C&A 기준값 평균 vs 이 건 경쟁사들의 역량 레이더(실측 또는 자동 추정) 평균
+  const xiAvg=xiBaseline.reduce((s,a)=>s+a.val,0)/xiBaseline.length;
+  const compRadarAvgs=compEntries.filter(e=>e.comp).map(e=>{
+    const radar=e.comp.radar||estimateRadar(e.comp,e.ts);
+    return radar.reduce((s,a)=>s+a.val,0)/radar.length;
+  });
+  const compCapAvg=compRadarAvgs.length?compRadarAvgs.reduce((s,v)=>s+v,0)/compRadarAvgs.length:xiAvg;
+  const capScore=Math.round(Math.max(0,Math.min(WIN_WEIGHTS.cap,WIN_WEIGHTS.cap*(0.5+(xiAvg-compCapAvg)/100))));
+
+  // ④ 동일 공종 과거 낙찰 이력(10점) — 같은 공종(type)에서 우리 낙찰률. 이력 없으면 중립값(50%) 적용.
+  const sameType=allBids.filter(b=>b.type===bid.type&&(b.result==="우리낙찰"||b.result==="타사낙찰"));
+  const histScore=sameType.length?Math.round(WIN_WEIGHTS.hist*(sameType.filter(b=>b.result==="우리낙찰").length/sameType.length)):Math.round(WIN_WEIGHTS.hist*0.5);
+
+  const score=Math.max(0,Math.min(100,compScore+typeScore+capScore+histScore));
+  return {score,breakdown:{compScore,typeScore,capScore,histScore,avgThreat:Math.round(avgThreat),sameTypeCount:sameType.length,compCount:compEntries.length}};
+}
+const winChanceColor=v=>v>=65?T.green:v>=40?T.gold:T.red;
+
+// ─── 입찰 대응 종합 예측(경쟁사 분석 + RFP 리스크 분석 결합) ────────
+// "진행중" 입찰 1건에 대해 ① 경쟁사 기반 수주 가능성(calcWinChance)과 ② RFP·계약조건 리스크(rfpAnalysis.totalScore, 있는 경우)를
+// 함께 반영해 종합 대응 스코어와 권고를 산출한다. RFP가 아직 없으면 수주 가능성만으로 판단하고 그 사실을 breakdown에 남긴다.
+function calcBidRecommendation(bid,allBids,activeComps,threatScores,xiBaseline){
+  const win=calcWinChance(bid,allBids,activeComps,threatScores,xiBaseline);
+  const rfpRisk=typeof bid.rfpAnalysis?.totalScore==="number"?bid.rfpAnalysis.totalScore:null;
+  const rfpGrade=bid.rfpAnalysis?.grade||null;
+  // RFP 리스크가 있으면 수주 가능성 65% + 계약 안전도(100-리스크) 35%로 종합, 없으면 수주 가능성 그대로 사용
+  const overallScore=rfpRisk==null?win.score:Math.round(win.score*0.65+(100-rfpRisk)*0.35);
+
+  let recommendation,recColor;
+  const winHigh=win.score>=65,winLow=win.score<40;
+  const riskHigh=rfpRisk!=null&&rfpRisk>=65,riskLow=rfpRisk!=null&&rfpRisk<40;
+  if(rfpRisk==null){
+    recommendation=winHigh?"적극 대응 권장":winLow?"신중 검토 필요":"조건부 대응 검토";
+    recColor=winHigh?T.green:winLow?T.red:T.gold;
+  }else if(winHigh&&riskLow){recommendation="적극 대응 권장";recColor=T.green;}
+  else if(winHigh&&riskHigh){recommendation="조건부 대응 — 계약조건 협상 필수";recColor=T.gold;}
+  else if(winLow&&riskHigh){recommendation="참여 재검토 권장";recColor=T.red;}
+  else if(winLow&&riskLow){recommendation="신중 검토 — 수주 가능성 보완 필요";recColor=T.gold;}
+  else{
+    // 수주 가능성이 중간대(40~65)라 위 4분면에 걸리지 않는 경우, 종합점수(overallScore)로 한 번 더 세분화해
+    // "위협도는 애매한데 RFP 리스크가 커서 종합점수는 낮은" 경우를 뭉뚱그려 중립 취급하지 않도록 한다.
+    if(overallScore>=60){recommendation="조건부 대응 검토 — 양호";recColor=T.gold;}
+    else if(overallScore<35){recommendation="참여 재검토 권장";recColor=T.red;}
+    else{recommendation="조건부 대응 검토";recColor=T.gold;}
+  }
+
+  return {overallScore,recommendation,recColor,win,rfpRisk,rfpGrade,hasRfp:rfpRisk!=null};
 }
 
 // ─── API ──────────────────────────────────────────────────────
@@ -356,6 +427,53 @@ function RadarSVG({data,color,overlay}){
   );
 }
 
+// ─── 역량 레이더 자동 추정(참고용) ───────────────────────────────
+// radar 필드가 큐레이션되어 있지 않은 경쟁사에 대해, 보유 중인 객관적 데이터만으로 5개 축(0~100)을 추정한다.
+// 사람이 직접 조사·입력한 값(radar 필드 있음)과 달리 사실 검증을 거치지 않은 참고용 추정치이므로,
+// 화면에서는 반드시 "자동 추정" 배지와 함께 표시하고 실측 데이터가 쌓이면 큐레이션 값으로 교체할 것.
+const RADAR_CREDIT_SCORE={AAA:97,"AA+":94,AA:92,"AA-":90,"A+":86,A:82,"A-":78,"BBB+":72,BBB:66,"BBB-":60,"BB+":52,BB:46,"BB-":40,B:30,CCC:18};
+function estimateRadar(comp,ts){
+  const n=TOP50.length;
+  const rankScore=comp.rank?Math.round(100-((comp.rank-1)/Math.max(1,n-1))*70):50; // 도급순위 기반 대략치(30~100), 다른 근거가 없을 때의 최종 fallback
+
+  // ① 기술력 — 산업설비(산설) 시공능력평가 순위 우선, 없으면 토건 순위 + Xi C&A 주력 공종(XI_TYPES) 겹침 가점
+  let tech=rankScore;
+  if(comp.capabilityRating?.industrialRank) tech=Math.round(100-((comp.capabilityRating.industrialRank-1)/99)*60);
+  else if(comp.capabilityRating?.civilRank) tech=Math.round(100-((comp.capabilityRating.civilRank-1)/99)*65);
+  const overlap=(comp.biz||[]).filter(b=>XI_TYPES.includes(b)).length;
+  tech=Math.min(100,Math.round(tech+overlap*3));
+
+  // ② 트랙레코드 — 공개 확인된 수주실적(wins)·발주처(clients) 수, 입찰이력이 있으면 경합 참여건수도 반영
+  let track=40+Math.min(30,(comp.wins?.length||0)*10)+Math.min(20,(comp.clients?.length||0)*3);
+  if(ts?.breakdown) track=Math.round(track*0.5+Math.min(100,ts.breakdown.cnt*8)*0.5);
+  track=Math.min(100,Math.round(track));
+
+  // ③ 재무 — 공식 신용등급 우선, 없으면 도급순위 fallback(시공능력평가액은 서식이 회사마다 달라 자동 파싱하지 않음)
+  let fin=rankScore;
+  if(comp.creditRating?.grade){
+    const g=Object.keys(RADAR_CREDIT_SCORE).find(k=>comp.creditRating.grade.startsWith(k));
+    if(g) fin=RADAR_CREDIT_SCORE[g];
+  }
+  fin=Math.round(fin);
+
+  // ④ 영업력 — 입찰이력(위협도 breakdown)의 경합빈도·낙찰률이 있으면 최우선 반영, 없으면 확인된 수주 건수
+  let biz=rankScore;
+  if(ts?.breakdown) biz=Math.round((ts.breakdown.freq/30)*50+(ts.breakdown.wr/35)*50);
+  else if(comp.wins?.length) biz=Math.min(100,50+comp.wins.length*10);
+  biz=Math.round(biz);
+
+  // ⑤ 인력 — 공개된 등록기술인·임직원 수 데이터가 없어 시공능력평가 규모(순위)로만 대략 추정(신뢰도 낮음)
+  const workforce=Math.round(rankScore);
+
+  return [
+    {axis:"기술력",val:tech},
+    {axis:"트랙레코드",val:track},
+    {axis:"재무",val:fin},
+    {axis:"영업력",val:biz},
+    {axis:"인력",val:workforce},
+  ];
+}
+
 // ─── APP ──────────────────────────────────────────────────────
 const CHAT_SYS="당신은 자이씨앤에이(Xi C&A) 영업2팀 전용 경쟁사 분석 AI입니다. Xi C&A 전문: GMP 제약/바이오, 클린룸, 데이터센터, 이차전지, EPC 플랜트. 한국어로 간결하고 전략적으로 답변하세요.";
 
@@ -419,8 +537,15 @@ function App(){
     })();
   },[dbApi]);
 
-  // Xi C&A 역량 레이더 기준값(default) — 팀이 직접 조정 가능, DB에 공유 저장
-  const XI_BASELINE_DEFAULT=[{axis:"기술력",val:70},{axis:"트랙레코드",val:70},{axis:"재무",val:70},{axis:"영업력",val:70},{axis:"인력",val:70}];
+  // Xi C&A 역량 레이더 기준값(default) — 자이C&A 공개자료 기반 산정(팀이 직접 조정 가능, DB에 공유 저장)
+  // 산정 근거 (2026-09 기준 공개자료):
+  //  · 기술력(82): GMP·클린룸·반도체·이차전지·데이터센터·석유화학플랜트 등 8개 전문영역 특화 + 베트남법인 건설업면허 1등급 취득(2024)
+  //  · 트랙레코드(80): LG에너지솔루션 오창·美애리조나·폴란드 배터리공장, LG디스플레이 파주 P9·P10 클린룸, 네이버 데이터센터 '각 세종'(2026 우선협상대상자) 등 5개국 해외법인 기반 실적
+  //  · 재무(78): 2026년 시공능력평가 36위(2025년 평가액 1조4,028억원), 한국신용평가 신용등급 A/안정적(2025.05) — 현재 추적 중인 4개 경쟁사 중 공식 신용등급 A 확보 사례 없음
+  //  · 영업력(62): 2022년 163위→2026년 36위로 4년 만에 급성장했으나 GS건설(구 LG) 계열 매출 의존도가 높아 Non-Captive(비계열) 수주 비중 확대가 현재 진행 중인 과제
+  //  · 인력(55): 공개된 등록기술인·임직원 수 데이터 없음 — S&I건설 CM사업부에서 출발한 조직 특성상 대형 종합건설사 대비 슬림한 조직으로 추정(간접 신호, 확정치 아님·담당자 조정 권장)
+  // 출처: 자이C&A — 나무위키(https://namu.wiki/w/자이C&A), "자이에스앤디, 자이씨앤에이 품고 5년 만에 매출 468%↑"(CEOSCOREDAILY, https://www.ceoscoredaily.com/page/view/2025042816453678835), "[GS 신사업][AIDC] 자이C&A 역할 커진다"(딜사이트, https://dealsite.co.kr/articles/169013)
+  const XI_BASELINE_DEFAULT=[{axis:"기술력",val:82},{axis:"트랙레코드",val:80},{axis:"재무",val:78},{axis:"영업력",val:62},{axis:"인력",val:55}];
   const [xiBaseline,setXiBaseline]=useState(XI_BASELINE_DEFAULT);
   useEffect(()=>{
     if(!dbApi) return;
@@ -458,13 +583,24 @@ function App(){
   };
 
   // 팀 공유 저장. 입찰이력은 건별 문서로 저장되어 서로 덮어쓰지 않습니다.
+  // 낙관적 업데이트: 서버 응답을 기다리지 않고 화면(bids state)에 즉시 반영한다.
+  // 예전엔 서버 저장이 끝나야만(await) 화면이 갱신됐는데, 서버가 없거나(예: 이 미리보기 화면) 저장이 실패하면
+  // catch{}로 조용히 삼켜져서 "추가를 눌러도 아무 반응이 없는" 것처럼 보이는 문제가 있었다.
+  // 이제는 즉시 화면에 반영하고, 서버 저장에 실패하면 예외를 호출부(BidHistory.submit)로 올려보내 경고를 띄운다.
+  // 서버가 실제로는 저장하지 못했는데도 화면엔 남는 경우, 다음 폴링(BID_POLL_MS)때 서버의 실제 목록으로 다시 덮어써진다.
   const addBid=async bid=>{
-    if(!dbApi) return;
-    try{await dbApi.collection("bids").doc(bid.id).set(bid);}catch{}
+    setBids(prev=>{
+      const idx=prev.findIndex(b=>b.id===bid.id);
+      if(idx>=0){const next=[...prev];next[idx]=bid;return next;}
+      return [...prev,bid];
+    });
+    if(!dbApi) throw new Error("저장 서버에 연결되어 있지 않습니다. 이 화면에서만 임시로 보이며, 새로고침하면 사라집니다.");
+    await dbApi.collection("bids").doc(bid.id).set(bid);
   };
   const removeBid=async id=>{
-    if(!dbApi) return;
-    try{await dbApi.doc(`bids/${id}`).delete();}catch{}
+    setBids(prev=>prev.filter(b=>b.id!==id));
+    if(!dbApi) throw new Error("저장 서버에 연결되어 있지 않습니다. 이 화면에서만 삭제되며, 새로고침하면 되돌아올 수 있습니다.");
+    await dbApi.doc(`bids/${id}`).delete();
   };
   const saveTracked=async n=>{
     if(!dbApi) return;
@@ -472,7 +608,7 @@ function App(){
   };
 
   // RFP 위험도 분석 — 저장된 RFP 텍스트를 Claude(뷰어 본인 계정)에게 분석시키고, 결과를 팀 공유 DB에 저장
-  const RFP_RUBRIC=`[검토 카테고리 12가지]
+  const RFP_RUBRIC=`[검토 카테고리 12가지 — 각 카테고리는 0~10점(10=매우 위험, 0=문제없음)으로도 채점]
 1. 손해배상·지체상금 — 상한 유무, 과도한 요율(예: 일 0.5% 초과, 총액 제한 없음)
 2. 하자담보책임(하자보수) — 기간 과도(구조체 10년 초과·일반 5년 초과) 또는 범위 불명확
 3. 계약해지 — 발주처 일방적/무귀책 해지권 + 위약금 미보상, 해지 시 기성고 정산 불리
@@ -490,13 +626,29 @@ function App(){
 S등급(매우 위험): 치명적(critical) 조항 1건 이상
 A등급(위험): 중대(major) 조항 1건 이상(치명적 없음)
 B등급(주의): 경미한(minor) 조항만 발견
-C등급(낮음): 특이 리스크 없음, 통상적 계약조건`;
+C등급(낮음): 특이 리스크 없음, 통상적 계약조건
+
+[정량 점수 산정 방식]
+카테고리별 0~10점 위험도 점수를 매기고, 12개 카테고리 점수 합계(최대 120점)를 100점 만점으로 환산해 종합 리스크 스코어를 산출합니다(총점 = 카테고리 합계 ÷ 120 × 100, 반올림). S/A/B/C 등급은 정성적 참고용, 총점은 계약 간 정량 비교·추이 관리용입니다.`;
+  const RFP_CATEGORIES=[
+    {id:"1",label:"손해배상·지체상금"},{id:"2",label:"하자담보책임"},{id:"3",label:"계약해지"},
+    {id:"4",label:"대금지급 조건"},{id:"5",label:"설계변경·추가공사 정산"},{id:"6",label:"불가항력"},
+    {id:"7",label:"지식재산권·설계도서 귀속"},{id:"8",label:"하도급 통제"},{id:"9",label:"이행보증·하자보증"},
+    {id:"10",label:"분쟁해결"},{id:"11",label:"안전·환경 책임 전가"},{id:"12",label:"기타 이례조항"},
+  ];
   const runRfpAnalysis=async(bidId,rfpText)=>{
     if(!sampleApi) throw new Error("AI 분석 기능을 사용할 수 없습니다");
     if(!rfpText||!rfpText.trim()) throw new Error("분석할 RFP 텍스트가 없습니다");
-    const prompt=`당신은 Xi C&A(GS그룹 계열, GMP 의약품·클린룸·데이터센터·이차전지·산업플랜트 전문 EPC 기업) 영업팀을 위한 RFP·계약조건 리스크 검토 전문가입니다. 아래 RFP/계약조건 원문을 검토해 독소조항·리스크 요인을 분석하고 전체 위험도를 S/A/B/C 등급으로 산정하세요.\n\n${RFP_RUBRIC}\n\n[출력 형식] 설명 없이 JSON만 반환:\n{"grade":"S|A|B|C","findings":[{"category":"카테고리명","severity":"critical|major|minor","clause_excerpt":"원문에서 발췌한 짧은 문구","issue":"무엇이 문제인지","recommendation":"협상·대응 방안"}],"summary":"2~3문장 총평"}\n\n[RFP/계약조건 원문]\n"""\n${rfpText.slice(0,40000)}\n"""`;
+    const prompt=`당신은 Xi C&A(GS그룹 계열, GMP 의약품·클린룸·데이터센터·이차전지·산업플랜트 전문 EPC 기업) 영업팀을 위한 RFP·계약조건 리스크 검토 전문가입니다. 아래 RFP/계약조건 원문을 검토해 독소조항·리스크 요인을 분석하고, 전체 위험도를 S/A/B/C 등급과 카테고리별 정량 점수로 함께 산정하세요.\n\n${RFP_RUBRIC}\n\n[출력 형식] 설명 없이 JSON만 반환:\n{"grade":"S|A|B|C","categoryScores":{"1":0,"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0},"findings":[{"category":"카테고리명","severity":"critical|major|minor","clause_excerpt":"원문에서 발췌한 짧은 문구","issue":"무엇이 문제인지","recommendation":"협상·대응 방안"}],"summary":"2~3문장 총평"}\ncategoryScores는 카테고리 번호(1~12)를 key로, 0~10 정수 위험도 점수를 value로 반드시 12개 모두 채우세요(문제 없는 카테고리는 0).\n\n[RFP/계약조건 원문]\n"""\n${rfpText.slice(0,40000)}\n"""`;
     const result=await sampleApi.json(prompt,{modelTier:"complex"});
-    const analysis={...result,analyzedAt:new Date().toISOString()};
+    // 모델이 카테고리를 누락하거나 범위를 벗어난 값을 줄 수 있으므로 0~10으로 정규화하고 12개 전부 채운다.
+    const categoryScores={};
+    RFP_CATEGORIES.forEach(c=>{
+      const raw=Number(result?.categoryScores?.[c.id]);
+      categoryScores[c.id]=Number.isFinite(raw)?Math.max(0,Math.min(10,Math.round(raw))):0;
+    });
+    const totalScore=Math.round(Object.values(categoryScores).reduce((s,v)=>s+v,0)/120*100);
+    const analysis={...result,categoryScores,totalScore,analyzedAt:new Date().toISOString()};
     if(dbApi){try{await dbApi.doc(`bids/${bidId}`).update({rfpAnalysis:analysis});}catch{}}
     return analysis;
   };
@@ -592,7 +744,7 @@ C등급(낮음): 특이 리스크 없음, 통상적 계약조건`;
           {!isChat&&<div style={{padding:narrow?"14px 12px":"20px 22px"}}>
             {view==="overview"&&<Overview setView={setView} setSelId={setSelId} threatScores={threatScores} bidsCount={bids.length} activeComps={activeComps} onSettings={()=>setShowSettings(true)} narrow={narrow} investmentDisclosures={investmentDisclosures}/>}
             {view==="profiles"&&<Profiles selComp={selComp} setSelId={setSelId} threatScores={threatScores} activeComps={activeComps} narrow={narrow} xiBaseline={xiBaseline} saveXiBaseline={saveXiBaseline}/>}
-            {view==="bids"&&<BidHistory bids={bids} addBid={addBid} removeBid={removeBid} threatScores={threatScores} activeComps={activeComps} addCompetitor={addCompetitor} narrow={narrow} runRfpAnalysis={runRfpAnalysis} rfpRubric={RFP_RUBRIC} sampleReady={!!sampleApi}/>}
+            {view==="bids"&&<BidHistory bids={bids} addBid={addBid} removeBid={removeBid} threatScores={threatScores} activeComps={activeComps} addCompetitor={addCompetitor} narrow={narrow} runRfpAnalysis={runRfpAnalysis} rfpRubric={RFP_RUBRIC} rfpCategories={RFP_CATEGORIES} sampleReady={!!sampleApi} xiBaseline={xiBaseline}/>}
             {view==="pipeline"&&<Pipeline pipelineCache={pipelineCache} fetchPipeline={fetchPipeline} activeComps={activeComps}/>}
             {view==="news"&&<NewsView newsCache={newsCache} fetchNews={fetchNews} activeComps={activeComps} sampleApi={sampleApi}/>}
             {view==="dart"&&<DartView dartCache={dartCache} fetchDart={fetchDart} activeComps={activeComps} narrow={narrow} dartKeywords={dartKeywords} saveDartKeywords={saveDartKeywords}/>}
@@ -859,6 +1011,8 @@ function Profiles({selComp,setSelId,threatScores,activeComps,narrow,xiBaseline,s
   const [draft,setDraft]=useState(null);
   if(!selComp) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,color:T.t2}}>경쟁사를 설정에서 추가하세요</div>;
   const ts=threatScores.find(t=>t.id===selComp.id)||selComp;
+  const isEstimatedRadar=!selComp.radar;
+  const radarData=selComp.radar||estimateRadar(selComp,ts);
   const startEdit=()=>{setDraft(xiBaseline.map(a=>({...a})));setEditBaseline(true);};
   const saveEdit=()=>{saveXiBaseline(draft);setEditBaseline(false);};
   return (
@@ -888,19 +1042,25 @@ function Profiles({selComp,setSelId,threatScores,activeComps,narrow,xiBaseline,s
               <div style={{fontSize:40,fontWeight:900,color:selComp.color,lineHeight:1}}>{ts.threat||"—"}</div>
               <div style={{fontSize:10,color:T.t2,marginTop:2}}>위협도 / 100</div>
               <div style={{fontSize:9,color:T.t3,marginTop:2}}>도급순위 #{selComp.rank}</div>
-              {ts.breakdown&&<div style={{fontSize:9,color:T.t3,marginTop:2}}>{ts.breakdown.cnt}전 {ts.breakdown.wCnt}패</div>}
+              {ts.breakdown&&<div style={{fontSize:9,color:T.t3,marginTop:2}}>{ts.breakdown.cnt}전 {ts.breakdown.wCnt}승(상대낙찰)</div>}
               {ts.breakdown&&<span style={{display:"inline-block",marginTop:4,padding:"2px 8px",borderRadius:20,background:`${THREAT_CONF_COLOR[ts.breakdown.confidence]}14`,border:`1px solid ${THREAT_CONF_COLOR[ts.breakdown.confidence]}40`,fontSize:9,color:THREAT_CONF_COLOR[ts.breakdown.confidence],fontWeight:700}}>{THREAT_CONF_LABEL[ts.breakdown.confidence]}</span>}
             </div>
           </div>
         </div>
         {showMethod&&<MethodologyPanel onClose={()=>setShowMethod(false)}/>}
-        <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":(selComp.radar?"1.1fr 1fr":"1fr"),gap:12}}>
-          {selComp.radar&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-              <div style={{fontSize:11,fontWeight:700}}>역량 레이더 <span style={{fontWeight:400,color:T.t3}}>(Xi C&A 기준 대비)</span></div>
+        <div style={{display:"grid",gridTemplateColumns:narrow?"1fr":"1.1fr 1fr",gap:12}}>
+          <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:6}}>
+              <div style={{fontSize:11,fontWeight:700,display:"flex",alignItems:"center",gap:6}}>
+                역량 레이더 <span style={{fontWeight:400,color:T.t3}}>(Xi C&A 기준 대비)</span>
+                {isEstimatedRadar?
+                  <span title="입찰이력·시공능력평가·신용등급 등 보유 데이터로 자동 산출한 참고용 추정치입니다. 실측 조사값이 아닙니다." style={{padding:"1px 7px",borderRadius:20,background:`${T.gold}14`,border:`1px solid ${T.gold}40`,fontSize:9,color:T.gold,fontWeight:700,cursor:"help"}}>자동 추정</span>
+                  :<span style={{padding:"1px 7px",borderRadius:20,background:`${T.green}14`,border:`1px solid ${T.green}40`,fontSize:9,color:T.green,fontWeight:700}}>실측 조사</span>}
+              </div>
               {!editBaseline&&<span onClick={startEdit} style={{cursor:"pointer",fontSize:9,color:T.t3,border:`1px solid ${T.b}`,borderRadius:20,padding:"2px 8px"}}>Xi C&A 기준값 수정</span>}
             </div>
-            <RadarSVG data={selComp.radar} color={selComp.color} overlay={{data:xiBaseline,color:T.teal}}/>
+            {isEstimatedRadar&&<div style={{fontSize:9,color:T.t3,marginBottom:8,lineHeight:1.5}}>※ 담당자가 직접 조사한 값이 아직 없어 보유 데이터(시공능력평가 순위·신용등급·수주실적·입찰이력)로 자동 추정했습니다. 참고용으로만 활용하세요.</div>}
+            <RadarSVG data={radarData} color={selComp.color} overlay={{data:xiBaseline,color:T.teal}}/>
             <div style={{display:"flex",justifyContent:"center",gap:16,marginTop:6}}>
               <div style={{display:"flex",alignItems:"center",gap:5}}><span style={{width:10,height:10,borderRadius:3,background:selComp.color}}/><span style={{fontSize:9,color:T.t2}}>{selComp.name}</span></div>
               <div style={{display:"flex",alignItems:"center",gap:5}}><span style={{width:10,height:0,borderTop:`2px dashed ${T.teal}`}}/><span style={{fontSize:9,color:T.t2}}>Xi C&A 기준</span></div>
@@ -919,7 +1079,7 @@ function Profiles({selComp,setSelId,threatScores,activeComps,narrow,xiBaseline,s
               </div>
               <div style={{fontSize:9,color:T.t3}}>팀 전체에 공유 저장됩니다. 5개 축은 참고용 자체 평가치이며 객관적 산정 근거는 없습니다.</div>
             </div>}
-          </div>}
+          </div>
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
             {ts.breakdown&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"14px 16px"}}>
               <div style={{fontSize:11,fontWeight:700,marginBottom:12}}>위협도 분석</div>
@@ -935,7 +1095,7 @@ function Profiles({selComp,setSelId,threatScores,activeComps,narrow,xiBaseline,s
               ))}
               <div style={{fontSize:9,color:T.t3,marginBottom:4}}>참고: 추적 중인 전체 경쟁사 평균 낙찰률 {ts.breakdown.globalWinRate}% — 참여 건수가 적을수록 낙찰률이 이 값 쪽으로 보정됩니다</div>
               <div style={{borderTop:`1px solid ${T.b}`,paddingTop:8,marginTop:4,display:"flex",justifyContent:"space-between",fontSize:11}}>
-                <span style={{color:T.t2}}>{ts.breakdown.cnt}전 {ts.breakdown.wCnt}패 · {ts.breakdown.compWonAmt>0?`낙찰금액 ${ts.breakdown.compWonAmt.toLocaleString()}억`:"금액 미입력"}</span>
+                <span style={{color:T.t2}}>{ts.breakdown.cnt}전 {ts.breakdown.wCnt}승(상대낙찰) · {ts.breakdown.compWonAmt>0?`낙찰금액 ${ts.breakdown.compWonAmt.toLocaleString()}억`:"금액 미입력"}</span>
                 <span style={{fontWeight:800,color:selComp.color}}>합계 {ts.threat}점</span>
               </div>
             </div>}
@@ -1049,9 +1209,81 @@ const RFP_GRADE_LABEL={S:"매우 위험",A:"위험",B:"주의",C:"낮음"};
 const RFP_SEV_COLOR={critical:T.red,major:T.gold,minor:T.t2};
 const RFP_SEV_LABEL={critical:"치명적",major:"중대",minor:"경미"};
 const RFP_MAX_CHARS=40000;
+const rfpScoreColor=v=>v>=75?T.red:v>=50?T.gold:v>=25?T.blue:T.green;
+
+// ─── RFP 첨부파일 텍스트 추출(PDF/Word/Excel/PPT) ────────────────
+// 모두 브라우저(클라이언트) 내에서 CDN 라이브러리로 파싱하며, 서버로 원본 파일이 전송되지 않는다.
+// 지원: .txt/.md(그대로) · .pdf(pdf.js) · .docx(mammoth) · .xlsx/.xls(SheetJS) · .pptx(JSZip+XML 파싱)
+// 미지원(라이브러리 부재): 옛 .doc/.ppt(97-2003 바이너리), .hwp → 뷰어에서 본문을 복사해 붙여넣도록 안내
+if(typeof pdfjsLib!=="undefined"){
+  pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+const RFP_SUPPORTED_EXT=[".txt",".md",".pdf",".docx",".xlsx",".xls",".pptx"];
+const extractPdfText=async file=>{
+  if(typeof pdfjsLib==="undefined")throw new Error("PDF 파서를 불러오지 못했습니다(네트워크를 확인하고 새로고침해 주세요). 본문을 직접 복사해 붙여넣어 주세요.");
+  const buf=await file.arrayBuffer();
+  const doc=await pdfjsLib.getDocument({data:buf}).promise;
+  const out=[];
+  const maxPages=Math.min(doc.numPages,200); // 과도하게 큰 PDF는 앞부분만 읽어 처리 시간을 제한
+  for(let i=1;i<=maxPages;i++){
+    const page=await doc.getPage(i);
+    const content=await page.getTextContent();
+    out.push(content.items.map(it=>it.str).join(" "));
+    if(out.join("\n").length>RFP_MAX_CHARS)break;
+  }
+  const text=out.join("\n\n").trim();
+  if(!text)throw new Error("PDF에서 텍스트를 찾지 못했습니다(스캔본·이미지 PDF일 수 있습니다). 본문을 직접 복사해 붙여넣어 주세요.");
+  return text;
+};
+const extractDocxText=async file=>{
+  if(typeof mammoth==="undefined")throw new Error("Word 파서를 불러오지 못했습니다(네트워크를 확인하고 새로고침해 주세요). 본문을 직접 복사해 붙여넣어 주세요.");
+  const buf=await file.arrayBuffer();
+  const result=await mammoth.extractRawText({arrayBuffer:buf});
+  const text=(result.value||"").trim();
+  if(!text)throw new Error("문서에서 텍스트를 찾지 못했습니다.");
+  return text;
+};
+const extractXlsxText=async file=>{
+  if(typeof XLSX==="undefined")throw new Error("Excel 파서를 불러오지 못했습니다(네트워크를 확인하고 새로고침해 주세요). 본문을 직접 복사해 붙여넣어 주세요.");
+  const buf=await file.arrayBuffer();
+  const wb=XLSX.read(buf,{type:"array"});
+  const parts=wb.SheetNames.map(name=>`[시트: ${name}]\n${XLSX.utils.sheet_to_csv(wb.Sheets[name])}`);
+  const text=parts.join("\n\n").trim();
+  if(!text)throw new Error("스프레드시트에서 데이터를 찾지 못했습니다.");
+  return text;
+};
+const extractPptxText=async file=>{
+  if(typeof JSZip==="undefined")throw new Error("PPT 파서를 불러오지 못했습니다(네트워크를 확인하고 새로고침해 주세요). 본문을 직접 복사해 붙여넣어 주세요.");
+  const buf=await file.arrayBuffer();
+  const zip=await JSZip.loadAsync(buf);
+  const slideFiles=Object.keys(zip.files)
+    .filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n))
+    .map(n=>({n,num:parseInt(n.match(/slide(\d+)\.xml/)[1],10)}))
+    .sort((a,b)=>a.num-b.num);
+  const parser=new DOMParser();
+  const parts=[];
+  for(const {n,num} of slideFiles){
+    const xml=await zip.files[n].async("text");
+    const xdoc=parser.parseFromString(xml,"application/xml");
+    const texts=Array.from(xdoc.getElementsByTagName("a:t")).map(t=>t.textContent).filter(Boolean);
+    if(texts.length)parts.push(`[슬라이드 ${num}]\n${texts.join(" ")}`);
+  }
+  const text=parts.join("\n\n").trim();
+  if(!text)throw new Error("슬라이드에서 텍스트를 찾지 못했습니다.");
+  return text;
+};
+const extractRfpFileText=async file=>{
+  const ext=(file.name.match(/\.[^.]+$/)||[""])[0].toLowerCase();
+  if(ext===".txt"||ext===".md")return await file.text();
+  if(ext===".pdf")return await extractPdfText(file);
+  if(ext===".docx")return await extractDocxText(file);
+  if(ext===".xlsx"||ext===".xls")return await extractXlsxText(file);
+  if(ext===".pptx")return await extractPptxText(file);
+  throw new Error(`지원하지 않는 파일 형식입니다(${ext||"확장자 없음"}). 지원 형식: txt, md, pdf, docx, xlsx, xls, pptx. 옛 doc/ppt(97-2003)·HWP는 뷰어에서 본문을 복사해 붙여넣어 주세요.`);
+};
 
 // ─── RFP 위험도 등급 기준 패널 ───────────────────────────────────
-function RfpMethodologyPanel({rubric,onClose}){
+function RfpMethodologyPanel({rubric,categories,onClose}){
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.65)",zIndex:210,display:"flex",justifyContent:"center",alignItems:"center",padding:20}} onClick={onClose}>
       <div className="ci-fade" style={{width:"min(560px,94vw)",maxHeight:"85vh",overflowY:"auto",background:T.bg1,borderRadius:12,border:`1px solid ${T.b}`}} onClick={e=>e.stopPropagation()}>
@@ -1070,6 +1302,13 @@ function RfpMethodologyPanel({rubric,onClose}){
             ))}
           </div>
           <div style={{fontSize:10.5,color:T.t2,lineHeight:1.6}}>S=치명적(critical) 조항 1건 이상 · A=중대(major) 조항 1건 이상(치명적 없음) · B=경미한(minor) 조항만 발견 · C=특이 리스크 없음</div>
+          <div style={{borderTop:`1px solid ${T.b}`,paddingTop:12}}>
+            <div style={{fontSize:12,fontWeight:700,marginBottom:8}}>정량 리스크 스코어(0~100)</div>
+            <div style={{fontSize:10.5,color:T.t2,lineHeight:1.6,marginBottom:10}}>12개 카테고리를 각각 0~10점(10=매우 위험)으로 채점한 뒤 합계(최대 120점)를 100점 만점으로 환산합니다. 등급(S/A/B/C)은 최악의 단일 조항을 기준으로 한 정성 판단이고, 총점은 계약 전반의 리스크를 정량적으로 비교·추이 관리하기 위한 보조 지표입니다.</div>
+            {categories&&<div style={{display:"flex",flexDirection:"column",gap:4}}>
+              {categories.map((c,i)=><div key={c.id} style={{display:"flex",justifyContent:"space-between",fontSize:10,color:T.t2,padding:"3px 0",borderBottom:i<categories.length-1?`1px solid ${T.b}`:"none"}}><span>{c.id}. {c.label}</span><span style={{color:T.t3}}>0~10점</span></div>)}
+            </div>}
+          </div>
           <div style={{borderTop:`1px solid ${T.b}`,paddingTop:12,whiteSpace:"pre-wrap",fontSize:10.5,color:T.t2,lineHeight:1.7}}>{rubric}</div>
         </div>
       </div>
@@ -1077,7 +1316,7 @@ function RfpMethodologyPanel({rubric,onClose}){
   );
 }
 
-function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetitor,narrow,runRfpAnalysis,rfpRubric,sampleReady}){
+function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetitor,narrow,runRfpAnalysis,rfpRubric,rfpCategories,sampleReady,xiBaseline}){
   const TYPES=["GMP의약품","반도체시설","데이터센터","이차전지","산업플랜트","산업시설","기타"];
   const RESULTS=["우리낙찰","타사낙찰","진행중","유찰"];
   const RC={우리낙찰:T.green,타사낙찰:T.red,진행중:T.gold,유찰:T.t2};
@@ -1092,13 +1331,24 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
   const [analyzing,setAnalyzing]=useState({});
   const [analyzeErr,setAnalyzeErr]=useState({});
   const [expandedRfp,setExpandedRfp]=useState({});
+  const [expandedPred,setExpandedPred]=useState({});
+  const [saveWarn,setSaveWarn]=useState({}); // bid.id -> 서버 저장 실패 경고 메시지(화면엔 남아있지만 서버엔 없을 수 있음)
+  const [listErr,setListErr]=useState(""); // 삭제 등 목록 전체에 걸친 오류(폼이 닫혀있어도 보이도록 별도 상태)
+  const [rfpParsing,setRfpParsing]=useState(false);
 
-  const onRfpFile=e=>{
+  const onRfpFile=async e=>{
     const file=e.target.files?.[0];if(!file)return;
-    if(!/\.(txt|md)$/i.test(file.name)){setErr("RFP 파일은 .txt 또는 .md만 자동 인식됩니다. PDF는 뷰어에서 텍스트를 복사해 아래에 붙여넣어 주세요.");return;}
-    const reader=new FileReader();
-    reader.onload=()=>setForm(f=>({...f,rfpText:String(reader.result||"").slice(0,RFP_MAX_CHARS),rfpFileName:file.name}));
-    reader.readAsText(file);
+    setErr("");
+    setRfpParsing(true);
+    try{
+      const text=await extractRfpFileText(file);
+      setForm(f=>({...f,rfpText:text.slice(0,RFP_MAX_CHARS),rfpFileName:file.name}));
+    }catch(ex){
+      setErr(ex.message||"파일을 읽는 중 오류가 발생했습니다. 본문을 직접 복사해 붙여넣어 주세요.");
+    }finally{
+      setRfpParsing(false);
+      e.target.value=""; // 같은 파일을 다시 선택할 수 있도록 초기화
+    }
   };
 
   const doAnalyze=async b=>{
@@ -1136,9 +1386,25 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
     const editingOrig=editingId?bids.find(b=>b.id===editingId):null;
     const keepAnalysis=editingOrig&&editingOrig.rfpAnalysis&&editingOrig.rfpText===newRfpText;
     const bid={id:editingId||(Date.now().toString()+Math.random().toString(36).slice(2,7)),project:form.project.trim(),type:form.type,value:parseFloat(form.value)||0,ourBid:parseFloat(form.ourBid)||0,competitorBids:Object.fromEntries(Object.entries(form.competitorBids).map(([k,v])=>[k,parseFloat(v)||0]).filter(([,v])=>v>0)),competitors:[...form.competitors],result:form.result,winner:form.result==="타사낙찰"?form.winner:"",date:form.date||new Date().toISOString().slice(0,10),rfpText:newRfpText,rfpFileName:form.rfpFileName||"",...(keepAnalysis?{rfpAnalysis:editingOrig.rfpAnalysis}:{})};
-    await addBid(bid);setForm(INIT);setEditingId(null);setShowForm(false);setTab("stats");
+    // 화면(부모 bids state)에는 addBid 안에서 즉시 반영되므로 여기서는 결과와 무관하게 폼을 바로 닫는다.
+    // 서버 저장이 실패하면 addBid가 예외를 던지고, 그 경고를 해당 카드에 표시한다(조용히 삼키지 않음).
+    setForm(INIT);setEditingId(null);setShowForm(false);setTab("history");
+    try{
+      await addBid(bid);
+      setSaveWarn(p=>{if(!p[bid.id])return p;const n={...p};delete n[bid.id];return n;});
+    }catch(e){
+      setSaveWarn(p=>({...p,[bid.id]:e.message||"서버 저장에 실패했습니다. 화면엔 남아있지만 새로고침하면 사라질 수 있습니다."}));
+    }
   };
-  const remove=async id=>{if(editingId===id){setForm(INIT);setEditingId(null);}await removeBid(id);};
+  const remove=async id=>{
+    if(editingId===id){setForm(INIT);setEditingId(null);}
+    setListErr("");
+    try{
+      await removeBid(id);
+    }catch(e){
+      setListErr(e.message||"서버에서 삭제하지 못했습니다.");
+    }
+  };
   const startEdit=b=>{
     setForm({project:b.project,type:b.type,value:b.value?String(b.value):"",competitors:[...b.competitors],ourBid:b.ourBid?String(b.ourBid):"",competitorBids:Object.fromEntries(Object.entries(b.competitorBids||{}).map(([k,v])=>[k,String(v)])),result:b.result,winner:b.winner||"",date:b.date||"",rfpText:b.rfpText||"",rfpFileName:b.rfpFileName||""});
     setEditingId(b.id);setErr("");setShowForm(true);
@@ -1151,6 +1417,13 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
   const ongoing=bids.filter(b=>b.result==="진행중").length;
   const totalVal=bids.reduce((s,b)=>s+(b.value||0),0);
   const ourWinRate=totalBids>0?Math.round((ourWins/totalBids)*100):0;
+
+  // 진행중 입찰을 종합 대응 스코어(경쟁사 분석+RFP 리스크) 순으로 정렬한 우선순위 랭킹
+  const ongoingRanked=useMemo(()=>{
+    return bids.filter(b=>b.result==="진행중")
+      .map(b=>({bid:b,pred:calcBidRecommendation(b,bids,activeComps,threatScores,xiBaseline)}))
+      .sort((a,b)=>b.pred.overallScore-a.pred.overallScore);
+  },[bids,activeComps,threatScores,xiBaseline]);
 
   const compStats=activeComps.map(comp=>{
     const involved=bids.filter(b=>b.competitors.includes(comp.name));
@@ -1187,6 +1460,29 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
               <div key={id} onClick={()=>setTab(id)} style={{padding:"6px 14px",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:tab===id?700:400,background:tab===id?T.teal:"transparent",color:tab===id?"#FFFFFF":T.t2,border:`1px solid ${tab===id?T.teal:T.b}`,transition:"all .12s"}}>{label}</div>
             ))}
             <div style={{marginLeft:"auto"}}><Btn onClick={()=>{if(showForm){cancelEdit();setShowForm(false);}else{setShowForm(true);}}} color={T.teal}>{showForm?"폼 닫기":"+ 사례 추가"}</Btn></div>
+          </div>}
+
+          {ongoingRanked.length>0&&<div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"16px 18px",marginBottom:14}}>
+            <div style={{fontSize:11,fontWeight:700,marginBottom:2}}>🎯 진행중 입찰 우선순위 ({ongoingRanked.length}건)</div>
+            <div style={{fontSize:9,color:T.t3,marginBottom:12}}>종합 대응 스코어(경쟁사 분석 65% + RFP 리스크 35%, RFP 미첨부 시 수주가능성만) 높은 순 — 규칙 기반 참고 지표이며 최종 판단은 담당자 몫입니다.</div>
+            <div style={{display:"flex",flexDirection:"column",gap:6}}>
+              {ongoingRanked.map(({bid,pred},i)=>(
+                <div key={bid.id} onClick={()=>{setTab("history");setExpandedPred(p=>({...p,[bid.id]:true}));}} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",borderRadius:8,background:T.bg3,cursor:"pointer",border:`1px solid ${T.b}`}}>
+                  <div style={{width:20,flexShrink:0,textAlign:"center",fontSize:12,fontWeight:800,color:i===0?T.gold:T.t3}}>{i+1}</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:11.5,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{bid.project}</div>
+                    <div style={{fontSize:9,color:T.t3,marginTop:1}}>{bid.type}{bid.competitors?.length?` · ${bid.competitors.join(", ")}`:""}</div>
+                  </div>
+                  <div style={{flexShrink:0,textAlign:"right"}}>
+                    <span style={{fontSize:9,fontWeight:700,padding:"2px 8px",borderRadius:20,background:`${pred.recColor}18`,border:`1px solid ${pred.recColor}45`,color:pred.recColor,whiteSpace:"nowrap"}}>{pred.recommendation}</span>
+                  </div>
+                  <div style={{flexShrink:0,width:46,textAlign:"right"}}>
+                    <span style={{fontSize:16,fontWeight:900,color:winChanceColor(pred.overallScore)}}>{pred.overallScore}</span>
+                    <span style={{fontSize:8.5,color:T.t3}}>/100</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>}
 
           {(tab==="stats"||!totalBids)&&(
@@ -1261,9 +1557,11 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
 
           {tab==="history"&&totalBids>0&&(
             <div style={{background:T.bg2,border:`1px solid ${T.b}`,borderRadius:10,padding:"18px 20px"}}>
+              {listErr&&<div style={{fontSize:11,color:T.red,marginBottom:10}}>⚠ {listErr}</div>}
               <div style={{display:"flex",flexDirection:"column",gap:8,maxHeight:"520px",overflowY:"auto"}}>
-                {[...bids].reverse().map(b=>{const rc=RC[b.result];return(
+                {[...bids].reverse().map(b=>{const rc=RC[b.result];const pred=b.result==="진행중"?calcBidRecommendation(b,bids,activeComps,threatScores,xiBaseline):null;return(
                   <div key={b.id} style={{background:T.bg3,borderRadius:8,padding:"12px 14px",borderLeft:`3px solid ${rc}`,flexShrink:0}}>
+                    {saveWarn[b.id]&&<div style={{fontSize:9.5,color:T.gold,background:`${T.gold}14`,border:`1px solid ${T.gold}35`,borderRadius:6,padding:"5px 8px",marginBottom:7,lineHeight:1.5}}>⚠ {saveWarn[b.id]}</div>}
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
                       <div style={{fontSize:12,fontWeight:600}}>{b.project}</div>
                       <div style={{display:"flex",gap:6,alignItems:"center"}}>
@@ -1292,6 +1590,42 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
                       </div>
                     }
                     {b.competitors.length>0&&<div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{b.competitors.map(c=>{const comp=activeComps.find(x=>x.name===c);return <span key={c} style={{padding:"1px 7px",borderRadius:4,background:`${comp?.color||T.t2}14`,border:`1px solid ${comp?.color||T.t2}25`,fontSize:9,color:comp?.color||T.t2}}>⚔ {c}</span>;})}</div>}
+                    {pred&&<div style={{marginTop:8,paddingTop:8,borderTop:`1px solid ${T.b}`}}>
+                      <div onClick={()=>setExpandedPred(p=>({...p,[b.id]:!p[b.id]}))} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+                        <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                          <span style={{fontSize:9,color:T.t3,fontWeight:700}}>🎯 입찰 대응 예측</span>
+                          <span style={{padding:"2px 9px",borderRadius:20,background:`${pred.recColor}18`,border:`1px solid ${pred.recColor}45`,fontSize:10,fontWeight:800,color:pred.recColor}}>{pred.recommendation}</span>
+                        </div>
+                        <div style={{display:"flex",alignItems:"center",gap:10}}>
+                          <span title="경쟁사 분석 기반 수주 가능성(0~100, 참고용 규칙 기반 추정)" style={{fontSize:9,color:T.t2}}>수주가능성 <span style={{fontWeight:800,color:winChanceColor(pred.win.score)}}>{pred.win.score}</span></span>
+                          {pred.hasRfp?
+                            <span title="RFP 계약조건 리스크 총점(0~100, 높을수록 위험)" style={{fontSize:9,color:T.t2}}>RFP리스크 <span style={{fontWeight:800,color:rfpScoreColor(pred.rfpRisk)}}>{pred.rfpRisk}</span></span>
+                            :<span style={{fontSize:9,color:T.t3}}>RFP 미첨부(계약리스크 미반영)</span>}
+                          <span style={{fontSize:9,color:T.t3}}>{expandedPred[b.id]?"▲":"▼"}</span>
+                        </div>
+                      </div>
+                      {expandedPred[b.id]&&<div className="ci-fade" style={{marginTop:8,display:"flex",flexDirection:"column",gap:8}}>
+                        <div style={{background:"rgba(0,0,0,.04)",borderRadius:6,padding:"10px 12px"}}>
+                          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                            <span style={{fontSize:10,fontWeight:700,color:T.t2}}>종합 대응 스코어</span>
+                            <span style={{fontSize:14,fontWeight:900,color:winChanceColor(pred.overallScore)}}>{pred.overallScore}<span style={{fontSize:9,color:T.t3,fontWeight:400}}>/100</span></span>
+                          </div>
+                          <div style={{fontSize:9,fontWeight:700,color:T.t2,marginBottom:6}}>① 경쟁사 분석 — 수주 가능성 {pred.win.score}/100</div>
+                          {[["경쟁강도(역산)",pred.win.breakdown.compScore,WIN_WEIGHTS.comp,`참여 경쟁사 평균 위협도 ${pred.win.breakdown.avgThreat}점`],["공종 적합도",pred.win.breakdown.typeScore,WIN_WEIGHTS.type,"Xi C&A 주력 공종 여부"],["역량 비교 우위",pred.win.breakdown.capScore,WIN_WEIGHTS.cap,"Xi C&A 기준값 vs 경쟁사 레이더 평균"],["동일공종 과거 낙찰률",pred.win.breakdown.histScore,WIN_WEIGHTS.hist,`동일 공종 완료건 ${pred.win.breakdown.sameTypeCount}건 기준`]].map(([l,v,max,desc])=>(
+                            <div key={l} style={{marginBottom:7}}>
+                              <div style={{display:"flex",justifyContent:"space-between",fontSize:10,marginBottom:2}}><span style={{color:T.t2}}>{l}</span><span style={{fontWeight:700,color:T.t1}}>{v}<span style={{color:T.t3,fontWeight:400}}>/{max}</span></span></div>
+                              <div style={{background:T.b,borderRadius:3,height:4,overflow:"hidden",marginBottom:2}}><div style={{height:"100%",width:`${(v/max)*100}%`,background:T.teal,borderRadius:3}}/></div>
+                              <div style={{fontSize:8.5,color:T.t3}}>{desc}</div>
+                            </div>
+                          ))}
+                          <div style={{fontSize:9,fontWeight:700,color:T.t2,margin:"10px 0 4px"}}>② RFP·계약조건 리스크 분석{pred.hasRfp?` — 총점 ${pred.rfpRisk}/100${pred.rfpGrade?` (등급 ${pred.rfpGrade})`:""}`:""}</div>
+                          {pred.hasRfp?
+                            <div style={{background:T.b,borderRadius:3,height:4,overflow:"hidden"}}><div style={{height:"100%",width:`${pred.rfpRisk}%`,background:rfpScoreColor(pred.rfpRisk),borderRadius:3}}/></div>
+                            :<div style={{fontSize:9.5,color:T.t3,lineHeight:1.5}}>아직 RFP·계약조건 텍스트가 첨부되지 않아 계약 리스크가 종합 스코어에 반영되지 않았습니다. RFP를 첨부하고 "AI 위험도 분석"을 실행하면 종합 스코어가 자동으로 갱신됩니다.</div>}
+                          <div style={{fontSize:8.5,color:T.t3,marginTop:8,lineHeight:1.5}}>※ 종합 스코어는 수주 가능성 65% + 계약 안전도(100-RFP리스크) 35%로 계산한 규칙 기반 참고 지표입니다(통계·AI 예측 아님). 최종 입찰 참여 여부는 반드시 담당자가 판단하세요.</div>
+                        </div>
+                      </div>}
+                    </div>}
                     {b.rfpText&&<div style={{marginTop:8,paddingTop:8,borderTop:`1px solid ${T.b}`}}>
                       <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
                         <span style={{fontSize:9,color:T.t3,fontWeight:700}}>📄 RFP {b.rfpFileName?`(${b.rfpFileName})`:"첨부됨"}</span>
@@ -1300,6 +1634,10 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
                           <span style={{fontSize:9,color:RFP_GRADE_COLOR[b.rfpAnalysis.grade]}}>{RFP_GRADE_LABEL[b.rfpAnalysis.grade]}</span>
                           <span style={{fontSize:9,color:T.t3}}>{expandedRfp[b.id]?"▲":"▼"}</span>
                         </span>}
+                        {typeof b.rfpAnalysis?.totalScore==="number"&&<span title="12개 카테고리 위험도 점수 합계를 100점 만점으로 환산한 정량 스코어" style={{display:"flex",alignItems:"center",gap:5,padding:"2px 9px",borderRadius:20,background:`${rfpScoreColor(b.rfpAnalysis.totalScore)}18`,border:`1px solid ${rfpScoreColor(b.rfpAnalysis.totalScore)}45`}}>
+                          <span style={{fontSize:11,fontWeight:800,color:rfpScoreColor(b.rfpAnalysis.totalScore)}}>{b.rfpAnalysis.totalScore}</span>
+                          <span style={{fontSize:9,color:rfpScoreColor(b.rfpAnalysis.totalScore)}}>/100점</span>
+                        </span>}
                         {!b.rfpAnalysis&&<span onClick={()=>!analyzing[b.id]&&sampleReady&&doAnalyze(b)} title={sampleReady?"":"AI 분석 기능을 사용할 수 없습니다"} style={{cursor:sampleReady?"pointer":"not-allowed",padding:"2px 9px",borderRadius:20,background:`${T.purple}14`,border:`1px solid ${T.purple}35`,fontSize:9,color:T.purple,fontWeight:700,opacity:analyzing[b.id]?0.6:!sampleReady?0.5:1}}>{analyzing[b.id]?"분석 중...":"AI 위험도 분석"}</span>}
                         {b.rfpAnalysis&&<span onClick={()=>!analyzing[b.id]&&doAnalyze(b)} style={{cursor:"pointer",fontSize:9,color:T.t3,textDecoration:"underline"}}>{analyzing[b.id]?"재분석 중...":"재분석"}</span>}
                         <span onClick={()=>setShowGradeInfo(true)} style={{cursor:"pointer",fontSize:9,color:T.t3,border:`1px solid ${T.b}`,borderRadius:20,padding:"1px 7px"}}>ⓘ 등급기준</span>
@@ -1307,6 +1645,16 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
                       {analyzeErr[b.id]&&<div style={{fontSize:10,color:T.red,marginTop:6}}>⚠ {analyzeErr[b.id]}</div>}
                       {b.rfpAnalysis&&expandedRfp[b.id]&&<div className="ci-fade" style={{marginTop:8,display:"flex",flexDirection:"column",gap:6}}>
                         {b.rfpAnalysis.summary&&<div style={{fontSize:10.5,color:T.t2,lineHeight:1.6,background:"rgba(0,0,0,.04)",borderRadius:6,padding:"8px 10px"}}>{b.rfpAnalysis.summary}</div>}
+                        {b.rfpAnalysis.categoryScores&&rfpCategories&&<div style={{background:"rgba(0,0,0,.04)",borderRadius:6,padding:"8px 10px",display:"flex",flexDirection:"column",gap:5}}>
+                          <div style={{fontSize:9,fontWeight:700,color:T.t2,marginBottom:2}}>카테고리별 위험도 점수(0~10)</div>
+                          {rfpCategories.map(c=>{const v=b.rfpAnalysis.categoryScores[c.id]||0;return (
+                            <div key={c.id} style={{display:"flex",alignItems:"center",gap:8}}>
+                              <span style={{width:118,fontSize:9,color:T.t2,flexShrink:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.label}</span>
+                              <div style={{flex:1,background:T.b,borderRadius:3,height:5,overflow:"hidden"}}><div style={{height:"100%",width:`${v/10*100}%`,background:rfpScoreColor(v*10),borderRadius:3}}/></div>
+                              <span style={{width:16,fontSize:9,fontWeight:700,color:rfpScoreColor(v*10),textAlign:"right",flexShrink:0}}>{v}</span>
+                            </div>
+                          );})}
+                        </div>}
                         {(b.rfpAnalysis.findings||[]).map((f,i)=>(
                           <div key={i} style={{background:"rgba(0,0,0,.04)",borderRadius:6,padding:"8px 10px",borderLeft:`2px solid ${RFP_SEV_COLOR[f.severity]||T.t2}`}}>
                             <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:4,flexWrap:"wrap"}}>
@@ -1392,20 +1740,22 @@ function BidHistory({bids,addBid,removeBid,threatScores,activeComps,addCompetito
 
           <FL>RFP·계약조건 첨부 <span style={{color:T.t3,fontWeight:400}}>(선택 — 저장 후 AI 위험도 분석 가능)</span></FL>
           <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6}}>
-            <label style={{flexShrink:0,padding:"7px 12px",borderRadius:7,background:T.bg3,border:`1px solid ${T.b}`,fontSize:11,color:T.t2,cursor:"pointer"}}>
-              파일 선택(.txt/.md)
-              <input type="file" accept=".txt,.md" onChange={onRfpFile} style={{display:"none"}}/>
+            <label style={{flexShrink:0,padding:"7px 12px",borderRadius:7,background:rfpParsing?T.bg2:T.bg3,border:`1px solid ${T.b}`,fontSize:11,color:rfpParsing?T.t3:T.t2,cursor:rfpParsing?"default":"pointer",opacity:rfpParsing?.6:1}}>
+              파일 선택(.pdf/.docx/.xlsx/.xls/.pptx/.txt/.md)
+              <input type="file" accept=".txt,.md,.pdf,.docx,.xlsx,.xls,.pptx" onChange={onRfpFile} disabled={rfpParsing} style={{display:"none"}}/>
             </label>
-            {form.rfpFileName&&<span style={{fontSize:10,color:T.teal,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>✓ {form.rfpFileName}</span>}
+            {rfpParsing&&<span style={{fontSize:10,color:T.t2}}>파일 읽는 중…</span>}
+            {!rfpParsing&&form.rfpFileName&&<span style={{fontSize:10,color:T.teal,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>✓ {form.rfpFileName}</span>}
           </div>
-          <textarea value={form.rfpText} onChange={e=>setForm(f=>({...f,rfpText:e.target.value.slice(0,RFP_MAX_CHARS),rfpFileName:f.rfpFileName&&e.target.value!==f.rfpText?"":f.rfpFileName}))} placeholder="PDF·HWP 등은 뷰어에서 본문 텍스트를 복사해 여기에 붙여넣으세요 (핵심 조항 위주도 가능)" rows={4} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:11,marginBottom:4,resize:"vertical",fontFamily:"inherit"}}/>
+          <div style={{fontSize:9,color:T.t3,marginBottom:6}}>파일은 서버로 전송되지 않고 이 브라우저 안에서만 텍스트로 변환됩니다. 옛 doc/ppt(97-2003)·HWP·스캔본 PDF는 자동 인식이 안 되니 뷰어에서 본문을 복사해 아래에 붙여넣어 주세요.</div>
+          <textarea value={form.rfpText} onChange={e=>setForm(f=>({...f,rfpText:e.target.value.slice(0,RFP_MAX_CHARS),rfpFileName:f.rfpFileName&&e.target.value!==f.rfpText?"":f.rfpFileName}))} placeholder="위에서 파일을 선택하면 자동으로 채워집니다. 또는 본문 텍스트를 직접 붙여넣으세요 (핵심 조항 위주도 가능)" rows={4} style={{width:"100%",background:T.bg3,border:`1px solid ${T.b}`,borderRadius:7,padding:"8px 12px",color:T.t1,fontSize:11,marginBottom:4,resize:"vertical",fontFamily:"inherit"}}/>
           <div style={{fontSize:9,color:T.t3,marginBottom:14,textAlign:"right"}}>{form.rfpText.length.toLocaleString()} / {RFP_MAX_CHARS.toLocaleString()}자</div>
 
           {err&&<div style={{fontSize:11,color:T.red,marginBottom:10}}>⚠ {err}</div>}
           <div onClick={submit} style={{width:"100%",padding:"10px",borderRadius:8,background:T.teal,color:"#FFFFFF",fontWeight:700,fontSize:12,textAlign:"center",cursor:"pointer"}}>{editingId?"수정 완료":"추가"}</div>
         </div>}
       </div>
-      {showGradeInfo&&<RfpMethodologyPanel rubric={rfpRubric} onClose={()=>setShowGradeInfo(false)}/>}
+      {showGradeInfo&&<RfpMethodologyPanel rubric={rfpRubric} categories={rfpCategories} onClose={()=>setShowGradeInfo(false)}/>}
     </div>
   );
 }
